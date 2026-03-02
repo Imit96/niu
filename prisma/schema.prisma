@@ -1,0 +1,266 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// NextAuth (Auth.js) Core Models
+// ==========================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ==========================================
+// User & Role Management
+// ==========================================
+
+enum Role {
+  CUSTOMER
+  SALON
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+  
+  role          Role      @default(CUSTOMER)
+
+  accounts      Account[]
+  sessions      Session[]
+  
+  orders        Order[]
+  reviews       Review[]
+  salonProfile  SalonPartner?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model SalonPartner {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  businessName    String
+  taxId           String?
+  address         String
+  isApproved      Boolean  @default(false)
+  pricingTierId   String?
+  pricingTier     BulkPricingTier? @relation(fields: [pricingTierId], references: [id])
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ==========================================
+// Product & Inventory Catalog
+// ==========================================
+
+model Product {
+  id              String            @id @default(cuid())
+  slug            String            @unique
+  name            String
+  ritualName      String?
+  functionalTitle String?
+  description     String
+  howToUse        String?           // Ritual Usage Guide
+  ingredientsText String?
+  images          String[]
+  
+  variants        ProductVariant[]
+  reviews         Review[]
+  inventory       Inventory?
+  bundles         RitualBundle[]    @relation("BundleProducts")
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model ProductVariant {
+  id              String   @id @default(cuid())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  sku             String   @unique
+  size            String?  // e.g., "50ml", "100ml"
+  priceInCents    Int      // Smallest currency unit
+  
+  inventoryCount  Int      @default(0)
+  
+  orderItems      OrderItem[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Inventory {
+  id            String   @id @default(cuid())
+  productId     String   @unique
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  quantity      Int      @default(0)
+  lowStockAlert Int      @default(10)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model RitualBundle {
+  id          String    @id @default(cuid())
+  name        String
+  description String
+  priceInCents Int
+  slug        String    @unique
+  
+  products    Product[] @relation("BundleProducts")
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// ==========================================
+// Orders & Commerce
+// ==========================================
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  userId          String?     // Nullable for guest checkout
+  user            User?       @relation(fields: [userId], references: [id])
+  
+  guestEmail      String?
+  totalInCents    Int
+  status          OrderStatus @default(PENDING)
+  currency        String      @default("NGN")
+  
+  paymentMethod   String?
+  paymentIntentId String?     // e.g., Paystack Ref or Stripe ID
+  
+  orderItems      OrderItem[]
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model OrderItem {
+  id              String         @id @default(cuid())
+  orderId         String
+  order           Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productVariantId String
+  variant         ProductVariant @relation(fields: [productVariantId], references: [id])
+  
+  quantity        Int
+  priceAtPurchase Int            // Snapshot price
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+// ==========================================
+// Reviews & Content
+// ==========================================
+
+model Review {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  rating      Int      // 1 to 5
+  comment     String?
+  isApproved  Boolean  @default(false)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContentBlock {
+  id          String   @id @default(cuid())
+  slug        String   @unique // e.g. "home-hero", "about-manifesto"
+  contentJson String   // Stores structured content for the headless CMS approach
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BulkPricingTier {
+  id            String         @id @default(cuid())
+  name          String         // e.g. "Gold Salon"
+  discountPct   Float          // e.g. 20.0 for 20%
+  
+  salons        SalonPartner[]
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model DiscountCode {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  discountPct   Float?
+  discountFixed Int?
+  expiresAt     DateTime?
+  isActive      Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
