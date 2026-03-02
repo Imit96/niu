@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getPublicProducts } from "../actions/product";
 import ShopFilters from "./ShopFilters";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Shop All Regimens | Originæ",
   description: "Discover our full collection of intentional, heritage-rooted formulations.",

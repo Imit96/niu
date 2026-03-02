@@ -4,6 +4,8 @@ import { getProductBySlug } from "../../actions/product";
 import { notFound } from "next/navigation";
 import AddToCartButton from "./AddToCartButton";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const product = await getProductBySlug(params.id);
   if (!product) return { title: "Regimen Not Found" };
