@@ -82,7 +82,7 @@ export async function getPublicProducts() {
 
 // Get Single Product by Slug for PDP
 export async function getProductBySlug(slug: string) {
-  return prisma.product.findUnique({
+  return prisma.product.findFirst({
     where: { slug },
     include: {
       variants: true
