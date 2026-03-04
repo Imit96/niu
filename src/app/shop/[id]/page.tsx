@@ -6,8 +6,9 @@ import AddToCartButton from "./AddToCartButton";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  const product = await getProductBySlug(params.id);
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const product = await getProductBySlug(id);
   if (!product) return { title: "Regimen Not Found" };
   return {
     title: `${product.name} | Originæ`,
@@ -15,9 +16,9 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-export default async function ProductDetailPage({ params }: { params: { id: string } }) {
-  // params.id is actually the slug based on our routing setup
-  const product = await getProductBySlug(params.id);
+export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const product = await getProductBySlug(id);
   
   if (!product) {
     notFound();
