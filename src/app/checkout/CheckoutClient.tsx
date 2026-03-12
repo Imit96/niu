@@ -157,13 +157,18 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
         return;
       }
 
+      // Sanity check for Public Key vs Secret Key
+      if (!paystackKey.startsWith("pk_")) {
+        throw new Error("Invalid Payment Configuration: NEXT_PUBLIC_PAYSTACK_KEY must be a Public Key (pk_...), but it looks like a Secret Key or is malformed.");
+      }
+
       // Initialize Paystack inline popup
       const paystackConfig = {
         key: paystackKey,
         email: shippingData.email,
         amount: finalTotalInCents,
         currency: "NGN",
-        ref: orderRes.orderId,
+        reference: orderRes.orderId,
         metadata: {
           custom_fields: [
             { display_name: "Order ID", variable_name: "order_id", value: orderRes.orderId },
