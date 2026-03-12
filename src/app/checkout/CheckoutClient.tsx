@@ -168,7 +168,7 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
         email: shippingData.email,
         amount: finalTotalInCents,
         currency: "NGN",
-        reference: orderRes.orderId,
+        ref: orderRes.orderId,
         metadata: {
           custom_fields: [
             { display_name: "Order ID", variable_name: "order_id", value: orderRes.orderId },

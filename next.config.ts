@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
               // Connections: self + API hosts
               "connect-src 'self' https://api.paystack.co https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net",
               // Frames: Paystack inline popup uses an iframe
-              "frame-src 'self' https://js.paystack.co",
+              "frame-src 'self' https://js.paystack.co https://checkout.paystack.com",
               // Workers
               "worker-src 'self' blob:",
               // Block all object embeds
