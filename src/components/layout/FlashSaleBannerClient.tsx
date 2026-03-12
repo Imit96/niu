@@ -6,9 +6,10 @@ import { X } from "lucide-react";
 interface FlashSaleBannerClientProps {
   title: string;
   endsAt: string;
+  discountPct: number;
 }
 
-export default function FlashSaleBannerClient({ title, endsAt }: FlashSaleBannerClientProps) {
+export default function FlashSaleBannerClient({ title, endsAt, discountPct }: FlashSaleBannerClientProps) {
   const [dismissed, setDismissed] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
 
@@ -65,7 +66,7 @@ export default function FlashSaleBannerClient({ title, endsAt }: FlashSaleBanner
           <span className="hidden sm:inline text-bronze font-semibold uppercase text-[10px] tracking-[0.2em] border border-bronze/40 px-2 py-0.5 animate-pulse">
             Flash Sale
           </span>
-          <span className="font-medium">{title}</span>
+          <span className="font-medium">{title} — {discountPct}% OFF</span>
           {timeLeft && (
             <span className="text-cream/60 text-xs hidden md:inline">— {timeLeft}</span>
           )}

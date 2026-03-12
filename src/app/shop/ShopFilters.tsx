@@ -57,6 +57,8 @@ function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRit
     [searchParams]
   );
 
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setShowSuggestions(false);
@@ -68,9 +70,10 @@ function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRit
   };
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8 md:space-y-12">
+      {/* Search Bar - Always visible */}
       <div className="space-y-4" ref={wrapperRef}>
-        <h3 className="text-sm font-semibold tracking-widest uppercase text-bronze border-b border-earth/20 pb-2">Search</h3>
+        <h3 className="hidden md:block text-sm font-semibold tracking-widest uppercase text-bronze border-b border-earth/20 pb-2">Search</h3>
         <form onSubmit={handleSearch} className="relative">
           <input
             type="text"
@@ -116,36 +119,56 @@ function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRit
         </form>
       </div>
 
-      <div className="space-y-4">
-        <h3 className="text-sm font-semibold tracking-widest uppercase text-bronze border-b border-earth/20 pb-2">By Regimen</h3>
-        <ul className="space-y-3">
-          {categories.map((cat) => (
-            <li key={cat}>
-              <button
-                onClick={() => router.push(`/shop?${createQueryString("ritual", cat)}`)}
-                className={`text-sm tracking-wide transition-colors ${activeRitual === cat ? "text-earth font-semibold" : "text-earth/70 hover:text-bronze"}`}
-              >
-                {cat}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* Mobile Filter Toggle */}
+      <button 
+        onClick={() => setIsMobileOpen(!isMobileOpen)}
+        className="md:hidden w-full flex items-center justify-between px-4 py-3 bg-earth/5 border border-earth/10 text-earth font-semibold tracking-widest uppercase text-sm"
+      >
+        <span>Filter Products</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform duration-300 ${isMobileOpen ? "rotate-180" : ""}`}>
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
 
-      <div className="space-y-4">
-        <h3 className="text-sm font-semibold tracking-widest uppercase text-bronze border-b border-earth/20 pb-2">By Texture</h3>
-        <ul className="space-y-3">
-          {textures.map((tex) => (
-            <li key={tex}>
-              <button
-                onClick={() => router.push(`/shop?${createQueryString("texture", tex)}`)}
-                className={`text-sm tracking-wide transition-colors ${activeTexture === tex ? "text-earth font-semibold" : "text-earth/70 hover:text-bronze"}`}
-              >
-                {tex}
-              </button>
-            </li>
-          ))}
-        </ul>
+      {/* Filter Content - Collapsible on Mobile */}
+      <div className={`space-y-8 md:space-y-12 transition-all duration-300 ease-in-out md:block ${isMobileOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0 overflow-hidden md:max-h-none md:opacity-100"}`}>
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold tracking-widest uppercase text-bronze border-b border-earth/20 pb-2">By Regimen</h3>
+          <ul className="space-y-3">
+            {categories.map((cat) => (
+              <li key={cat}>
+                <button
+                  onClick={() => {
+                    router.push(`/shop?${createQueryString("ritual", cat)}`);
+                    setIsMobileOpen(false);
+                  }}
+                  className={`text-sm tracking-wide transition-colors ${activeRitual === cat ? "text-earth font-semibold" : "text-earth/70 hover:text-bronze"}`}
+                >
+                  {cat}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="space-y-4 pb-4 md:pb-0">
+          <h3 className="text-sm font-semibold tracking-widest uppercase text-bronze border-b border-earth/20 pb-2">By Texture</h3>
+          <ul className="space-y-3">
+            {textures.map((tex) => (
+              <li key={tex}>
+                <button
+                  onClick={() => {
+                    router.push(`/shop?${createQueryString("texture", tex)}`);
+                    setIsMobileOpen(false);
+                  }}
+                  className={`text-sm tracking-wide transition-colors ${activeTexture === tex ? "text-earth font-semibold" : "text-earth/70 hover:text-bronze"}`}
+                >
+                  {tex}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

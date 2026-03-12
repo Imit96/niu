@@ -10,6 +10,7 @@ export async function FlashSaleBanner() {
     <FlashSaleBannerClient
       title={sale.title}
       endsAt={sale.endsAt instanceof Date ? sale.endsAt.toISOString() : String(sale.endsAt)}
+      discountPct={sale.discountPct || 0}
     />
   );
 }

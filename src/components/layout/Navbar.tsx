@@ -28,6 +28,11 @@ export function Navbar() {
     setMounted(true);
   }, []);
 
+  // Close mobile menu when the route formally changes
+  React.useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   const cartItemsCount = mounted ? items.reduce((acc, item) => acc + item.quantity, 0) : 0;
 
   return (
