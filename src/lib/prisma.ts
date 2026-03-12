@@ -6,6 +6,10 @@ import "./env";
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 function createPrismaClient() {
+  const dbUrl = process.env.DATABASE_URL ?? "";
+  const urlHost = dbUrl.split("@")[1]?.split("/")[0] ?? "(empty)";
+  console.log("[prisma] connecting to host:", urlHost);
+
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     // rejectUnauthorized: false is only needed in local dev where SSL is intercepted.
