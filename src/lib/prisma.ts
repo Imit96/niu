@@ -12,11 +12,9 @@ function createPrismaClient() {
 
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    // rejectUnauthorized: false is only needed in local dev where SSL is intercepted.
-    // In production (Vercel + Supabase) the certificate is valid and we enforce it.
-    ssl: process.env.NODE_ENV === "production"
-      ? true
-      : { rejectUnauthorized: false },
+    // Supabase's pooler uses an internal CA not in Node's default trust store,
+    // so we disable cert verification (connection is still encrypted).
+    ssl: { rejectUnauthorized: false },
     // Prevent SocketTimeout: keep connections alive and release them before
     // the remote (Supabase/PgBouncer) closes them silently on its end.
     keepAlive: true,
