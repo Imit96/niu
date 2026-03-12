@@ -9,6 +9,7 @@ import { authConfig } from "./auth.config";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  trustHost: true,
   // @ts-expect-error adapter typings mismatch with Prisma v6
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
