@@ -10,6 +10,11 @@ if (typeof process !== "undefined" && process.env.NODE_ENV === "production" && p
 
 const isProduction = process.env.NODE_ENV === "production";
 
+// Fall back to Vercel's auto-provided URL if APP_URL is not explicitly set
+if (!process.env.APP_URL && process.env.VERCEL_URL) {
+  process.env.APP_URL = `https://${process.env.VERCEL_URL}`;
+}
+
 const envSchema = z.object({
   // Database
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
