@@ -8,13 +8,6 @@ if (typeof process !== "undefined" && process.env.NODE_ENV === "production" && p
   );
 }
 
-const isProduction = process.env.NODE_ENV === "production";
-
-// Fall back to Vercel's auto-provided URL if APP_URL is not explicitly set
-if (!process.env.APP_URL && process.env.VERCEL_URL) {
-  process.env.APP_URL = `https://${process.env.VERCEL_URL}`;
-}
-
 const envSchema = z.object({
   // Database
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
@@ -30,10 +23,8 @@ const envSchema = z.object({
   PAYSTACK_SECRET_KEY: z.string().min(1, "PAYSTACK_SECRET_KEY is required"),
   NEXT_PUBLIC_PAYSTACK_KEY: z.string().min(1, "NEXT_PUBLIC_PAYSTACK_KEY is required"),
 
-  // APP_URL is required in production — email links and redirect URLs depend on it
-  APP_URL: isProduction
-    ? z.string().url("APP_URL must be a valid URL in production")
-    : z.string().url().optional(),
+  // APP_URL — set to your production domain when available; email links depend on it
+  APP_URL: z.string().url().optional(),
 
   // Optional — validated at the call site
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
