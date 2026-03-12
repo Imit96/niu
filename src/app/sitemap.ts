@@ -4,18 +4,12 @@ import { prisma } from "@/lib/prisma";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://origonae.com";
 
-  // Fetch all dynamically generated routes
-  const products = await prisma.product.findMany({
-    select: { slug: true, updatedAt: true },
-  });
-  
-  const journals = await prisma.article.findMany({
-    select: { slug: true, updatedAt: true },
-  });
-  
-  const bundles = await prisma.ritualBundle.findMany({
-    select: { slug: true, updatedAt: true },
-  });
+  // Fetch all dynamically generated routes — fall back to empty arrays if DB is unreachable at build time
+  const [products, journals, bundles] = await Promise.all([
+    prisma.product.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
+    prisma.article.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
+    prisma.ritualBundle.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
+  ]);
 
   const productEntries = products.map((product) => ({
     url: `${baseUrl}/shop/${product.slug}`,
