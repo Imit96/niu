@@ -1,11 +1,11 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ==========================================
@@ -64,14 +64,16 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  password      String?
-  emailVerified DateTime?
-  image         String?
-  
-  role          Role      @default(CUSTOMER)
+  id              String    @id @default(cuid())
+  name            String?
+  email           String    @unique
+  password        String?
+  emailVerified   DateTime?
+  image           String?
+
+  phone           String?
+  role            Role      @default(CUSTOMER)
+  passwordVersion Int       @default(0) // Incremented on password reset to invalidate active JWT sessions
 
   accounts      Account[]
   sessions      Session[]
@@ -79,17 +81,27 @@ model User {
   orders        Order[]
   reviews       Review[]
   salonProfile  SalonPartner?
+  wishlist      Wishlist?
 
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  @@index([email])
+  @@index([role])
 }
 
 model SalonPartner {
   id              String   @id @default(cuid())
-  userId          String   @unique
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String?  @unique
+  user            User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   businessName    String
+  contactName     String?
+  contactEmail    String?
+  phone           String?
+  instagramHandle String?
+  socialMediaLinks String? // Generalized URLs (Website, TikTok, etc.)
+  message         String?
   taxId           String?
   address         String
   isApproved      Boolean  @default(false)
@@ -110,18 +122,35 @@ model Product {
   name            String
   ritualName      String?
   functionalTitle String?
+  texture         String?
   description     String
   howToUse        String?           // Ritual Usage Guide
   ingredientsText String?
-  images          String[]
-  
+  regimenProductIds String[]
+  images                   String[]
+  imagePositions           Json?    @default("[]")    // CSS object-position per image (parallel array)
+  performanceMedia         String?
+  performanceMediaPosition String?  @default("center") // CSS object-position for performance media
+  textureHeading      String? // e.g. "Texture & Scent"
+  textureScent        String? @db.Text // Texture & Scent description
+  inspirationHeading  String? // e.g. "Cultural Inspiration"
+  culturalInspiration String? @db.Text // Cultural Inspiration description
+  resonanceData       Json?   // e.g. [{ timeframe: "Day 01", title: "...", description: "..." }]
+  faqData             Json?   // e.g. [{ question: "...", answer: "..." }]
+  isFeaturedHair  Boolean  @default(false) // Homepage hair spotlight section
+  isFeaturedScent Boolean  @default(false) // Homepage scent spotlight section
+
   variants        ProductVariant[]
   reviews         Review[]
-  inventory       Inventory?
   bundles         RitualBundle[]    @relation("BundleProducts")
+  articles        Article[]         // Articles featuring this product as a CTA
+  wishlistedBy    WishlistItem[]
 
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+
+  @@index([slug])
+  @@index([ritualName])
 }
 
 model ProductVariant {
@@ -132,6 +161,7 @@ model ProductVariant {
   sku             String   @unique
   size            String?  // e.g., "50ml", "100ml"
   priceInCents    Int      // Smallest currency unit
+  salePriceInCents Int?    // Optional sale/discounted price (must be less than priceInCents)
   
   inventoryCount  Int      @default(0)
   
@@ -139,18 +169,6 @@ model ProductVariant {
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-}
-
-model Inventory {
-  id            String   @id @default(cuid())
-  productId     String   @unique
-  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  
-  quantity      Int      @default(0)
-  lowStockAlert Int      @default(10)
-
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
 }
 
 model RitualBundle {
@@ -189,14 +207,33 @@ model Order {
   totalInCents    Int
   status          OrderStatus @default(PENDING)
   currency        String      @default("NGN")
+  discountCode    String?
+
+  // Shipping address
+  shippingName       String?
+  shippingPhone      String?
+  shippingAddress    String?
+  shippingApartment  String?
+  shippingCity       String?
+  shippingState      String?
+  shippingPostalCode String?
+  shippingCountry    String?
   
+  shippingFeeInCents Int      @default(0)
   paymentMethod   String?
   paymentIntentId String?     // e.g., Paystack Ref or Stripe ID
-  
+
+  trackingNumber  String?
+  trackingUrl     String?
+
   orderItems      OrderItem[]
 
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([guestEmail])
 }
 
 model OrderItem {
@@ -218,20 +255,39 @@ model OrderItem {
 // Reviews & Content
 // ==========================================
 
+model AbandonedCart {
+  id              String   @id @default(cuid())
+  userId          String?
+  email           String?
+  cartData        String   // JSON string of cart items
+  recovered       Boolean  @default(false)
+  emailSent       Boolean  @default(false)
+
+  lastActiveAt    DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
 model Review {
   id          String   @id @default(cuid())
   productId   String
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  
+
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   rating      Int      // 1 to 5
   comment     String?
   isApproved  Boolean  @default(false)
+  isFeatured  Boolean  @default(false) // Show on homepage Voices section
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([productId])
+  @@index([userId])
+  @@index([isApproved])
+  @@index([isFeatured])
 }
 
 model ContentBlock {
@@ -255,13 +311,151 @@ model BulkPricingTier {
 }
 
 model DiscountCode {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  discountPct     Float?
+  discountFixed   Int?
+  expiresAt       DateTime?
+  isActive        Boolean  @default(true)
+  allowedForSalon Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ==========================================
+// Flash Sales
+// ==========================================
+
+model FlashSale {
+  id              String   @id @default(cuid())
+  title           String
+  discountPct     Float?
+  startsAt        DateTime
+  endsAt          DateTime
+  isActive        Boolean  @default(true)
+  allowedForSalon Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ==========================================
+// Journal & Articles
+// ==========================================
+
+model Article {
   id            String   @id @default(cuid())
-  code          String   @unique
-  discountPct   Float?
-  discountFixed Int?
-  expiresAt     DateTime?
+  slug          String   @unique
+  title         String
+  category      String
+  excerpt       String   @db.Text
+  content       String   @db.Text
+  featuredImage String?
+  mediaUrl      String?  // YouTube, Vimeo, GIF, or direct video URL
+  sortOrder     Int      @default(0)
+  isFeatured    Boolean  @default(false)
+  datePublished DateTime @default(now())
+  
+  // Call to action product relation
+  relatedProductId String?
+  relatedProduct   Product? @relation(fields: [relatedProductId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([slug])
+  @@index([isFeatured])
+}
+
+// ==========================================
+// Wishlist
+// ==========================================
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  items     WishlistItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WishlistItem {
+  id         String   @id @default(cuid())
+  wishlistId String
+  wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  restockNotifiedAt DateTime? // Last time the user was notified this item was back in stock
+
+  createdAt  DateTime @default(now())
+
+  @@unique([wishlistId, productId])
+}
+
+// ==========================================
+// Shipping
+// ==========================================
+
+model ShippingRate {
+  id            String   @id @default(cuid())
+  name          String   // Display name e.g. "Lagos", "Default Nigeria", "International"
+  type          String   // "domestic" | "international"
+  region        String?  // Nigerian state name, or null for catch-all
+  rateInCents   Int
+  estimatedDays String?  // e.g. "3-5 business days"
   isActive      Boolean  @default(true)
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([type, isActive])
+}
+
+// ==========================================
+// Order Audit Log
+// ==========================================
+
+model OrderAuditLog {
+  id         String   @id @default(cuid())
+  orderId    String
+  adminId    String?  // null if system-triggered (e.g. webhook)
+  fromStatus String
+  toStatus   String
+  note       String?
+
+  createdAt  DateTime @default(now())
+
+  @@index([orderId])
+}
+
+// ==========================================
+// Newsletter
+// ==========================================
+
+model NewsletterSubscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+
+  @@index([email])
+}
+
+// ==========================================
+// Webhook Replay Protection
+// ==========================================
+
+model ProcessedWebhookEvent {
+  id          String   @id @default(cuid())
+  provider    String   // e.g. "paystack"
+  eventId     String   // provider-supplied event ID
+  processedAt DateTime @default(now())
+
+  @@unique([provider, eventId])
+  @@index([provider, eventId])
 }

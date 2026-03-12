@@ -6,9 +6,12 @@ import { Menu, X, ShoppingBag, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useCartStore } from "@/lib/store/cartStore";
+import { useCurrencyStore, Currency } from "@/lib/store/currencyStore";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { name: "Regimens", href: "/shop" },
+  { name: "Shop", href: "/shop" },
+  { name: "Guides", href: "/guides" },
   { name: "Ingredients", href: "/ingredients" },
   { name: "Journal", href: "/journal" },
   { name: "About", href: "/about" },
@@ -17,7 +20,9 @@ const navLinks = [
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const items = useCartStore((state) => state.items);
+  const { currency, setCurrency } = useCurrencyStore();
   const [mounted, setMounted] = React.useState(false);
+  const pathname = usePathname();
 
   React.useEffect(() => {
     setMounted(true);
@@ -27,7 +32,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full border-b border-ash/20 bg-cream/90 backdrop-blur-md">
+      <nav className="w-full border-b border-ash/20 bg-cream/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-6 md:px-12">
           {/* Mobile Menu Toggle */}
           <button
@@ -40,15 +45,22 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden items-center space-x-8 md:flex">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="text-sm font-medium text-earth transition-colors hover:border-b hover:border-earth border-b border-transparent"
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`text-sm font-medium transition-colors border-b pb-0.5 hover:text-bronze ${
+                    isActive 
+                      ? "text-earth border-earth" 
+                      : "text-earth/80 border-transparent hover:border-bronze"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Logo */}
@@ -56,17 +68,28 @@ export function Navbar() {
             href="/"
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-semibold tracking-wider text-earth font-serif uppercase"
           >
-            Originæ
+            ORIGONÆ
           </Link>
 
           {/* Actions */}
           <div className="flex items-center space-x-6">
-            <Link
-              href="/salon"
-              className="hidden text-sm font-medium text-earth hover:text-bronze md:block"
-            >
-              Salon Partners
-            </Link>
+            
+            {mounted && (
+              <div className="hidden md:flex items-center border-b border-earth/20 pb-0.5">
+                <select 
+                  value={currency} 
+                  onChange={(e) => setCurrency(e.target.value as Currency)}
+                  className="bg-transparent text-[10px] font-semibold uppercase tracking-widest text-earth focus:outline-none cursor-pointer"
+                  aria-label="Select Currency"
+                >
+                  <option value="NGN">NGN ₦</option>
+                  <option value="USD">USD $</option>
+                  <option value="GBP">GBP £</option>
+                  <option value="EUR">EUR €</option>
+                </select>
+              </div>
+            )}
+
             <Link href="/account" aria-label="Account">
               <User className="h-5 w-5 text-earth hover:text-bronze transition-colors" />
             </Link>
@@ -111,22 +134,39 @@ export function Navbar() {
               </div>
 
               <div className="flex flex-col space-y-6">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className="text-lg font-medium text-earth hover:text-bronze transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-                <div className="h-px w-full bg-earth/10 my-4" />
-                <Link
-                  href="/salon"
-                  className="text-lg font-medium text-earth hover:text-bronze transition-colors"
-                >
-                  Salon Partners
-                </Link>
+                {navLinks.map((link) => {
+                  const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+                  return (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      className={`text-lg font-medium transition-colors ${
+                        isActive 
+                          ? "text-bronze underline decoration-1 underline-offset-[6px]" 
+                          : "text-earth hover:text-bronze"
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  );
+                })}
+                
+                {mounted && (
+                  <div className="pt-6 border-t border-earth/20 mt-6">
+                    <span className="text-xs uppercase tracking-widest text-earth/60 mb-2 block">Currency</span>
+                    <select 
+                      value={currency} 
+                      onChange={(e) => setCurrency(e.target.value as Currency)}
+                      className="bg-transparent text-base font-semibold uppercase tracking-widest text-earth focus:outline-none cursor-pointer w-full border-b border-earth/20 pb-2"
+                    >
+                      <option value="NGN">NGN (₦)</option>
+                      <option value="USD">USD ($)</option>
+                      <option value="GBP">GBP (£)</option>
+                      <option value="EUR">EUR (€)</option>
+                    </select>
+                  </div>
+                )}
+
               </div>
             </motion.div>
           </motion.div>

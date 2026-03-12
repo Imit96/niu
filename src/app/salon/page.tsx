@@ -1,12 +1,16 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { auth } from "../../../auth";
 
 export const metadata = {
-  title: "Professional Partnerships | Originæ",
-  description: "Discover Originæ's B2B salon portal. Elevate your salon experience with our luxury regimen haircare system.",
+  title: "Professional Partnerships | ORIGONÆ",
+  description: "Discover ORIGONÆ's B2B salon portal. Elevate your salon experience with our luxury regimen haircare system.",
 };
 
-export default function SalonPortalPage() {
+export default async function SalonPortalPage() {
+  const session = await auth();
+  const isSalonActive = session?.user?.role === "SALON";
+
   return (
     <div className="flex flex-col w-full bg-cream min-h-screen">
       {/* Hero */}
@@ -21,9 +25,15 @@ export default function SalonPortalPage() {
           <h1 className="text-4xl md:text-6xl font-serif text-cream uppercase tracking-wide leading-tight mb-8">
             Elevate Your <br className="hidden md:block"/> Practice.
           </h1>
-          <Link href="/salon/apply">
-             <Button variant="secondary" size="lg" className="border-cream text-cream hover:bg-cream hover:text-earth">Apply for Partnership</Button>
-          </Link>
+          {isSalonActive ? (
+            <Link href="/salon/dashboard">
+               <Button variant="secondary" size="lg" className="border-cream text-cream hover:bg-cream hover:text-earth">Enter Salon Dashboard</Button>
+            </Link>
+          ) : (
+            <Link href="/salon/apply">
+               <Button variant="secondary" size="lg" className="border-cream text-cream hover:bg-cream hover:text-earth">Apply for Partnership</Button>
+            </Link>
+          )}
         </div>
       </section>
 
@@ -33,7 +43,7 @@ export default function SalonPortalPage() {
           <div className="space-y-6">
             <h3 className="text-2xl font-serif text-earth">Premium Positioning</h3>
             <p className="text-earth/80 font-light leading-relaxed">
-              Align your salon with a luxury, culturally-rooted brand. Originæ offers a prestige narrative that differentiates your service menu and attracts high-end clientele seeking intentional beauty.
+              Align your salon with a luxury, culturally-rooted brand. ORIGONÆ offers a prestige narrative that differentiates your service menu and attracts high-end clientele seeking intentional beauty.
             </p>
           </div>
           <div className="space-y-6">
@@ -45,7 +55,7 @@ export default function SalonPortalPage() {
           <div className="space-y-6">
             <h3 className="text-2xl font-serif text-earth">Education & Support</h3>
             <p className="text-earth/80 font-light leading-relaxed">
-              Partners receive comprehensive ritual training. We provide the historical context, ingredient science, and application techniques required to deliver the true Originæ experience.
+              Partners receive comprehensive product training. We provide the historical context, ingredient science, and application techniques required to deliver the true ORIGONÆ experience.
             </p>
           </div>
         </div>
@@ -59,9 +69,15 @@ export default function SalonPortalPage() {
             We review every partnership inquiry meticulously to ensure alignment in luxury standards, salon aesthetics, and client experience. We invite concept salons, luxury texture specialists, and premium retailers to submit their details for consideration.
           </p>
           <div className="pt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-            <Link href="/salon/apply">
-              <Button size="lg" className="w-full sm:w-auto bg-cream text-earth">Begin Application</Button>
-            </Link>
+            {isSalonActive ? (
+              <Link href="/salon/dashboard">
+                <Button size="lg" className="w-full sm:w-auto bg-cream text-earth">Enter Salon Dashboard</Button>
+              </Link>
+            ) : (
+              <Link href="/salon/apply">
+                <Button size="lg" className="w-full sm:w-auto bg-cream text-earth">Begin Application</Button>
+              </Link>
+            )}
             <Link href="/contact">
               <Button variant="secondary" size="lg" className="w-full sm:w-auto border-cream text-cream">Contact Wholesale Team</Button>
             </Link>

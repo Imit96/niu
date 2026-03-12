@@ -1,10 +1,11 @@
 
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata = {
-  title: "About Originæ | Heritage & Craftsmanship",
-  description: "Discover the founding story, heritage, and philosophy behind Originæ's luxury regimen haircare.",
+  title: "About ORIGONÆ | Heritage & Craftsmanship",
+  description: "Discover the founding story, heritage, and philosophy behind ORIGONÆ's luxury regimen haircare.",
 };
 
 export default function AboutPage() {
@@ -12,11 +13,11 @@ export default function AboutPage() {
     <div className="flex flex-col w-full bg-sand">
       {/* Hero Section */}
       <section className="relative w-full h-[70vh] min-h-[500px] flex items-center justify-center bg-earth overflow-hidden">
-        <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1512495039889-52a3b799c9bc?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay"></div>
+        <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1549558549-415fe4c37b60?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay"></div>
         <div className="relative z-10 text-center px-6 max-w-4xl">
           <p className="text-sm font-semibold tracking-[0.2em] text-bronze uppercase mb-4">Our Origin</p>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-cream uppercase tracking-wide leading-tight mb-6">
-            Ancestral Energy, <br className="hidden md:block"/> Refined.
+            Essential Elements, <br className="hidden md:block"/> Refined.
           </h1>
         </div>
       </section>
@@ -30,10 +31,10 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-6 text-earth/80 leading-loose text-lg font-light">
               <p>
-                Originæ was born from a desire to elevate haircare beyond utility, transforming it into a sacred, intentional practice. We looked back to move forward, inspired by the ancient beauty rituals of the African continent—from the Atlas Mountains to the coasts of West Africa.
+                ORIGONÆ was born from a desire to elevate haircare beyond utility, transforming it into an elevated, intentional practice. We draw inspiration from the time-tested beauty regimens of the African continent—from the Atlas Mountains to the coasts of West Africa.
               </p>
               <p>
-                Our founders recognized a void in the luxury space: a lack of true, culturally-rooted reverence for textured hair. Originæ is our answer. A line of prestige formulations that honor the specific needs of natural textures while delivering an uncompromising, sensory-rich experience.
+                Our founders recognized a void in the luxury space: a lack of true, culturally-rooted reverence for textured hair and artisanal perfumery. ORIGONÆ is our answer. A line of prestige formulations and olfactory regimens that honor the specific needs of natural textures while delivering an uncompromising, sensory-rich experience.
               </p>
             </div>
           </div>
@@ -46,11 +47,25 @@ export default function AboutPage() {
       </section>
 
       {/* 2. Heritage Section */}
-      <section className="py-24 px-6 bg-earth text-cream">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <h2 className="text-3xl md:text-5xl font-serif uppercase tracking-widest">Grounded in Culture.</h2>
-          <p className="text-lg text-cream/80 leading-loose font-light">
-            We do not borrow; we inherit and elevate. Every product within the Originæ collection is a tribute to raw, indigenous ingredients that have been used for centuries. We source our clays, oils, and botanicals with deep respect for the land and the people who cultivate them, ensuring our formulations remain authentic to their source.
+      <section className="relative py-32 px-6 flex items-center justify-center bg-earth text-cream overflow-hidden min-h-[500px]">
+        {/* Background Image layer */}
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src="/grounded-culture.jpg" 
+            alt="Grounded in Culture" 
+            fill 
+            className="object-cover object-center opacity-60 mix-blend-luminosity grayscale"
+          />
+        </div>
+        
+        {/* Multi-layered Contrast Overlay */}
+        <div className="absolute inset-0 z-10 bg-earth/70 mix-blend-multiply" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-earth/95 via-earth/50 to-earth/95" />
+
+        <div className="relative z-20 max-w-4xl mx-auto text-center space-y-8">
+          <h2 className="text-3xl md:text-5xl font-serif uppercase tracking-widest text-cream drop-shadow-sm">Grounded in Culture.</h2>
+          <p className="text-lg text-cream/90 leading-loose font-light drop-shadow-sm">
+            We do not borrow; we inherit and elevate. Every product within the ORIGONÆ collection is a tribute to raw, indigenous ingredients that have been used for centuries. We source our clays, oils, and botanicals with deep respect for the land and the people who cultivate them, ensuring our formulations remain authentic to their source.
           </p>
         </div>
       </section>
@@ -95,7 +110,7 @@ export default function AboutPage() {
           <div className="bg-earth text-cream p-12 lg:p-16">
             <h3 className="text-2xl font-serif uppercase tracking-wide mb-6">The Future</h3>
             <p className="text-cream/80 leading-relaxed font-light mb-8">
-              Originæ is building a global community. Our mission is to redefine luxury haircare on an international scale, establishing a new standard for how textured hair is treated, presented, and understood. We are expanding our reach, partnering with prestige salons worldwide to bring the regimen to you.
+              ORIGONÆ is building a global community. Our mission is to redefine luxury haircare on an international scale, establishing a new standard for how textured hair is treated, presented, and understood. We are expanding our reach, partnering with prestige salons worldwide to bring the regimen to you.
             </p>
             <Link href="/salon">
               <Button variant="secondary" className="border-cream text-cream hover:bg-cream hover:text-earth">

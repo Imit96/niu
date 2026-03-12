@@ -1,23 +1,21 @@
-"use client";
-
-import * as React from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { getSalonProfile } from "@/app/actions/salon";
+import { SalonApplicationForm } from "./SalonApplicationForm";
 
-export default function SalonApplicationPage() {
-  const [isSubmitted, setIsSubmitted] = React.useState(false);
+export const metadata = {
+  title: "Partnership Inquiry | ORIGONÆ",
+  description: "Apply to become an ORIGONÆ salon partner and access wholesale pricing.",
+};
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real application, submit to backend / email service.
-    setIsSubmitted(true);
-  };
+export default async function SalonApplicationPage() {
+  const profile = await getSalonProfile();
 
   return (
     <div className="flex flex-col w-full bg-sand min-h-screen">
       <section className="pt-32 pb-24 px-6">
         <div className="max-w-2xl mx-auto space-y-12">
-          
+
           <div className="text-center space-y-6">
             <h1 className="text-4xl md:text-5xl font-serif text-earth uppercase tracking-widest leading-tight">Partnership Inquiry</h1>
             <p className="text-earth/80 font-light leading-relaxed">
@@ -25,58 +23,39 @@ export default function SalonApplicationPage() {
             </p>
           </div>
 
-          {!isSubmitted ? (
-            <form onSubmit={handleSubmit} className="space-y-8 bg-stone p-8 md:p-12 border border-earth/10">
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label htmlFor="salonName" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Salon Name *</label>
-                    <Input id="salonName" required placeholder="Your Salon" className="bg-cream border-earth/20 focus-visible:border-bronze" />
+          {profile ? (
+            /* Already has an application on file */
+            <div className="text-center py-16 bg-stone border border-earth/10 space-y-6 px-8">
+              {profile.isApproved ? (
+                <>
+                  <div className="inline-block px-4 py-1.5 bg-bronze/10 border border-bronze/30 text-bronze text-[10px] uppercase tracking-widest font-semibold">
+                    Active Partner
                   </div>
-                  <div className="space-y-2">
-                    <label htmlFor="stylistName" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Primary Contact *</label>
-                    <Input id="stylistName" required placeholder="Stylist or Owner Name" className="bg-cream border-earth/20 focus-visible:border-bronze" />
+                  <h3 className="text-2xl font-serif text-earth">You are an ORIGONÆ Partner.</h3>
+                  <p className="text-earth/70 font-light max-w-sm mx-auto leading-relaxed">
+                    Your salon partnership is active. Access your dashboard to manage wholesale orders and pricing.
+                  </p>
+                  <Link href="/salon/dashboard">
+                    <Button size="lg" className="mt-4">Enter Salon Dashboard</Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <div className="inline-block px-4 py-1.5 bg-earth/5 border border-earth/20 text-earth/60 text-[10px] uppercase tracking-widest font-semibold">
+                    Application Under Review
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="email" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Professional Email *</label>
-                  <Input id="email" type="email" required placeholder="contact@yoursalon.com" className="bg-cream border-earth/20 focus-visible:border-bronze" />
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="location" className="text-[10px] font-semibold tracking-widest uppercase text-earth">City & Country *</label>
-                  <Input id="location" required placeholder="Lagos, Nigeria" className="bg-cream border-earth/20 focus-visible:border-bronze" />
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="instagram" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Salon Instagram Handle</label>
-                  <Input id="instagram" placeholder="@yoursalon" className="bg-cream border-earth/20 focus-visible:border-bronze" />
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="message" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Tell Us About Your Salon Philosophy</label>
-                  <textarea 
-                    id="message" 
-                    rows={4}
-                    className="flex w-full rounded-none border border-earth/20 bg-cream px-4 py-3 text-sm text-earth shadow-sm placeholder:text-earth/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-earth disabled:cursor-not-allowed disabled:opacity-50"
-                    placeholder="We'd love to learn about your space, your current product lines, and your clientele..."
-                  />
-                </div>
-              </div>
-
-              <div className="pt-4">
-                <Button type="submit" size="lg" className="w-full">Submit Application</Button>
-              </div>
-            </form>
-          ) : (
-            <div className="text-center py-16 bg-stone border border-earth/10">
-              <h3 className="text-2xl font-serif text-earth mb-4">Application Received.</h3>
-              <p className="text-earth/80 font-light mb-8 max-w-sm mx-auto">
-                Thank you for your interest in Originæ. Our wholesale concierge will review your submission and contact you shortly.
-              </p>
-              <Button variant="secondary" onClick={() => setIsSubmitted(false)}>Submit Another Inquiry</Button>
+                  <h3 className="text-2xl font-serif text-earth">Application Received.</h3>
+                  <p className="text-earth/70 font-light max-w-sm mx-auto leading-relaxed">
+                    We have your application for <span className="text-earth font-medium">{profile.businessName}</span> on file. Our wholesale concierge is reviewing your submission and will contact you shortly.
+                  </p>
+                  <p className="text-[10px] text-earth/40 uppercase tracking-widest">
+                    Questions? <Link href="/contact" className="underline hover:text-bronze transition-colors">Contact our wholesale team</Link>
+                  </p>
+                </>
+              )}
             </div>
+          ) : (
+            <SalonApplicationForm />
           )}
 
         </div>

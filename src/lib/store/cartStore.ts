@@ -4,11 +4,13 @@ import { persist } from "zustand/middleware";
 export interface CartItem {
   id: string; // Product Variant ID
   productId: string;
+  slug: string; // Used for routing back to the product details page
   name: string;
   priceInCents: number;
   quantity: number;
   image?: string;
   size?: string;
+  inventoryCount: number;
 }
 
 interface CartStore {
@@ -18,6 +20,7 @@ interface CartStore {
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   getCartTotal: () => number;
+  syncPrices: (updates: { id: string; priceInCents: number }[]) => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -53,6 +56,16 @@ export const useCartStore = create<CartStore>()(
       clearCart: () => set({ items: [] }),
       getCartTotal: () => {
         return get().items.reduce((total, item) => total + item.priceInCents * item.quantity, 0);
+      },
+      syncPrices: (updates) => {
+        const priceMap = Object.fromEntries(updates.map((u) => [u.id, u.priceInCents]));
+        set({
+          items: get().items.map((item) =>
+            priceMap[item.id] !== undefined && priceMap[item.id] !== item.priceInCents
+              ? { ...item, priceInCents: priceMap[item.id] }
+              : item
+          ),
+        });
       },
     }),
     {
