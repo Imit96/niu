@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Cormorant_Garamond, Inter, Geist } from "next/font/google";
 import "./globals.css";
 import { FlashSaleBanner } from "@/components/layout/FlashSaleBanner";
 import { Navbar } from "@/components/layout/Navbar";
@@ -11,6 +11,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { auth } from "../../auth";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { MetaPixel } from "@/components/analytics/MetaPixel";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -63,7 +66,7 @@ export default async function RootLayout({
   const session = await auth();
 
   return (
-    <html lang="en">
+    <html lang="en" className={cn("font-sans", geist.variable)}>
       <body
         className={`${cormorant.variable} ${inter.variable} antialiased bg-cream text-ink font-sans flex flex-col min-h-screen`}
       >

@@ -4,6 +4,24 @@ Sourced from `.agents/rules/rules.md`. Follow these at all times.
 
 ---
 
+## 0. Project Management — Mandatory Workflow
+
+**Before ANY Work Session (CRITICAL):**
+1. Read `docs/PROJECT_STATUS.md`
+2. Read `docs/TASKS.md`
+3. Read `docs/KNOWN_ISSUES.md`
+4. Scan `docs/CHANGELOG.md`
+
+**After ANY Meaningful Change (CRITICAL):**
+1. Update `docs/CHANGELOG.md` — log what you did.
+2. Update `docs/PROJECT_STATUS.md` — change affected feature statuses.
+3. Update `docs/TASKS.md` — mark done, add any discovered tasks.
+4. Update `docs/KNOWN_ISSUES.md` — add new issues, remove fixed ones.
+
+*Workflow Rule: Atomic progress. Never leave the project broken. Never skip doc updates.*
+
+---
+
 ## 1. Project Structure
 
 - Follow the established App Router structure: `src/app/`, `src/components/`, `src/lib/`, `src/emails/`

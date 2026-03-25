@@ -4,6 +4,32 @@ trigger: always_on
 
 # AI-Powered IDE Ruleset for Cosmetics Website
 
+## 0. Project Management — Mandatory Workflow
+
+### Required Documents in `/docs/`
+These MUST exist and be maintained:
+- `PROJECT_STATUS.md` — Phase-by-phase feature status.
+- `CHANGELOG.md` — Reverse-chronological log of every change.
+- `TASKS.md` — Prioritized task backlog.
+- `ARCHITECTURE_DECISIONS.md` — Key technical decisions.
+- `KNOWN_ISSUES.md` — Active bugs and incomplete work.
+
+### Before ANY Work Session (CRITICAL)
+1. Read `docs/PROJECT_STATUS.md`
+2. Read `docs/TASKS.md`
+3. Read `docs/KNOWN_ISSUES.md`
+4. Scan `docs/CHANGELOG.md`
+
+### After ANY Meaningful Change (CRITICAL)
+1. Update `docs/CHANGELOG.md` — log what you did.
+2. Update `docs/PROJECT_STATUS.md` — change affected feature statuses.
+3. Update `docs/TASKS.md` — mark done, add any discovered tasks.
+4. Update `docs/KNOWN_ISSUES.md` — add new issues, remove fixed ones.
+
+*Workflow Rule: Atomic progress. Never leave the project broken. Never skip doc updates.*
+
+---
+
 ## 1. Project Structure Rules
 
 * Always follow a **modular file structure**:
