@@ -27,3 +27,12 @@ All notable changes to this project will be documented in this file.
 - Switched `/shop` listing page from `force-dynamic` to `revalidate = 1800` (30-min ISR).
 - Documented `force-dynamic` on product detail page as intentional (auth-dependent per-user state).
 - Updated `PROJECT_STATUS.md` to reflect Phases 1–6 complete and Phase 7 In Progress.
+- **Admin CMS — Ingredients & Guides**: Created `content-admin.ts` with full CRUD server actions (create/update/delete/fetch) for Ingredient and Guide models.
+- Built `/admin/ingredients` index, new, and edit admin pages with full form fields and inline delete.
+- Built `/admin/guides` index, new, and edit admin pages with full form fields and inline delete.
+- Created `Textarea.tsx` UI component following the established Input component pattern.
+- Updated admin sidebar layout to include Ingredients (FlaskConical) and Care Guides (BookMarked) nav links.
+- **Admin CMS — Ritual Bundles**: Created `bundle-admin.ts` server actions for full bundle CRUD.
+- Built `/admin/bundles` index, new, and edit pages with a scrollable product checklist (checkbox multi-select).
+- Edit page uses Prisma `set` to atomically replace the product relation on save.
+- Added Ritual Bundles (Layers icon) to admin sidebar.

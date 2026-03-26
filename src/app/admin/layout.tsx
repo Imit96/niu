@@ -14,6 +14,9 @@ import {
   LogOut,
   BookOpen,
   Truck,
+  FlaskConical,
+  BookMarked,
+  Layers,
 } from "lucide-react";
 import { AdminSidebarLink } from "./AdminSidebarLink";
 
@@ -25,6 +28,9 @@ export const metadata = {
 const sidebarLinks = [
   { name: "Dashboard", href: "/admin", icon: "LayoutDashboard" },
   { name: "Journal", href: "/admin/articles", icon: "BookOpen" },
+  { name: "Ingredients", href: "/admin/ingredients", icon: "FlaskConical" },
+  { name: "Care Guides", href: "/admin/guides", icon: "BookMarked" },
+  { name: "Ritual Bundles", href: "/admin/bundles", icon: "Layers" },
   { name: "Products", href: "/admin/products", icon: "Package" },
   { name: "Orders", href: "/admin/orders", icon: "ShoppingCart" },
   { name: "Users", href: "/admin/users", icon: "Users" },
@@ -39,6 +45,9 @@ const sidebarLinks = [
 const iconMap: Record<string, React.ElementType> = {
   LayoutDashboard,
   BookOpen,
+  FlaskConical,
+  BookMarked,
+  Layers,
   Package,
   ShoppingCart,
   Users,
