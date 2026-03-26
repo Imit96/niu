@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { auth } from "../../../auth";
+import { StaggerSection, FadeUpDiv, FadeUpSection } from "@/components/ui/Motion";
 
 export const metadata = {
   title: "Professional Partnerships | ORIGONÆ",
@@ -17,52 +18,57 @@ export default async function SalonPortalPage() {
       <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center bg-ink overflow-hidden">
         <div className="absolute inset-0 bg-earth/40 mix-blend-multiply"></div>
         <div className="absolute inset-0 flex flex-col justify-center items-center">
-            {/* Dark aesthetic placeholder */}
-            <div className="absolute inset-0 border-[20px] border-cream/5 m-6"></div>
+          <div className="absolute inset-0 border-[20px] border-cream/5 m-6"></div>
         </div>
-        <div className="relative z-10 text-center px-6 max-w-3xl">
-          <p className="text-sm font-semibold tracking-[0.2em] text-bronze uppercase mb-4">Professional Access</p>
-          <h1 className="text-4xl md:text-6xl font-serif text-cream uppercase tracking-wide leading-tight mb-8">
-            Elevate Your <br className="hidden md:block"/> Practice.
-          </h1>
-          {isSalonActive ? (
-            <Link href="/salon/dashboard">
-               <Button variant="secondary" size="lg" className="border-cream text-cream hover:bg-cream hover:text-earth">Enter Salon Dashboard</Button>
-            </Link>
-          ) : (
-            <Link href="/salon/apply">
-               <Button variant="secondary" size="lg" className="border-cream text-cream hover:bg-cream hover:text-earth">Apply for Partnership</Button>
-            </Link>
-          )}
-        </div>
+        <StaggerSection className="relative z-10 text-center px-6 max-w-3xl">
+          <FadeUpDiv>
+            <p className="text-sm font-semibold tracking-[0.2em] text-bronze uppercase mb-4">Professional Access</p>
+          </FadeUpDiv>
+          <FadeUpDiv>
+            <h1 className="text-4xl md:text-6xl font-serif text-cream uppercase tracking-wide leading-tight mb-8">
+              Elevate Your <br className="hidden md:block"/> Practice.
+            </h1>
+          </FadeUpDiv>
+          <FadeUpDiv>
+            {isSalonActive ? (
+              <Link href="/salon/dashboard">
+                <Button variant="secondary" size="lg" className="border-cream text-cream hover:bg-cream hover:text-earth">Enter Salon Dashboard</Button>
+              </Link>
+            ) : (
+              <Link href="/salon/apply">
+                <Button variant="secondary" size="lg" className="border-cream text-cream hover:bg-cream hover:text-earth">Apply for Partnership</Button>
+              </Link>
+            )}
+          </FadeUpDiv>
+        </StaggerSection>
       </section>
 
       {/* Benefits */}
-      <section className="py-24 px-6 bg-sand text-center">
+      <StaggerSection className="py-24 px-6 bg-sand text-center">
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-24">
-          <div className="space-y-6">
+          <FadeUpDiv className="space-y-6">
             <h3 className="text-2xl font-serif text-earth">Premium Positioning</h3>
             <p className="text-earth/80 font-light leading-relaxed">
               Align your salon with a luxury, culturally-rooted brand. ORIGONÆ offers a prestige narrative that differentiates your service menu and attracts high-end clientele seeking intentional beauty.
             </p>
-          </div>
-          <div className="space-y-6">
+          </FadeUpDiv>
+          <FadeUpDiv className="space-y-6">
             <h3 className="text-2xl font-serif text-earth">Wholesale Margins</h3>
             <p className="text-earth/80 font-light leading-relaxed">
               Gain access to exclusive tiered professional pricing. Maximize your retail profitability while offering your clients the exact regimens used during their service.
             </p>
-          </div>
-          <div className="space-y-6">
+          </FadeUpDiv>
+          <FadeUpDiv className="space-y-6">
             <h3 className="text-2xl font-serif text-earth">Education & Support</h3>
             <p className="text-earth/80 font-light leading-relaxed">
               Partners receive comprehensive product training. We provide the historical context, ingredient science, and application techniques required to deliver the true ORIGONÆ experience.
             </p>
-          </div>
+          </FadeUpDiv>
         </div>
-      </section>
+      </StaggerSection>
 
       {/* Philosophy / CTA */}
-      <section className="py-24 px-6 bg-earth text-cream text-center">
+      <FadeUpSection className="py-24 px-6 bg-earth text-cream text-center">
         <div className="max-w-4xl mx-auto space-y-12">
           <h2 className="text-3xl md:text-5xl font-serif uppercase tracking-widest leading-tight">Join The Circle of Cultural Architects.</h2>
           <p className="text-lg text-cream/80 font-light leading-loose">
@@ -83,7 +89,7 @@ export default async function SalonPortalPage() {
             </Link>
           </div>
         </div>
-      </section>
+      </FadeUpSection>
     </div>
   );
 }

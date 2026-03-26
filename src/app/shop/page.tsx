@@ -5,7 +5,8 @@ import { PriceDisplay } from "@/components/ui/PriceDisplay";
 import ShopFilters from "./ShopFilters";
 import Image from "next/image";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 1800;
+
 
 export const metadata = {
   title: "Shop All Regimens | ORIGONÆ",

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { getArticles, getFeaturedArticle } from "@/app/actions/article";
+import { StaggerSection, FadeUpDiv, FadeUpSection } from "@/components/ui/Motion";
 
 export const dynamic = "force-dynamic";
 
@@ -9,12 +10,22 @@ export const metadata = {
   description: "Editorial stories exploring African heritage, formulation science, and intent-driven beauty.",
 };
 
+interface JournalArticle {
+  id: string;
+  slug: string;
+  featuredImage: string | null;
+  title: string;
+  category: string;
+  datePublished: Date;
+  excerpt: string;
+}
+
 export default async function JournalPage() {
   const [allArticles, dbFeatured] = await Promise.all([getArticles(), getFeaturedArticle()]);
 
   // isFeatured = hero at the top; remaining articles sorted by sortOrder in the grid
   const featuredArticle = dbFeatured ?? allArticles[0] ?? null;
-  const recentArticles = allArticles.filter((a: any) => a.id !== featuredArticle?.id);
+  const recentArticles = allArticles.filter((a: JournalArticle) => a.id !== featuredArticle?.id);
 
   return (
     <div className="flex flex-col w-full bg-sand min-h-screen">
@@ -28,9 +39,9 @@ export default async function JournalPage() {
 
       {/* Featured Article */}
       {featuredArticle && (
-        <section className="py-24 px-6 border-b border-earth/20">
+        <StaggerSection className="py-24 px-6 border-b border-earth/20">
           <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-            <div className="relative aspect-[4/3] w-full bg-stone overflow-hidden">
+            <FadeUpDiv className="relative aspect-[4/3] w-full bg-stone overflow-hidden">
               {featuredArticle.featuredImage ? (
                 <img src={featuredArticle.featuredImage} alt={featuredArticle.title} className="object-cover w-full h-full" />
               ) : (
@@ -38,8 +49,8 @@ export default async function JournalPage() {
                   Featured Editorial Image
                 </div>
               )}
-            </div>
-            <div className="space-y-6">
+            </FadeUpDiv>
+            <FadeUpDiv className="space-y-6">
               <div className="flex items-center space-x-4 text-xs font-semibold tracking-widest uppercase text-bronze">
                 <span>{featuredArticle.category}</span>
                 <span className="text-earth/40">•</span>
@@ -56,18 +67,18 @@ export default async function JournalPage() {
               <Link href={`/journal/${featuredArticle.slug}`} className="inline-block pt-4 text-earth border-b border-earth pb-1 hover:text-bronze hover:border-bronze transition-colors">
                 Read Full Article
               </Link>
-            </div>
+            </FadeUpDiv>
           </div>
-        </section>
+        </StaggerSection>
       )}
 
       {/* Editorial Grid */}
       {recentArticles.length > 0 && (
-        <section className="py-24 px-6">
+        <FadeUpSection className="py-24 px-6">
           <div className="max-w-[1440px] mx-auto">
             <h3 className="text-2xl font-serif text-earth uppercase tracking-widest mb-12 text-center lg:text-left">Recent Dispatches</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
-              {recentArticles.map((article: any) => (
+              {recentArticles.map((article: JournalArticle) => (
                 <Link key={article.id} href={`/journal/${article.slug}`} className="group cursor-pointer block">
                   <div className="relative aspect-[3/4] w-full bg-stone mb-6 overflow-hidden">
                     {article.featuredImage ? (
@@ -103,7 +114,7 @@ export default async function JournalPage() {
               Load More Entries
             </Button>
           </div>
-        </section>
+        </FadeUpSection>
       )}
     </div>
   );

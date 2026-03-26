@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import AddToCartButton from "@/app/shop/[id]/AddToCartButton";
 import { PriceDisplay } from "@/components/ui/PriceDisplay";
+import { StaggerSection, FadeUpDiv } from "@/components/ui/Motion";
 
 export default async function SalonDashboardPage() {
   const session = await auth();
@@ -41,26 +42,32 @@ export default async function SalonDashboardPage() {
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-sand">
-      <section className="pt-32 pb-16 px-6 bg-earth text-cream text-center">
-        <h1 className="text-4xl md:text-6xl font-serif uppercase tracking-widest mb-6 border-b border-cream/20 pb-6 inline-block">Wholesale Portal</h1>
-        <p className="text-lg text-cream/80 max-w-2xl mx-auto leading-relaxed font-light mb-4 pt-4">
-          Welcome back, <span className="font-semibold">{profile.businessName}</span>.<br />
-          You are currently on the <span className="font-semibold text-bronze">{profile.pricingTier?.name || "Standard"}</span> tier.
-        </p>
-        <p className="text-xs text-cream/60 uppercase tracking-widest bg-stone/20 inline-block px-6 py-2 border border-cream/10">
-          {discountPct}% wholesale discount applied automatically at checkout
-        </p>
-        <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
-          <Link href="/account/orders" className="text-xs text-cream/70 uppercase tracking-widest border border-cream/20 px-6 py-3 hover:bg-cream/10 transition-colors">
-            Order History
-          </Link>
-          <Link href="/contact" className="text-xs text-cream/70 uppercase tracking-widest border border-cream/20 px-6 py-3 hover:bg-cream/10 transition-colors">
-            Contact Wholesale Team
-          </Link>
-        </div>
-      </section>
+      <StaggerSection className="pt-32 pb-16 px-6 bg-earth text-cream text-center">
+        <FadeUpDiv>
+          <h1 className="text-4xl md:text-6xl font-serif uppercase tracking-widest mb-6 border-b border-cream/20 pb-6 inline-block">Wholesale Portal</h1>
+        </FadeUpDiv>
+        <FadeUpDiv>
+          <p className="text-lg text-cream/80 max-w-2xl mx-auto leading-relaxed font-light mb-4 pt-4">
+            Welcome back, <span className="font-semibold">{profile.businessName}</span>.<br />
+            You are currently on the <span className="font-semibold text-bronze">{profile.pricingTier?.name || "Standard"}</span> tier.
+          </p>
+        </FadeUpDiv>
+        <FadeUpDiv>
+          <p className="text-xs text-cream/60 uppercase tracking-widest bg-stone/20 inline-block px-6 py-2 border border-cream/10">
+            {discountPct}% wholesale discount applied automatically at checkout
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
+            <Link href="/account/orders" className="text-xs text-cream/70 uppercase tracking-widest border border-cream/20 px-6 py-3 hover:bg-cream/10 transition-colors">
+              Order History
+            </Link>
+            <Link href="/contact" className="text-xs text-cream/70 uppercase tracking-widest border border-cream/20 px-6 py-3 hover:bg-cream/10 transition-colors">
+              Contact Wholesale Team
+            </Link>
+          </div>
+        </FadeUpDiv>
+      </StaggerSection>
 
-      <section className="py-24 px-6 max-w-[1440px] mx-auto w-full">
+      <StaggerSection className="py-24 px-6 max-w-[1440px] mx-auto w-full">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
           {products.map((product) => {
             const primaryVariant = product.variants[0];
@@ -70,7 +77,7 @@ export default async function SalonDashboardPage() {
             const discountedPrice = Math.floor(basePrice * (1 - discountPct / 100));
 
             return (
-              <div key={product.id} className="group flex flex-col space-y-4 bg-cream/30 p-6 border border-earth/10 hover:border-earth/30 transition-colors">
+              <FadeUpDiv key={product.id} className="group flex flex-col space-y-4 bg-cream/30 p-6 border border-earth/10 hover:border-earth/30 transition-colors">
                 <Link href={`/shop/${product.slug}`} className="relative aspect-square overflow-hidden bg-stone border border-ash/30 block mb-2">
                   {product.images?.[0] && product.images[0] !== "Product Image Placeholder" ? (
                     <Image 
@@ -111,11 +118,11 @@ export default async function SalonDashboardPage() {
                     inventoryCount={primaryVariant.inventoryCount}
                   />
                 </div>
-              </div>
+              </FadeUpDiv>
             );
           })}
         </div>
-      </section>
+      </StaggerSection>
     </div>
   );
 }

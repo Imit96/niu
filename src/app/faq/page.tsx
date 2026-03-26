@@ -1,5 +1,7 @@
+import { StaggerSection, FadeUpDiv } from "@/components/ui/Motion";
+
 export const metadata = {
-  title: "Frequently Asked Questions | Origin\u00e6",
+  title: "Frequently Asked Questions | ORIGONÆ",
   description: "Find answers regarding our regimens, sourcing, and shipping.",
 };
 
@@ -7,7 +9,7 @@ export default function FAQPage() {
   const faqs = [
     {
       question: "Are your products suitable for all hair types?",
-      answer: "While Origin\u00e6 is rooted in African heritage and particularly supportive of dense, coarse, and coily textures, our formulations focus on foundational scalp health and deep hydration, making them beneficial for all hair architectures."
+      answer: "While ORIGONÆ is rooted in African heritage and particularly supportive of dense, coarse, and coily textures, our formulations focus on foundational scalp health and deep hydration, making them beneficial for all hair architectures."
     },
     {
       question: "Where do you source your ingredients?",
@@ -30,19 +32,23 @@ export default function FAQPage() {
   return (
     <div className="bg-sand min-h-screen pt-32 pb-24 px-6">
       <div className="max-w-3xl mx-auto space-y-16">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl md:text-5xl font-serif text-earth uppercase tracking-widest">F.A.Q.</h1>
-          <p className="text-earth/70 font-light">Questions regarding our philosophy and formulations.</p>
-        </div>
+        <StaggerSection className="text-center space-y-4">
+          <FadeUpDiv>
+            <h1 className="text-4xl md:text-5xl font-serif text-earth uppercase tracking-widest">F.A.Q.</h1>
+          </FadeUpDiv>
+          <FadeUpDiv>
+            <p className="text-earth/70 font-light">Questions regarding our philosophy and formulations.</p>
+          </FadeUpDiv>
+        </StaggerSection>
 
-        <div className="space-y-6">
+        <StaggerSection className="space-y-6">
           {faqs.map((faq, index) => (
-            <div key={index} className="bg-cream border border-earth/20 p-6 md:p-8">
+            <FadeUpDiv key={index} className="bg-cream border border-earth/20 p-6 md:p-8 hover:border-bronze/30 transition-colors duration-300">
               <h3 className="text-lg font-serif text-earth mb-3">{faq.question}</h3>
               <p className="text-earth/80 font-light leading-relaxed">{faq.answer}</p>
-            </div>
+            </FadeUpDiv>
           ))}
-        </div>
+        </StaggerSection>
 
         <div className="text-center pt-8 border-t border-earth/20">
           <p className="text-earth/70 font-light mb-4">Still need assistance?</p>

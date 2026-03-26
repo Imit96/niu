@@ -145,6 +145,7 @@ model Product {
   bundles         RitualBundle[]    @relation("BundleProducts")
   articles        Article[]         // Articles featuring this product as a CTA
   wishlistedBy    WishlistItem[]
+  ingredients     Ingredient[]      // Ingredients that spotlight this product
 
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
@@ -432,6 +433,47 @@ model OrderAuditLog {
   createdAt  DateTime @default(now())
 
   @@index([orderId])
+}
+
+// ==========================================
+// Editorial Content (Ingredients & Guides)
+// ==========================================
+
+model Ingredient {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  name             String
+  category         String   // e.g. "Oils & Emollients", "Clays & Minerals"
+  description      String   @db.Text
+  origin           String?  // e.g. "West Africa", "Atlas Mountains"
+  benefitsText     String?  @db.Text
+  sortOrder        Int      @default(0)
+  isPublished      Boolean  @default(true)
+
+  relatedProductId String?
+  relatedProduct   Product? @relation(fields: [relatedProductId], references: [id])
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([slug])
+  @@index([category])
+}
+
+model Guide {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  title        String
+  description  String   @db.Text
+  methodNumber Int      @default(0) // Display order / numbering
+  image        String?  // URL or local path
+  sortOrder    Int      @default(0)
+  isPublished  Boolean  @default(true)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([slug])
 }
 
 // ==========================================

@@ -5,6 +5,7 @@ import { FlashSaleBanner } from "@/components/layout/FlashSaleBanner";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Providers } from "./providers";
+import SmoothScroll from "@/components/layout/SmoothScroll";
 import { CurrencyRatesProvider } from "@/components/ui/CurrencyRatesProvider";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -70,15 +71,17 @@ export default async function RootLayout({
       <body
         className={`${cormorant.variable} ${inter.variable} antialiased bg-cream text-ink font-sans flex flex-col min-h-screen`}
       >
-        <Providers session={session}>
-          <CurrencyRatesProvider />
-          <div className="sticky top-0 z-50">
-            <FlashSaleBanner />
-            <Navbar />
-          </div>
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </Providers>
+        <SmoothScroll>
+          <Providers session={session}>
+            <CurrencyRatesProvider />
+            <div className="sticky top-0 z-50">
+              <FlashSaleBanner />
+              <Navbar />
+            </div>
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </Providers>
+        </SmoothScroll>
         <Analytics />
         <SpeedInsights />
         <GoogleAnalytics />

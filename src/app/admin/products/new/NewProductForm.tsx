@@ -10,11 +10,13 @@ import { Save, Plus, Trash2 } from "lucide-react";
 
 type VariantDraft = { size: string; price: string; salePrice: string; inventoryCount: string };
 
+export interface AdminProduct { id: string; name: string; }
+
 export default function NewProductForm({
   allProducts,
   handleSubmit
 }: {
-  allProducts: any[];
+  allProducts: AdminProduct[];
   handleSubmit: (formData: FormData) => void
 }) {
   const [imageEntries, setImageEntries] = useState<ImageEntry[]>([]);
@@ -311,7 +313,7 @@ export default function NewProductForm({
             <div className="space-y-4 mt-4">
               <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Complete Regimen (Pairings)</label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border border-earth/20 p-6 bg-sand max-h-64 overflow-y-auto">
-                {allProducts.map((p: any) => (
+                {allProducts.map((p: AdminProduct) => (
                   <label key={p.id} className="flex items-center space-x-3 text-sm text-earth cursor-pointer">
                     <input 
                       type="checkbox" 

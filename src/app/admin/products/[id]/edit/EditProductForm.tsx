@@ -10,13 +10,40 @@ import { Save, Plus, Trash2 } from "lucide-react";
 
 type VariantDraft = { id?: string; size: string; price: string; salePrice: string; inventoryCount: string };
 
+export interface AdminProduct { id: string; name: string; }
+
+export interface AdminProductDetails {
+  id: string;
+  name: string;
+  ritualName?: string | null;
+  functionalTitle?: string | null;
+  texture?: string | null;
+  images: string[];
+  imagePositions?: any;
+  faqData?: string | any;
+  resonanceData?: string | any;
+  variants: { id: string; size?: string | null; priceInCents: number; salePriceInCents?: number | null; inventoryCount: number }[];
+  description: string;
+  howToUse?: string | null;
+  ingredientsText?: string | null;
+  textureHeading?: string | null;
+  textureScent?: string | null;
+  inspirationHeading?: string | null;
+  culturalInspiration?: string | null;
+  performanceMedia?: string | null;
+  performanceMediaPosition?: string | null;
+  regimenProductIds?: string[];
+  isFeaturedHair?: boolean;
+  isFeaturedScent?: boolean;
+}
+
 export default function EditProductForm({
   product,
   allProducts,
   handleSubmit
 }: {
-  product: any;
-  allProducts: any[];
+  product: AdminProductDetails;
+  allProducts: AdminProduct[];
   handleSubmit: (formData: FormData) => void
 }) {
   const [imageEntries, setImageEntries] = useState<ImageEntry[]>(() => {
@@ -43,7 +70,7 @@ export default function EditProductForm({
 
   const [variants, setVariants] = useState<VariantDraft[]>(() =>
     product.variants && product.variants.length > 0
-      ? product.variants.map((v: any) => ({
+      ? product.variants.map((v: { id: string; size?: string | null; priceInCents: number; salePriceInCents?: number | null; inventoryCount: number }) => ({
           id: v.id,
           size: v.size || "",
           price: String(v.priceInCents / 100),
@@ -336,7 +363,7 @@ export default function EditProductForm({
             <div className="space-y-4 mt-4">
               <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Complete Regimen (Pairings)</label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border border-earth/20 p-6 bg-sand max-h-64 overflow-y-auto">
-                {allProducts.filter((p: any) => p.id !== product.id).map((p: any) => (
+                {allProducts.filter((p: AdminProduct) => p.id !== product.id).map((p: AdminProduct) => (
                   <label key={p.id} className="flex items-center space-x-3 text-sm text-earth cursor-pointer">
                     <input 
                       type="checkbox" 

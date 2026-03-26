@@ -24,7 +24,11 @@ interface FaqData {
   answer: string;
 }
 
+// force-dynamic is intentional: product detail page calls auth() for
+// per-user wishlist and review state. Individual product data is cached
+// via Prisma query caching / Supabase connection pooling.
 export const dynamic = "force-dynamic";
+
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
