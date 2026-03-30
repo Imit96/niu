@@ -7,9 +7,6 @@ import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
-const categories = ["All", "The Cleansing Regimen", "The Growth Regimen", "The Restoration Regimen", "The Olfactory Regimen"];
-const textures = ["All", "Oil", "Clay", "Cream", "Mist", "Serum", "Parfum"];
-
 type ProductSuggestion = {
   id: string;
   name: string;
@@ -20,7 +17,7 @@ type ProductSuggestion = {
   description: string | null;
 };
 
-function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRitual: string; activeTexture: string; suggestions: ProductSuggestion[] }) {
+function FilterContent({ activeRitual, availableRituals, suggestions }: { activeRitual: string; availableRituals: string[]; suggestions: ProductSuggestion[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("shop");
@@ -135,10 +132,10 @@ function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRit
 
       {/* Filter Content - Collapsible on Mobile */}
       <div className={`space-y-8 md:space-y-12 transition-all duration-300 ease-in-out md:block ${isMobileOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0 overflow-hidden md:max-h-none md:opacity-100"}`}>
-        <div className="space-y-4">
+        <div className="space-y-4 pb-4 md:pb-0">
           <h3 className="text-sm font-semibold tracking-widest uppercase text-bronze border-b border-earth/20 pb-2">{t("filters.regimenLabel")}</h3>
           <ul className="space-y-3">
-            {categories.map((cat) => (
+            {availableRituals.map((cat) => (
               <li key={cat}>
                 <button
                   onClick={() => {
@@ -153,25 +150,6 @@ function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRit
             ))}
           </ul>
         </div>
-
-        <div className="space-y-4 pb-4 md:pb-0">
-          <h3 className="text-sm font-semibold tracking-widest uppercase text-bronze border-b border-earth/20 pb-2">{t("filters.textureLabel")}</h3>
-          <ul className="space-y-3">
-            {textures.map((tex) => (
-              <li key={tex}>
-                <button
-                  onClick={() => {
-                    router.push(`/shop?${createQueryString("texture", tex)}`);
-                    setIsMobileOpen(false);
-                  }}
-                  className={`text-sm tracking-wide transition-colors ${activeTexture === tex ? "text-earth font-semibold" : "text-earth/70 hover:text-bronze"}`}
-                >
-                  {tex}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
     </div>
   );
@@ -179,17 +157,17 @@ function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRit
 
 export default function ShopFilters({
   activeRitual,
-  activeTexture,
+  availableRituals,
   suggestions,
 }: {
   activeRitual: string;
-  activeTexture: string;
+  availableRituals: string[];
   suggestions: ProductSuggestion[];
 }) {
   const t = useTranslations("shop");
   return (
     <Suspense fallback={<div className="text-earth/60 text-sm">{t("filters.loadingFilters")}</div>}>
-      <FilterContent activeRitual={activeRitual} activeTexture={activeTexture} suggestions={suggestions} />
+      <FilterContent activeRitual={activeRitual} availableRituals={availableRituals} suggestions={suggestions} />
     </Suspense>
   );
 }

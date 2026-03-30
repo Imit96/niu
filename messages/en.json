@@ -1,11 +1,11 @@
 {
   "nav": {
-    "shop": "Shop",
+    "shop": "Shop All",
     "journal": "Journal",
     "about": "About",
     "ingredients": "Ingredients",
     "guides": "Guides",
-    "salon": "Salon Partners",
+    "salon": "Distributors",
     "cart": "Cart",
     "account": "Account",
     "login": "Sign In",
@@ -15,94 +15,97 @@
     "menu": "Menu",
     "language": "Language",
     "currency": "Currency",
-    "hair": "Hair",
-    "scent": "Scent",
-    "skin": "Skin"
+    "hair": "Body Care",
+    "scent": "Combos",
+    "skin": "Face Care",
+    "face": "Face Care",
+    "body": "Body Care",
+    "combos": "Combos & Sets"
   },
   "home": {
     "hero": {
-      "tagline": "Raw Elements Refined",
-      "description": "Luxury regimen haircare and olfactory regimen rooted in broader African heritage. Earthy, modern, and intentional.",
-      "cta": "Shop Regimens",
-      "ctaSecondary": "Discover the Philosophy"
+      "tagline": "Glow Naturally. Live Confidently.",
+      "description": "Science-backed, non-bleaching skincare formulated in the UK. Brightening, hydrating, and effective for every skin type.",
+      "cta": "Shop Now",
+      "ctaSecondary": "Learn More"
     },
     "heroV2": {
-      "tagline": "Turn Your Cleanse Into Care.",
-      "description": "Meet the Cream Cleanser — a rich, creamy wash that's proven to hydrate as it cleanses for soft, balanced skin.",
-      "ctaPrimary": "Try It Now",
+      "tagline": "Glow Naturally. Live Confidently.",
+      "description": "Non-bleaching skincare formulated in the UK — with Alpha Arbutin, Niacinamide & Vitamin C for radiant, healthy skin.",
+      "ctaPrimary": "Shop Now",
       "ctaSecondary": "Shop All"
     },
     "categoriesV2": {
       "bestSellers": "Best Sellers",
       "faceAndBody": "Face + Body",
-      "handCare": "Hand Care",
-      "curatedSets": "Curated Sets",
-      "customSet": "Craft Your Custom Set"
+      "handCare": "Skin Care",
+      "curatedSets": "Combo Sets",
+      "customSet": "Find Your Perfect Set"
     },
     "manifesto": {
-      "label": "The Manifesto",
-      "body": "grounded luxury. raw efficacy. regimen focused.",
-      "sub": "heritage-led beauty meets intentional craftsmanship—elevating your hair and scalp with power without noise."
+      "label": "Our Promise",
+      "body": "Glow that lasts. Skin that thrives. Science you can trust.",
+      "sub": "Niu Skin Cosmetics delivers brightening, hydrating skincare formulated in the UK — without bleaching agents. For every skin type, every skin tone."
     },
     "hairSpotlight": {
-      "label": "Signature Hair Care",
-      "shopNow": "Shop Now",
-      "exploreCollection": "Explore Full Collection"
+      "label": "Body Care Spotlight",
+      "shopNow": "Shop Body Care",
+      "exploreCollection": "Explore Body Range"
     },
     "featured": {
-      "title": "Signature Regimens",
-      "subtitle": "Experience our most revered collections, designed to cleanse, restore, and elevate.",
-      "cta": "Explore All Regimens",
-      "empty": "No signature regimens available at the moment.",
+      "title": "Best Sellers",
+      "subtitle": "Our most loved products, trusted by thousands of customers across Nigeria.",
+      "cta": "Shop All Products",
+      "empty": "No products available at the moment.",
       "soldOut": "Sold Out",
-      "regimen": "Regimen"
+      "regimen": "Product"
     },
     "ingredientSpotlight": {
-      "label": "Ingredient Heritage",
-      "title": "Ingredient Heritage",
-      "cta": "Discover Our Ingredients",
-      "body": "We source directly from the earth, focusing on materials revered for centuries. From African Black Soap to Baobab and wild-harvested clays, each element is chosen for its functional power and cultural resonance.",
-      "ingredient1Name": "Rhassoul Clay",
-      "ingredient1Desc": "Mined from the Atlas Mountains, this mineral-rich clay purifies without stripping.",
-      "ingredient2Name": "Kalahari Melon Seed",
-      "ingredient2Desc": "A resilient desert oil providing intense, lightweight hydration to parched strands."
+      "label": "Key Ingredients",
+      "title": "Key Ingredients",
+      "cta": "Explore All Ingredients",
+      "body": "Every Niu Skin formula is built around scientifically proven actives — sourced globally, tested rigorously, and designed to deliver real, visible results without bleaching your skin.",
+      "ingredient1Name": "Alpha Arbutin",
+      "ingredient1Desc": "Reduces melanin production to fade dark spots and even skin tone — without bleaching.",
+      "ingredient2Name": "Niacinamide (Vitamin B3)",
+      "ingredient2Desc": "Brightens, minimises pores, controls oil, and strengthens the skin barrier for all-day glow."
     },
     "scentSpotlight": {
-      "label": "Olfactory Regimen",
-      "discoverCta": "Discover the Scent",
-      "exploreCta": "Explore All Olfactory"
+      "label": "Body Care",
+      "discoverCta": "Shop Body Care",
+      "exploreCta": "View All Body Products"
     },
     "journal": {
-      "label": "From the Journal",
-      "title": "The Dispatch",
-      "cta": "Read the Dispatch",
-      "viewAll": "View All Journal Entries"
+      "label": "From the Blog",
+      "title": "Skincare Insights",
+      "cta": "Read More Articles",
+      "viewAll": "View All Articles"
     },
     "newsletter": {
-      "label": "Enter the Circle",
-      "heading": "The Ritual Begins With Intention.",
-      "body": "Join the ORIGONÆ inner circle. Receive early access to new regimens, editorial dispatches, and the quiet philosophy behind the practice.",
+      "label": "Stay Updated",
+      "heading": "Get Exclusive Offers & Skincare Tips.",
+      "body": "Subscribe to the Niu Skin newsletter. Be the first to know about new products, exclusive offers, and expert skincare advice.",
       "placeholder": "Your email address",
-      "cta": "Join the Circle",
-      "joining": "Joining...",
-      "successTitle": "Welcome to the Circle.",
-      "successBody": "Your regimen begins now.",
-      "disclaimer": "No spam. Only ritual.",
-      "title": "The Ritual Dispatch",
-      "subtitle": "Rituals, heritage notes, and early access — delivered.",
-      "success": "Welcome to the circle.",
+      "cta": "Subscribe",
+      "joining": "Subscribing...",
+      "successTitle": "You're subscribed!",
+      "successBody": "Welcome to the Niu Skin family.",
+      "disclaimer": "No spam. Unsubscribe any time.",
+      "title": "Niu Skin Newsletter",
+      "subtitle": "Skincare tips, new arrivals, and exclusive offers — delivered.",
+      "success": "You're subscribed!",
       "error": "Something went wrong. Please try again."
     },
     "reviews": {
-      "label": "The Resonance",
-      "title": "Voices of ORIGONÆ",
-      "verifiedCustomer": "Verified Customer"
+      "label": "Customer Reviews",
+      "title": "What Our Customers Say",
+      "verifiedCustomer": "Verified Buyer"
     },
     "salonCta": {
-      "label": "For Professionals",
-      "title": "Elevate Your Salon Experience",
-      "body": "Are you a salon or beauty professional? Apply for wholesale access to ORIGONÆ.",
-      "cta": "Apply for Partnership"
+      "label": "Become a Distributor",
+      "title": "Partner With Niu Skin Cosmetics",
+      "body": "Are you interested in stocking or distributing Niu Skin products? Contact us to discuss wholesale and partnership opportunities.",
+      "cta": "Contact Us"
     }
   },
   "regimens": {
@@ -120,9 +123,9 @@
     "scentSubBenefit": "long-lasting botanical perfumes"
   },
   "shop": {
-    "title": "Shop All Regimens",
-    "description": "Discover our full collection of intentional, heritage-rooted formulations.",
-    "empty": "No regimens found matching your selection.",
+    "title": "Shop All Products",
+    "description": "Discover the full Niu Skin Cosmetics collection — face care, body care, and combo sets.",
+    "empty": "No products found matching your selection.",
     "clearFilters": "Clear Filters",
     "pagination": {
       "previous": "Previous",
@@ -209,24 +212,24 @@
     "ourMission": "Our Mission",
     "ourValues": "Our Values",
     "ourOrigin": "Our Origin",
-    "heading": "Essential Elements, Refined.",
-    "genesisLabel": "The Genesis of a New Tradition.",
-    "story1": "ORIGONÆ was born from a desire to elevate haircare beyond utility, transforming it into an elevated, intentional practice. We draw inspiration from the time-tested beauty regimens of the African continent—from the Atlas Mountains to the coasts of West Africa.",
-    "story2": "Our founders recognized a void in the luxury space: a lack of true, culturally-rooted reverence for textured hair and artisanal perfumery. ORIGONÆ is our answer. A line of prestige formulations and olfactory regimens that honor the specific needs of natural textures while delivering an uncompromising, sensory-rich experience.",
-    "foundingStory": "Founding Story",
-    "cultureHeading": "Grounded in Culture.",
-    "cultureBody": "We do not borrow; we inherit and elevate. Every product within the ORIGONÆ collection is a tribute to raw, indigenous ingredients that have been used for centuries. We source our clays, oils, and botanicals with deep respect for the land and the people who cultivate them, ensuring our formulations remain authentic to their source.",
-    "craftsmanshipLabel": "Craftsmanship",
-    "formulationLabel": "The Formulation Rule",
-    "precisionHeading": "Uncompromising Precision.",
-    "formulation1": "We believe that true luxury lies in the details. Our formulations are the result of years of rigorous research and development. We blend modern botanical science with heritage ingredients, subjecting every batch to intense quality control.",
-    "formulation2": "There are no fillers, no artificial masking, and no unnecessary additions. Only potent, active ingredients designed to perform at the highest level.",
+    "heading": "Skincare That Works For Every Skin.",
+    "genesisLabel": "Where Niu Skin Began.",
+    "story1": "Niu Skin Cosmetics was founded with a simple but powerful mission: to create effective, brightening skincare that is safe for all skin tones — without bleaching agents. We believe everyone deserves healthy, radiant skin.",
+    "story2": "Our formulations are developed in the UK using globally sourced, scientifically proven ingredients. We combine innovation with care to deliver products that genuinely work — for face care, body care, and everything in between.",
+    "foundingStory": "Our Story",
+    "cultureHeading": "Science Meets Simplicity.",
+    "cultureBody": "At Niu Skin, we believe great skincare doesn't need to be complicated. Our products are formulated with clinically proven actives — Alpha Arbutin, Niacinamide, Vitamin C, and Hyaluronic Acid — chosen for their effectiveness and skin safety. No bleaching agents. No unnecessary fillers. Just results.",
+    "craftsmanshipLabel": "Formulation",
+    "formulationLabel": "Our Formulation Philosophy",
+    "precisionHeading": "Effective, Safe, and Non-Bleaching.",
+    "formulation1": "Every Niu Skin product is carefully formulated to brighten and even skin tone without bleaching or darkening your complexion. We use mild, clinically validated ingredients that work with your skin — not against it.",
+    "formulation2": "Our products are suitable for all skin types, including sensitive skin, and are rigorously tested to ensure safety and efficacy. Because great skin shouldn't come with compromises.",
     "ingredientsCta": "Explore Our Ingredients",
-    "ethicalLabel": "Ethical Footprint",
-    "sustainabilityBody": "Our commitment to the earth is absolute. We employ sustainable sourcing practices, focusing on ethical production and fair trade partnerships across the continent. Our packaging is intentionally minimalist, utilizing recyclable glass, aluminum, and post-consumer recycled materials wherever possible. We are continually refining our supply chain to reduce our environmental impact.",
-    "futureLabel": "The Future",
-    "futureBody": "ORIGONÆ is building a global community. Our mission is to redefine luxury haircare on an international scale, establishing a new standard for how textured hair is treated, presented, and understood. We are expanding our reach, partnering with prestige salons worldwide to bring the regimen to you.",
-    "salonCta": "Discover Salon Partnerships"
+    "ethicalLabel": "Our Commitment",
+    "sustainabilityBody": "We are committed to producing skincare that is both effective and responsible. Our formulas are free from bleaching agents, harsh chemicals, and unnecessary additives. We source our ingredients with care, and our packaging is designed to reduce waste wherever possible.",
+    "futureLabel": "Our Vision",
+    "futureBody": "Niu Skin Cosmetics is growing — expanding our product range and reaching more customers across Nigeria and beyond. We are building a brand that stands for healthy, confident skin for everyone. Find us in stores across Lagos and nationwide through our authorised distributor network.",
+    "salonCta": "Find a Distributor Near You"
   },
   "journal": {
     "title": "The Journal",
@@ -376,32 +379,32 @@
   },
   "faq": {
     "title": "Frequently Asked Questions",
-    "subtitle": "Questions regarding our philosophy and formulations.",
-    "q1": "Are your products suitable for all hair types?",
-    "a1": "While ORIGONÆ is rooted in African heritage and particularly supportive of dense, coarse, and coily textures, our formulations focus on foundational scalp health and deep hydration, making them beneficial for all hair architectures.",
-    "q2": "Where do you source your ingredients?",
-    "a2": "We ethically source our key botanicals and minerals, such as our Rhassoul Clay and Kalahari Melon Seed Oil, directly from cooperatives across the African continent, ensuring purity and fair trade practices.",
-    "q3": "Do your products contain synthetic fragrances?",
-    "a3": "No. The Olfactory Regimen and all our product scents are derived entirely from natural essential oils, resins, and absolutes. We prioritize earthy, grounding notes over synthetic florals.",
-    "q4": "How long does shipping take?",
-    "a4": "Standard domestic shipping takes 3-5 business days. International shipping typically takes 7-14 business days depending on the destination and customs processing.",
-    "q5": "Can I use the Purifying Clay Wash daily?",
-    "a5": "We recommend using the Clay Wash 1-2 times per week to gently detoxify without stripping the scalp of its natural lipid barrier.",
-    "stillNeedHelp": "Still need assistance?",
-    "contactCare": "Contact Client Care"
+    "subtitle": "Common questions about our products, delivery, and formulations.",
+    "q1": "Are Niu Skin products suitable for all skin types?",
+    "a1": "Yes. Niu Skin products are formulated with mild and effective non-bleaching ingredients suitable for all skin types — including oily, dry, combination, and sensitive skin.",
+    "q2": "Will your products bleach my skin?",
+    "a2": "No. Niu Skin products are formulated without any bleaching agents. They contain Alpha Arbutin, Niacinamide, and Vitamin C, which reduce melanin production gently — brightening without bleaching.",
+    "q3": "Will the products darken fair skin?",
+    "a3": "No. The products will not darken your skin. The active ingredients — Alpha Arbutin, Niacinamide, and Vitamin C — help regulate melanin production for an even, healthy complexion.",
+    "q4": "How long does delivery take?",
+    "a4": "Lagos orders are delivered within 24 hours after confirmation via dispatch rider. Orders outside Lagos are sent via waybill to your regional motor park within 24 hours — arrival typically takes 1–4 days depending on distance.",
+    "q5": "Where are the products formulated?",
+    "a5": "Niu Skin products are formulated in the UK and produced by our production base abroad, with ingredients sourced from around the world.",
+    "stillNeedHelp": "Still have questions?",
+    "contactCare": "Contact Us"
   },
   "shipping": {
     "title": "Shipping & Delivery",
-    "subtitle": "Policies regarding the transit of our regimens.",
-    "section1Title": "Domestic Shipping",
-    "section1Body": "We process all orders within 1-2 business days. Standard domestic shipping typically arrives within 3-5 business days from the date of dispatch. Expedited options are available at checkout for an additional fee.",
-    "section2Title": "International Shipping",
-    "section2Body": "ORIGONÆ ships globally. International orders are processed within 2-3 business days and delivered within 7-14 business days, depending on the destination. Please note that customs duties and taxes are the responsibility of the recipient and are not included in the shipping cost at checkout.",
+    "subtitle": "How we get your Niu Skin products to you.",
+    "section1Title": "Lagos Delivery",
+    "section1Body": "Lagos orders are delivered within 24 hours after order confirmation to your doorstep via a dispatch rider. Additional delivery fee applies based on your location within Lagos.",
+    "section2Title": "Outside Lagos (Nationwide)",
+    "section2Body": "Orders outside Lagos are sent via waybill to your regional motor park within 24 hours of confirmation. Arrival time varies from 1 to 4 days depending on distance. For doorstep delivery outside Lagos, please contact us at +234 906 048 6962. Additional delivery fee applies.",
     "section3Title": "Returns & Exchanges",
-    "section3Body": "Due to the artisanal and personal care nature of our formulations, we cannot accept returns on opened products. If a product arrives damaged or if you experience an adverse reaction, please contact our Client Care team within 14 days of delivery. Unopened products in their original packaging may be returned within 30 days for a full refund, minus return shipping costs.",
-    "section4Title": "Tracking Your Ritual",
-    "section4Body": "Once your regimen has been dispatched, you will receive an email containing tracking information. If your tracking states delivered but you have not received your package, please reach out to us within 48 hours.",
-    "contactCare": "Contact Client Care for Assistance"
+    "section3Body": "Due to the personal care nature of our products, we cannot accept returns on opened products. If a product arrives damaged or you experience an adverse reaction, please contact us within 14 days of delivery. Unopened products in original packaging may be returned within 30 days for a full refund, minus return shipping costs.",
+    "section4Title": "Order Tracking",
+    "section4Body": "Once your order has been dispatched, you will receive a confirmation message with tracking information. If your tracking shows delivered but you have not received your package, please reach out to us within 48 hours.",
+    "contactCare": "Contact Us for Assistance"
   },
   "contact": {
     "title": "Contact Us",
@@ -424,7 +427,7 @@
     "welcomeBack": "Welcome back.",
     "accountCreated": "Account created. Sign in to continue shopping.",
     "passwordUpdated": "Password updated. You can now sign in.",
-    "newToOrigonae": "New to ORIGONÆ?",
+    "newToOrigonae": "New to Niu Skin?",
     "registerSubtitle": "Create your account. Shop immediately — no approval required.",
     "namePlaceholder": "Full name",
     "passwordPlaceholder": "Password",
@@ -537,19 +540,19 @@
     }
   },
   "footer": {
-    "tagline": "Rooted in the earth. Crafted with intention.",
-    "shop": "Shop",
-    "editorial": "Editorial",
-    "ingredientPhilosophy": "Ingredient Philosophy",
-    "journal": "Journal",
-    "clientCare": "Client Care",
+    "tagline": "Glow naturally. Live confidently. Formulated in the UK.",
+    "shop": "Shop All",
+    "editorial": "Discover",
+    "ingredientPhilosophy": "Our Ingredients",
+    "journal": "Skincare Blog",
+    "clientCare": "Customer Care",
     "contact": "Contact Us",
     "termsPrivacy": "Terms & Privacy",
-    "salon": "Salon",
+    "salon": "Distributors",
     "legal": "Legal",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
-    "shipping": "Shipping",
+    "shipping": "Delivery Info",
     "faq": "FAQ",
     "rights": "All rights reserved."
   },

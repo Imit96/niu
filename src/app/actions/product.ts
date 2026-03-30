@@ -373,6 +373,17 @@ export async function getPublicProducts(
   return { products: localisedProducts, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
 }
 
+// Fetch available rituals dynamically for Shop Filters
+export async function getAvailableRituals() {
+  const products = await prisma.product.findMany({
+    where: { ritualName: { not: null } },
+    select: { ritualName: true },
+    distinct: ['ritualName']
+  });
+  const rituals = products.map(p => p.ritualName).filter(Boolean) as string[];
+  return ["All", ...rituals.sort()];
+}
+
 // Lightweight product list for search autocomplete — no variants needed
 export async function getProductsForSearch() {
   return prisma.product.findMany({

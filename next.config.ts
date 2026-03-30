@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'media.istockphoto.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.niuskincosmetics.com',
+      },
     ],
   },
   async headers() {
@@ -43,7 +47,7 @@ const nextConfig: NextConfig = {
               // Fonts
               "font-src 'self' https://fonts.gstatic.com",
               // Images: self + all configured remote image hosts + data URIs
-              "img-src 'self' data: blob: https://images.unsplash.com https://placehold.co https://res.cloudinary.com https://media.istockphoto.com https://www.facebook.com https://www.google-analytics.com",
+              "img-src 'self' data: blob: https://images.unsplash.com https://placehold.co https://res.cloudinary.com https://media.istockphoto.com https://www.niuskincosmetics.com https://www.facebook.com https://www.google-analytics.com",
               // Connections: self + API hosts
               "connect-src 'self' https://api.paystack.co https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net",
               // Frames: Paystack inline popup uses an iframe

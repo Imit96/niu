@@ -64,11 +64,10 @@ export function Navbar() {
     : t("cart");
 
   const navLinks = [
-    { name: t("hair"), href: "/hair" as const },
-    { name: t("scent"), href: "/scent" as const },
-    { name: t("skin"), href: "/skin" as const },
+    { name: t("face"), href: "/skin" as const },
+    { name: t("body"), href: "/hair" as const },
+    { name: t("combos"), href: "/bundles" as const },
     { name: t("shop"), href: "/shop" as const },
-    { name: t("guides"), href: "/guides" as const },
     { name: t("journal"), href: "/journal" as const },
     { name: t("about"), href: "/about" as const },
   ];
@@ -114,7 +113,7 @@ export function Navbar() {
                 isTransparent ? "text-white" : "text-[#2A2A2A]"
               }`}
             >
-              ORIGONÆ
+              NIU SKIN
             </Link>
 
             {/* Right — utilities */}
@@ -171,7 +170,7 @@ export function Navbar() {
               href="/"
               className="text-xl font-semibold tracking-wider font-serif uppercase text-[#2A2A2A] whitespace-nowrap hover:text-bronze transition-colors"
             >
-              ORIGONÆ
+              NIU SKIN
             </Link>
           </div>
 

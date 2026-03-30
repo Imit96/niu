@@ -47,7 +47,7 @@ export async function Footer() {
         {/* Brand Column */}
         <div className="flex flex-col space-y-4 md:col-span-1">
           <Link href="/" className="text-3xl font-serif tracking-widest uppercase">
-            ORIGONÆ
+            NIU SKIN
           </Link>
           <p className="text-sm text-cream/50 max-w-xs leading-relaxed">
             {t("tagline")}
@@ -115,7 +115,7 @@ export async function Footer() {
 
       {/* ── Copyright Bar ── */}
       <div className="mx-auto max-w-[1440px] px-6 md:px-12 pb-10 pt-8 border-t border-cream/10 flex flex-col md:flex-row items-center justify-between text-xs text-cream/30">
-        <p>&copy; {new Date().getFullYear()} ORIGONÆ. {t("rights")}</p>
+        <p>&copy; {new Date().getFullYear()} NIU SKIN. {t("rights")}</p>
         <div className="flex space-x-6 mt-4 md:mt-0">
           <Link href="/terms" className="hover:text-cream/60 transition-colors">{t("terms")}</Link>
           <Link href="/privacy" className="hover:text-cream/60 transition-colors">{t("privacy")}</Link>

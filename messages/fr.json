@@ -17,7 +17,10 @@
     "currency": "Devise",
     "hair": "Cheveux",
     "scent": "Parfum",
-    "skin": "Soin Corps"
+    "skin": "Soin Corps",
+    "face": "Soin Visage",
+    "body": "Soin Corps",
+    "combos": "Coffrets & Ensembles"
   },
   "home": {
     "hero": {

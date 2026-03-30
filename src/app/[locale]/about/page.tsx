@@ -5,8 +5,8 @@ import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 
 export const metadata = {
-  title: "About ORIGONÆ | Heritage & Craftsmanship",
-  description: "Discover the founding story, heritage, and philosophy behind ORIGONÆ's luxury regimen haircare.",
+  title: "About Niu Skin Cosmetics | Our Story",
+  description: "Discover the story behind Niu Skin Cosmetics — science-backed, non-bleaching skincare formulated in the UK for every skin type.",
 };
 
 export default async function AboutPage() {
@@ -112,7 +112,7 @@ export default async function AboutPage() {
             <p className="text-cream/80 leading-relaxed font-light mb-8">
               {t("futureBody")}
             </p>
-            <Link href="/salon">
+            <Link href="/distributors">
               <Button variant="secondary" className="border-cream text-cream hover:bg-cream hover:text-earth">
                 {t("salonCta")}
               </Button>

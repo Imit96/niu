@@ -13,31 +13,38 @@ interface HeroSectionProps {
   className?: string;
 }
 
+const CDN = "https://www.niuskincosmetics.com/cdn/shop/files";
+
 const CATEGORIES = [
   {
     key: "bestSellers",
     href: "/shop",
-    image: "/hero.png",
+    image: `${CDN}/face_wash.png`,
+    unoptimized: true,
   },
   {
     key: "faceAndBody",
     href: "/skin",
-    image: "/ingredient-heritage.png",
+    image: `${CDN}/serum.png`,
+    unoptimized: true,
   },
   {
     key: "handCare",
     href: "/skin",
-    image: "/grounded-culture.jpg",
+    image: `${CDN}/bright_cream.png`,
+    unoptimized: true,
   },
   {
     key: "curatedSets",
     href: "/bundles",
-    image: "/hero.png",
+    image: `${CDN}/advanced_acne.png`,
+    unoptimized: true,
   },
   {
     key: "customSet",
     href: "/shop",
-    image: "/ingredient-heritage.png",
+    image: `${CDN}/oudwood.png`,
+    unoptimized: true,
   },
 ];
 
@@ -60,26 +67,15 @@ export function HeroSection({ imageSrc = "/hero.png", className }: HeroSectionPr
           animate={shouldReduceMotion ? { opacity: 1 } : { scale: 1, opacity: 1 }}
           transition={shouldReduceMotion ? { duration: 0.3 } : { duration: 1.8, ease: [0.33, 1, 0.68, 1] }}
         >
-          {/* 
-            Future Video Integration Example:
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover"
-            >
-              <source src="/hero-video.mp4" type="video/mp4" />
-            </video>
-          */}
-          <Image
-            src={imageSrc}
-            alt="Luxury Heritage Skincare"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+          >
+            <source src="/Woman%20Holding%20Cotton%20Mar%2030.mp4" type="video/mp4" />
+          </video>
           
           {/* Media Overlays */}
           <div className="absolute inset-0 z-10 bg-black/30 md:bg-black/20" />
@@ -148,13 +144,14 @@ export function HeroSection({ imageSrc = "/hero.png", className }: HeroSectionPr
                       alt={tCat(cat.key)}
                       fill
                       sizes="(max-width: 768px) 220px, (max-width: 1024px) 33vw, 20vw"
-                      className="object-cover"
+                      className="object-contain p-4 bg-cream"
+                      unoptimized={cat.unoptimized}
                     />
                   </motion.div>
 
                   {/* Light Bar Label */}
-                  <div className="absolute left-0 right-0 bottom-0 z-20 h-11 md:h-12 bg-[#EAE5DF]/95 backdrop-blur-[4px] flex items-center justify-center border-t border-white/20">
-                    <span className="text-[#3A3A3A] text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-center px-4">
+                  <div className="absolute left-0 right-0 bottom-0 z-20 h-11 md:h-12 bg-earth/90 backdrop-blur-[4px] flex items-center justify-center border-t border-clay/30">
+                    <span className="text-cream text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-center px-4">
                       {tCat(cat.key)}
                     </span>
                   </div>

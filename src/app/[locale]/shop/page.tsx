@@ -1,4 +1,4 @@
-import { getPublicProducts, getProductsForSearch } from "@/app/actions/product";
+import { getPublicProducts, getProductsForSearch, getAvailableRituals } from "@/app/actions/product";
 import { getActiveFlashSale } from "@/app/actions/admin";
 import { PriceDisplay } from "@/components/ui/PriceDisplay";
 import ShopFilters from "./ShopFilters";
@@ -24,21 +24,20 @@ export default async function ShopPage({
   const [{ locale }, resolvedSearchParams] = await Promise.all([params, searchParams]);
 
   const activeRitual = typeof resolvedSearchParams.ritual === "string" ? resolvedSearchParams.ritual : "All";
-  const activeTexture = typeof resolvedSearchParams.texture === "string" ? resolvedSearchParams.texture : "All";
   const searchQuery = typeof resolvedSearchParams.q === "string" ? resolvedSearchParams.q : "";
   const page = typeof resolvedSearchParams.page === "string" ? Math.max(1, parseInt(resolvedSearchParams.page) || 1) : 1;
 
-  const [{ products, total, totalPages }, searchSuggestions, flashSale, t] = await Promise.all([
-    getPublicProducts({ ritual: activeRitual, texture: activeTexture, search: searchQuery }, page, 24, locale),
+  const [{ products, total, totalPages }, searchSuggestions, flashSale, t, availableRituals] = await Promise.all([
+    getPublicProducts({ ritual: activeRitual, search: searchQuery }, page, 24, locale),
     getProductsForSearch(),
     getActiveFlashSale(),
     getTranslations("shop"),
+    getAvailableRituals(),
   ]);
 
   const buildPageUrl = (p: number) => {
     const params = new URLSearchParams();
     if (activeRitual !== "All") params.set("ritual", activeRitual);
-    if (activeTexture !== "All") params.set("texture", activeTexture);
     if (searchQuery) params.set("q", searchQuery);
     if (p > 1) params.set("page", String(p));
     const qs = params.toString();
@@ -60,13 +59,13 @@ export default async function ShopPage({
 
         {/* Sidebar Filters (Client Component) */}
         <aside className="w-full lg:w-64 flex-shrink-0">
-          <ShopFilters activeRitual={activeRitual} activeTexture={activeTexture} suggestions={searchSuggestions} />
+          <ShopFilters activeRitual={activeRitual} suggestions={searchSuggestions} availableRituals={availableRituals} />
         </aside>
 
         {/* Product Grid */}
         <div className="flex-1">
           {/* Active filter indicator */}
-          {(activeRitual !== "All" || activeTexture !== "All" || searchQuery) && (
+          {(activeRitual !== "All" || searchQuery) && (
             <div className="flex items-center justify-between mb-6">
               <p className="text-sm text-earth/60">{total} {total === 1 ? "product" : "products"}</p>
               <Link href="/shop" className="text-xs text-bronze underline underline-offset-4 hover:text-earth transition-colors">

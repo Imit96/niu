@@ -6,15 +6,15 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-earth: #3A2F2A;
-  --color-clay: #A14F2C;
-  --color-sand: #D6BFA6;
-  --color-stone: #E8E3DC;
+  --color-earth: #0D3D2F;
+  --color-clay: #108474;
+  --color-sand: #DDE8DC;
+  --color-stone: #EDF4EC;
   --color-ink: #1A1A1A;
-  --color-bronze: #8C6239;
-  --color-olive: #6E6A3D;
-  --color-ash: #8A7F76;
-  --color-cream: #F4EFE8;
+  --color-bronze: #C8A84B;
+  --color-olive: #5A7A68;
+  --color-ash: #8A9A8A;
+  --color-cream: #F0F6EF;
 
   --color-background: var(--color-cream);
   --color-foreground: var(--color-ink);

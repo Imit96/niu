@@ -1,4 +1,16 @@
 # Changelog
+- **2026-03-30** (Niu Skin Rebrand Session):
+    - **Full brand rebrand** — Converted ORIGONÆ site to Niu Skin Cosmetics for pitch/demo purposes.
+    - **Design system** — Updated `globals.css` color palette: `earth` → deep forest green `#0D3D2F`, `clay` → teal `#108474`, `bronze` → gold `#C8A84B`, `cream` → light sage `#F0F6EF`, `sand` → soft green tint, `stone` → very light sage.
+    - **Image CDN** — Added `www.niuskincosmetics.com` to `next.config.ts` remote image patterns and CSP headers.
+    - **Navbar** — Brand name changed to "NIU SKIN". Nav links updated: Face Care → `/skin`, Body Care → `/hair`, Combos → `/bundles`.
+    - **Footer** — Brand name changed to "NIU SKIN". Tagline and copy updated to Niu Skin brand voice.
+    - **Homepage** (`page.tsx`) — Complete rewrite with Niu Skin branding: trust bar, product grid with real CDN images, combo spotlight, values, skincare routine steps, reviews, ingredient highlights, kids range callout, store locator section, and journal.
+    - **HeroSection** — Category strip updated with Niu Skin product images from CDN. Label bars updated to forest green / teal palette.
+    - **en.json** — All brand copy updated: nav labels, homepage copy, about story, FAQ, shipping info, footer tagline.
+    - **About page** — Metadata updated; CTA link now points to `/distributors`.
+    - **Distributor Locator** — New page at `/distributors` with Lagos area map, nationwide waybill delivery info, WhatsApp/phone CTAs.
+    - **Seed script** — Created `prisma/seed-niu-skin.ts` with 16 Niu Skin products (face care, body care, combos, kids, tools) with real CDN image URLs and correct NGN pricing.
 - **2026-03-30** (session 3):
     - **Currency audit** — Updated hardcoded fallback rates in `currencyStore.ts` to reflect real March 2026 rates: USD 1600→1400, GBP 1950→1850, EUR 1650→1600. Stale fallback rates were making prices appear ~15% cheaper in USD than they should be.
     - **General audit** — Verified: all 11 email templates are in use, no dead files, no orphaned components, checkout flow is secure (server-side price validation + Paystack signature verification + replay protection). Admin CMS confirmed complete with 14+ pages.
