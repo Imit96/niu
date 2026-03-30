@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../../../auth";
 import { logger } from "@/lib/logger";
 
+export const dynamic = "force-dynamic";
+
 function configureCloudinary() {
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
