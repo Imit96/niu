@@ -1,8 +1,123 @@
 # Changelog
+- **2026-03-30** (session 3):
+    - **Currency audit** — Updated hardcoded fallback rates in `currencyStore.ts` to reflect real March 2026 rates: USD 1600→1400, GBP 1950→1850, EUR 1650→1600. Stale fallback rates were making prices appear ~15% cheaper in USD than they should be.
+    - **General audit** — Verified: all 11 email templates are in use, no dead files, no orphaned components, checkout flow is secure (server-side price validation + Paystack signature verification + replay protection). Admin CMS confirmed complete with 14+ pages.
+- **2026-03-30** (session 2):
+    - **Custom Formula Section expanded** — Added Hair / Skin / Scent category selector (4-step conversational flow). Step 3 now asks "what would you like us to formulate?" with category pills; step 4 shows category-appropriate concerns. Skin and Scent concern lists added. Step progress indicator (4 dots) added. Background changed from `bg-white` to `bg-sand` for palette consistency.
+    - **Admin order notification** — Created `AdminNewOrderEmail.tsx` email template. Added `sendAdminNewOrderNotification()` to `src/lib/email.ts`. Paystack webhook now fires this after every successful `charge.success` event alongside the customer confirmation email. Uses `ADMIN_EMAIL` env var (falls back to `CARE_EMAIL` / care@origonae.com).
+    - **Admin formula request notification** — Created `AdminFormulaRequestEmail.tsx`. Added `sendAdminFormulaRequestNotification()` to `email.ts`. Called (fire-and-forget) in `submitCustomFormulaRequest` after DB save. Links to `/admin/formula-requests`.
+    - **Admin Formula Requests CMS page** — Created `src/app/admin/formula-requests/page.tsx` showing pending/reviewed formula requests with `MarkReviewedButton` client component. Added "Formula Requests" (Sparkles icon) to admin sidebar.
+    - **Homepage UI/UX improvements** — Manifesto quote changed to `font-serif` (was `font-sans font-bold`) for brand consistency. Spacing normalised: manifesto `py-28→py-24`, Values strip `py-20→py-24`, Shop by Category `py-16→py-24`. Ritual Steps step numbers use tighter leading; body text line-height improved to `1.75`. Values body copy contrast improved.
+- **2026-03-30**:
+    - Removed "Enter the Circle" newsletter capture section from the homepage as per user request.
+- **2026-03-29**:
+    - Implemented **Signature Regimens** editorial section on the homepage, replacing the basic "Shop by Category" grid.
+    - Added `category` field (`ProductCategory` enum) to the `RitualBundle` model to support categorization (HAIR, BODY, SCENT).
+    - Updated Admin CMS: Add/Edit Bundle forms now include a category selection dropdown.
+    - Created `SignatureRegimens.tsx` — a premium split-panel Client Component featuring horizontal scrolling product cards and category-specific storytelling.
+    - Implemented `getSignatureRegimens` server action to fetch curated bundles for Hair, Skin, and Scent categories.
+    - Added comprehensive i18n support (EN/FR) for all regimen section copy and product labels.
+    - Fixed image positioning in `CustomFormulaSection.tsx` by vertically centering the bottle image...
+    - Implemented pixel-perfect Luxury Hero Section and Category Strip V2 on the homepage.
+    - Created `HeroSection.tsx` with editorial typography and responsive rounded layout.
+    - Created `CategoryStripV2.tsx` with 5-card grid and horizontal scroll for mobile.
+    - Updated homepage `page.tsx` to integrate new V2 components.
+    - Added multilingual support for new hero and category strings (EN/FR).
 
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+- **Homepage Composition Redesign + Custom Formula Feature**
+  - [x] Homepage composition redesign (16 sections, CategoryStrip, CustomFormulaSection).
+  - [x] Luxury Hero & Category Strip V2 implementation.
+  - [x] Custom Formula Request feature (DB model, server action, form component).
+  - Rewrote `src/app/[locale]/page.tsx` to match a 16-section editorial composition: Hero Split → Category Strip → Brand Manifesto → Custom Formula Request → Values Strip → Hair Collection Grid → Scent Spotlight → Cinematic Banner → Ingredient Philosophy → Shop by Category → Ritual Process Steps → Featured Hair Product Spotlight → Community Voices → Journal Grid (3 articles) → Newsletter → Salon CTA.
+  - Added `CustomFormulaRequest` Prisma model (`id`, `name`, `email`, `hairConcern`, `texture`, `notes`, `isReviewed`, timestamps); pushed to Supabase via `prisma db push`.
+  - Added `CustomFormulaRequestSchema` to `src/lib/validators.ts`.
+  - Created `src/app/actions/custom-formula.ts` — `submitCustomFormulaRequest` (rate-limited, Zod-validated, DB write), `getCustomFormulaRequests` (admin), `markFormulaRequestReviewed` (admin).
+  - Added `getRecentArticles(count, locale)` to `src/app/actions/article.ts`.
+  - Created `src/components/layout/CategoryStrip.tsx` — 5-tile editorial strip (Hair, Scent, Skin, Guides, Bundles) with hover animation and bronze accent lines.
+  - Created `src/components/layout/CustomFormulaSection.tsx` — split-panel client component with form (name, email, hair concern, texture, notes), accessible labels, success/error state management.
+
+- **UI/UX Audit & Accessibility Fixes**
+  - [x] UI/UX Audit — accessibility (focus-visible, ARIA, reduced-motion), hero split layout, analytics gating, contrast improvements
+  - [x] Luxury Hero & Category Strip V2 — Pixel-perfect eCommerce hero with rounded layout and editorial typography; horizontal scroll category strip with 5 curated sets.
+  - Global `focus-visible` ring styles added to `globals.css` (ring-2 ring-earth ring-offset-2 on all interactive elements).
+  - `prefers-reduced-motion` support added to all Motion.tsx components via `useReducedMotion()` hook.
+  - Newsletter `HomeNewsletterSection`: sr-only label, `aria-live` success div, `successRef` focus management, improved placeholder contrast.
+  - Navbar: CSS Grid logo centering (replaces brittle `absolute`), dynamic cart `aria-label`, `aria-expanded`/`aria-controls` on hamburger, `aria-hidden` on decorative separators.
+  - Locale layout: invalid locale now redirects to `/en`; analytics gated to production only.
+  - Shop filters: Clear Filters visible whenever a filter is active; jump-to-top link after pagination.
+  - Hair/Scent/Skin pages: hardcoded pagination strings replaced with `t("pagination.previous/next")` via `getTranslations`.
+  - PDP sticky sidebar: `max-h-[calc(100vh-8rem)] overflow-y-auto` to prevent viewport clipping.
+  - Hero split layout: `md:grid-cols-[55%_45%]` with image left, brand text panel right using `justify-between`.
+  - Footer and divider contrast improved: `border-earth/10` → `border-earth/20` throughout.
+
+- **Admin Article Editor — MDX Cheat Sheet + Preview**
+  - Installed `react-markdown` for client-side content preview.
+  - Added collapsible "MDX Cheat Sheet" toggle above content textarea — 12-entry quick reference (headings, bold, italic, blockquote, lists, links, images, dividers).
+  - Added Write / Preview tab switcher on the content field; Preview pane renders the current content via `react-markdown` styled to approximate the live journal typography.
+
+- **Guide Product Linking**
+  - Added `relatedProductId` / `relatedProduct` relation to `Guide` model; back-relation (`guides`) added to `Product`. Pushed via `prisma db push`.
+  - Updated `adminGetGuideById` to include `relatedProduct`; updated `createGuide` / `updateGuide` to persist `relatedProductId`.
+  - Added "Featured Product" dropdown to both new-guide and edit-guide admin pages — fetches full product list, renders a shop CTA when set.
+
+- **Journal MDX**
+  - Installed `next-mdx-remote` and `@tailwindcss/typography`.
+  - Replaced naive `content.split('\n')` paragraph renderer with `<MDXRemote source={article.content} />` (RSC, zero client JS cost).
+  - Added `@plugin "@tailwindcss/typography"` to `globals.css` — activates `prose` styling for all Markdown-rendered content.
+  - Updated admin `ArticleForm` content textarea: label now indicates Markdown/MDX support; placeholder shows common syntax examples (headings, blockquotes, bold, lists).
+
+- **Category Pages — Scent, Skin & Seed Data**
+  - Added `getScentProducts` and `getSkinProducts` server actions (SCENT / BODY categories).
+  - Created `src/app/[locale]/scent/page.tsx` — dark atmospheric editorial, olfactory philosophy columns, product grid, bundle CTA.
+  - Created `src/app/[locale]/skin/page.tsx` — earthy hero, botanical philosophy columns, product grid with graceful empty state.
+  - Added Scent + Skin Navbar links (EN: Scent/Skin; FR: Parfum/Soin Corps).
+  - Rewrote `prisma/seed.ts` — 8 products (3 HAIR, 3 SCENT, 2 BODY) + 1 Ritual Bundle seeded to DB.
+  - All product mutation actions revalidate `/scent` and `/skin` alongside `/hair`.
+
+- **Dedicated Hair Section**
+  - Added `ProductCategory` enum (`HAIR`, `SCENT`, `BODY`, `OTHER`) to Prisma schema; `category` field on `Product` with default `OTHER`.
+  - Pushed schema to Supabase via `prisma db push`; regenerated Prisma client.
+  - Added `getHairProducts(page, pageSize, locale)` server action — filters by `category = HAIR`.
+  - Added `category` field to `createProduct` and `updateProduct` server actions; added `/hair` revalidation path to all product mutations.
+  - Created `src/app/[locale]/hair/page.tsx` — Aesop-inspired editorial landing page with hero, philosophy columns, full product grid (flash-sale aware pricing), pagination, and guides/ingredients CTA.
+  - Added "Hair" nav link to Navbar (first position); added `nav.hair` translation key in `en.json` ("Hair") and `fr.json` ("Cheveux").
+  - Added `category` dropdown (HAIR / SCENT / BODY / OTHER) to both `NewProductForm` and `EditProductForm` in the admin CMS.
+
+- **Frontend Polish — Homepage & PDP**
+  - Replaced 3 raw `<img>` tags with Next.js `<Image>` (hair spotlight, scent spotlight, journal article) — enables automatic optimisation, lazy-loading, and responsive `srcset`.
+  - Added breadcrumb navigation (`<nav aria-label="Breadcrumb">`) to Product Detail Page with Home / Shop / Ritual / Product hierarchy and `aria-current="page"` on the active item.
+  - Made PDP FAQs expandable using native `<details>/<summary>` with a CSS `+` / rotate-45 indicator — no JS bundle cost.
+  - Added `AggregateRating` to PDP JSON-LD schema when approved reviews exist (improves Google rich results / star snippets).
+  - Improved PDP `generateMetadata` to include `openGraph`, `twitter`, and `alternates.canonical` fields.
+  - Added correct `sizes` prop to related-product images in PDP (was missing, causing oversized image downloads).
+  - Reduced PDP hero top padding from `pt-24` to `pt-8` now that breadcrumb nav occupies the top space.
+- **i18n Phase D — Backend Content Localisation (Option A: DB language columns)**
+  - Added nullable `_fr` columns to 5 Prisma models: `Product` (10 fields), `Article` (4 fields), `Ingredient` (3 fields), `Guide` (2 fields), `RitualBundle` (2 fields).
+  - Pushed schema to Supabase via `prisma db push`; regenerated Prisma client.
+  - Created `src/lib/i18n-content.ts` with `localise(enValue, frValue, locale)` helper.
+  - Updated server actions read path: `getProductBySlug`, `getPublicProducts`, `getFeaturedHairProduct`, `getFeaturedScentProduct`, `getArticles`, `getFeaturedArticle`, `getArticleBySlug`, `getIngredients`, `getIngredientBySlug`, `getGuides`, `getGuideBySlug` all accept `locale` param and return localised fields.
+  - Added `getPublicBundles(locale)` and `getBundleBySlug(slug, locale)` to `bundle-admin.ts`.
+  - Updated 11 public pages (`shop`, `shop/[id]`, `journal`, `journal/[slug]`, `ingredients`, `ingredients/[slug]`, `guides`, `guides/[slug]`, `bundles`, `bundles/[slug]`, homepage) to pass `locale` to actions.
+  - Updated server actions write path: `createProduct`, `updateProduct`, `createArticle`, `updateArticle`, `createIngredient`, `updateIngredient`, `createGuide`, `updateGuide`, `createBundle`, `updateBundle` all save `_fr` fields from formData.
+  - Added "FR Translation" input sections to all admin CMS forms: products (new + edit), articles, ingredients, guides, bundles.
+  - Build: `pnpm build` exits 0, 78 routes, no TypeScript errors.
+
+- **i18n Phase C**: Wired translations across all user-facing pages and components using `getTranslations`/`useTranslations`.
+  - Created `src/i18n/navigation.ts` (locale-aware Link, useRouter, usePathname via `createNavigation`).
+  - Updated `messages/en.json` and `messages/fr.json`: fixed mismatched hero/featured/journal/reviews/salonCta keys; added ~20 missing keys.
+  - Created `LocaleSwitcher` component (EN | FR toggle in Navbar desktop + mobile).
+  - Wired Navbar: `useTranslations("nav")`, locale-aware Link, LocaleSwitcher.
+  - Wired Footer: `getTranslations("footer")`, locale-aware Link.
+  - Wired Home page: all hero, featured, ingredientSpotlight, journal, reviews, salonCta sections.
+  - Wired Shop page + ShopFilters: title, description, empty state, clearFilters, pagination, search placeholder.
+  - Wired 13 additional pages: journal, ingredients, guides, bundles, faq, shipping, contact, auth/login, auth/register, auth/forgot-password, salon, not-found, cart (CartClient), checkout (CheckoutClient).
+  - Replaced `next/link` with locale-aware `Link` from `@/i18n/navigation` in all wired files.
+  - Build: `pnpm build` exits 0 with 28 static + dynamic routes.
+
 - Initialized `shadcn/ui` with brand colors mapped to generic CSS variables in `globals.css`.
 - Enforced strict project scaffolding `/src/components/{ui,layout,shared}`.
 - Replaced ambiguous `any` types with explicit interfaces in `HomeClient`, `journal/page.tsx`, and Admin product dashboard.
@@ -36,3 +151,14 @@ All notable changes to this project will be documented in this file.
 - Built `/admin/bundles` index, new, and edit pages with a scrollable product checklist (checkbox multi-select).
 - Edit page uses Prisma `set` to atomically replace the product relation on save.
 - Added Ritual Bundles (Layers icon) to admin sidebar.
+- **i18n Phase A**: Installed `next-intl`. Created `messages/en.json` and `messages/fr.json` (full key sets). Configured `src/i18n/routing.ts` (`localePrefix: "as-needed"`) and `src/i18n/request.ts`. Wired `createNextIntlPlugin` in `next.config.ts`.
+- **i18n Middleware**: Replaced standalone `src/middleware.ts` with `src/proxy.ts` (Next.js 16 format). Chains next-intl locale detection with NextAuth RBAC — admin, salon dashboard, account, and checkout routes are now protected at the middleware level with role-aware redirects and `callbackUrl` support.
+- **i18n Phase B**: Migrated all 16 user-facing route directories and root special files under `src/app/[locale]/`. Created `src/app/[locale]/layout.tsx` with `NextIntlClientProvider`, `setRequestLocale`, and full app chrome (Navbar, Footer, Providers, analytics). Stripped `src/app/layout.tsx` to a minimal HTML shell serving admin/API routes. Converted all broken relative action imports to `@/app/actions/` alias. Build: exit 0, all routes compile.
+- **i18n Groups 6–10**: Completed translation wire-up for all remaining user-facing pages.
+  - Group 6 (content detail pages): `about/page.tsx`, `journal/[slug]/page.tsx`, `ingredients/[slug]/page.tsx`, `guides/[slug]/page.tsx`, `bundles/[slug]/page.tsx`, `bundles/[slug]/AddBundleToCartButton.tsx` — added `getTranslations`/`useTranslations` and replaced all hardcoded strings.
+  - Group 7 (listing pages): `journal/page.tsx`, `ingredients/page.tsx`, `guides/page.tsx`, `bundles/page.tsx`, `faq/page.tsx`, `shipping/page.tsx`, `contact/page.tsx`, `salon/page.tsx` — replaced remaining hardcoded strings.
+  - Group 8 (salon portal): `salon/apply/page.tsx`, `salon/apply/SalonApplicationForm.tsx`, `salon/dashboard/page.tsx` — full translation setup including form labels and dynamic strings.
+  - Group 9 (error states): `not-found.tsx` (`common.notFoundBody`) and `error.tsx` (`common.errorTitle`, `common.errorBody`, `common.tryAgain`, `common.returnHome`) — error.tsx remains "use client", uses `useTranslations`.
+  - Group 10 (homepage): Replaced all remaining hardcoded strings in `page.tsx` with `t()` calls (manifesto, hairSpotlight, ingredientSpotlight, scentSpotlight, reviews).
+  - Added ~80 new keys to `messages/en.json` across `about`, `journal`, `ingredients`, `guides`, `bundles`, `faq`, `shipping`, `contact`, `salon`, and `common` namespaces.
+  - Added identical French translations for all new keys in `messages/fr.json`. Key structure validated: 100% match between en/fr.

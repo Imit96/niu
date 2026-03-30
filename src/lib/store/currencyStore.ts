@@ -20,12 +20,12 @@ const symbols: Record<Currency, string> = {
   EUR: "€"
 };
 
-// Hardcoded fallback rates (used if live fetch fails)
+// Hardcoded fallback rates (used if live fetch fails) — updated March 2026
 const FALLBACK_RATES: Record<Currency, number> = {
   NGN: 1,
-  USD: 1600,
-  GBP: 1950,
-  EUR: 1650,
+  USD: 1400,
+  GBP: 1850,
+  EUR: 1600,
 };
 
 export const useCurrencyStore = create<CurrencyState>()(
