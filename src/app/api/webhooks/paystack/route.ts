@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { sendOrderConfirmationEmail, sendAdminNewOrderNotification } from "@/lib/email";
 import { logger } from "@/lib/logger";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Paystack Webhook Handler
  *
