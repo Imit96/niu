@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Package, Building } from "lucide-react";
-import { PriceDisplay } from "@/components/ui/PriceDisplay";
 import { AdminUserActions } from "./AdminUserActions";
 
 export default async function AdminUserDetailPage(props: { params: Promise<{ id: string }> }) {
@@ -66,7 +65,7 @@ export default async function AdminUserDetailPage(props: { params: Promise<{ id:
         <div className="bg-cream border border-earth/10 p-6 space-y-2">
           <p className="text-[10px] uppercase tracking-widest text-earth/50 font-semibold">Total Spent</p>
           <p className="text-earth text-lg">
-            <PriceDisplay amountInCents={user.orders.reduce((acc, o) => acc + (o.status === "PAID" || o.status === "DELIVERED" ? o.totalInCents : 0), 0)} />
+            ₦ {(user.orders.reduce((acc, o) => acc + (o.status === "PAID" || o.status === "DELIVERED" ? o.totalInCents : 0), 0) / 100).toLocaleString()}
           </p>
         </div>
       </div>
@@ -120,7 +119,7 @@ export default async function AdminUserDetailPage(props: { params: Promise<{ id:
                   <td className="p-4 font-mono text-bronze"><Link href={`/admin/orders/${order.id}`}>{order.id.slice(-8).toUpperCase()}</Link></td>
                   <td className="p-4 text-earth/80">{new Date(order.createdAt).toLocaleDateString()}</td>
                   <td className="p-4">{order.status}</td>
-                  <td className="p-4 text-right"><PriceDisplay amountInCents={order.totalInCents} /></td>
+                  <td className="p-4 text-right">₦ {(order.totalInCents / 100).toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>

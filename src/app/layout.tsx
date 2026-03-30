@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter, Geist } from "next/font/google";
 import "./globals.css";
-import { FlashSaleBanner } from "@/components/layout/FlashSaleBanner";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { Providers } from "./providers";
-import SmoothScroll from "@/components/layout/SmoothScroll";
-import { CurrencyRatesProvider } from "@/components/ui/CurrencyRatesProvider";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { auth } from "../../auth";
-import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
-import { MetaPixel } from "@/components/analytics/MetaPixel";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
@@ -59,33 +48,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const session = await auth();
-
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body
         className={`${cormorant.variable} ${inter.variable} antialiased bg-cream text-ink font-sans flex flex-col min-h-screen`}
       >
-        <SmoothScroll>
-          <Providers session={session}>
-            <CurrencyRatesProvider />
-            <div className="sticky top-0 z-50">
-              <FlashSaleBanner />
-              <Navbar />
-            </div>
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </Providers>
-        </SmoothScroll>
-        <Analytics />
-        <SpeedInsights />
-        <GoogleAnalytics />
-        <MetaPixel />
+        {children}
       </body>
     </html>
   );

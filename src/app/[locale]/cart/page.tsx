@@ -1,6 +1,6 @@
-import { auth } from "../../../auth";
+import { auth } from "../../../../auth";
 import { prisma } from "@/lib/prisma";
-import { getActiveFlashSale } from "../actions/admin";
+import { getActiveFlashSale } from "@/app/actions/admin";
 import CartClient from "./CartClient";
 
 export default async function CartPage() {

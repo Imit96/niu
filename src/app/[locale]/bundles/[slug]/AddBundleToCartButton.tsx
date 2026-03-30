@@ -4,6 +4,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { Button } from "@/components/ui/Button";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 interface BundleProps {
   bundle: {
@@ -28,6 +29,7 @@ interface BundleProps {
 export default function AddBundleToCartButton({ bundle }: BundleProps) {
   const { addItem, items } = useCartStore();
   const [adding, setAdding] = useState(false);
+  const t = useTranslations("bundles");
 
   // Check if any product in the bundle is out of stock natively
   const isOutOfStock = bundle.products.some(product => {
@@ -38,12 +40,12 @@ export default function AddBundleToCartButton({ bundle }: BundleProps) {
 
   const handleAddBundle = () => {
     if (isOutOfStock) {
-      toast.error("One or more items in this bundle are out of stock.");
+      toast.error(t("bundleOutOfStock"));
       return;
     }
 
     setAdding(true);
-    
+
     // We iterate through all products in the bundle and add their primary variant.
     // NOTE: In Phase 4, we will need to update the cartStore schema to natively understand "Bundles"
     // to strictly enforce the bundle.priceInCents natively at Checkout. For now, we add the elements.
@@ -55,9 +57,9 @@ export default function AddBundleToCartButton({ bundle }: BundleProps) {
            // Check if adding this would exceed inventory in cart
            const existingItem = items.find(i => i.id === primaryVariant.id);
            const currentQty = existingItem ? existingItem.quantity : 0;
-           
+
            if (currentQty >= primaryVariant.inventoryCount) {
-             toast.error(`Maximum stock reached for ${product.name}`);
+             toast.error(t("maxStockReached", { name: product.name }));
              allAdded = false;
              return;
            }
@@ -75,25 +77,25 @@ export default function AddBundleToCartButton({ bundle }: BundleProps) {
            });
         }
       });
-      
+
       if (allAdded) {
-         toast.success(`${bundle.name} added to bag`);
+         toast.success(t("addedToBag", { name: bundle.name }));
       }
     } catch (e) {
-      toast.error("Failed to add bundle to bag.");
+      toast.error(t("addFailed"));
     } finally {
       setTimeout(() => setAdding(false), 500);
     }
   };
 
   return (
-    <Button 
-      size="lg" 
+    <Button
+      size="lg"
       onClick={handleAddBundle}
       disabled={isOutOfStock || adding}
       className="w-full bg-earth text-cream hover:bg-earth/90 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest font-serif text-sm h-14"
     >
-      {adding ? "Adding Regimen..." : isOutOfStock ? "Out of Stock" : `Add Complete Regimen`}
+      {adding ? t("adding") : isOutOfStock ? t("outOfStock") : t("addCompleteRegimen")}
     </Button>
   );
 }

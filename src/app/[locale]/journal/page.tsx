@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { getArticles, getFeaturedArticle } from "@/app/actions/article";
 import { StaggerSection, FadeUpDiv, FadeUpSection } from "@/components/ui/Motion";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -20,8 +21,9 @@ interface JournalArticle {
   excerpt: string;
 }
 
-export default async function JournalPage() {
-  const [allArticles, dbFeatured] = await Promise.all([getArticles(), getFeaturedArticle()]);
+export default async function JournalPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const [allArticles, dbFeatured, t] = await Promise.all([getArticles(locale), getFeaturedArticle(locale), getTranslations("journal")]);
 
   // isFeatured = hero at the top; remaining articles sorted by sortOrder in the grid
   const featuredArticle = dbFeatured ?? allArticles[0] ?? null;
@@ -31,9 +33,9 @@ export default async function JournalPage() {
     <div className="flex flex-col w-full bg-sand min-h-screen">
       {/* Header */}
       <section className="pt-32 pb-16 px-6 text-center border-b border-earth/20 bg-cream">
-        <h1 className="text-4xl md:text-6xl font-serif text-earth uppercase tracking-widest mb-6">The Journal</h1>
+        <h1 className="text-4xl md:text-6xl font-serif text-earth uppercase tracking-widest mb-6">{t("title")}</h1>
         <p className="text-lg text-earth/70 max-w-2xl mx-auto font-light">
-          Observations on heritage, hair architecture, botanical potency, and the quiet power of ritual.
+          {t("pageSubtitle")}
         </p>
       </section>
 
@@ -65,7 +67,7 @@ export default async function JournalPage() {
                 {featuredArticle.excerpt}
               </p>
               <Link href={`/journal/${featuredArticle.slug}`} className="inline-block pt-4 text-earth border-b border-earth pb-1 hover:text-bronze hover:border-bronze transition-colors">
-                Read Full Article
+                {t("readMore")}
               </Link>
             </FadeUpDiv>
           </div>
@@ -76,7 +78,7 @@ export default async function JournalPage() {
       {recentArticles.length > 0 && (
         <FadeUpSection className="py-24 px-6">
           <div className="max-w-[1440px] mx-auto">
-            <h3 className="text-2xl font-serif text-earth uppercase tracking-widest mb-12 text-center lg:text-left">Recent Dispatches</h3>
+            <h3 className="text-2xl font-serif text-earth uppercase tracking-widest mb-12 text-center lg:text-left">{t("recentDispatches")}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
               {recentArticles.map((article: JournalArticle) => (
                 <Link key={article.id} href={`/journal/${article.slug}`} className="group cursor-pointer block">
@@ -108,10 +110,10 @@ export default async function JournalPage() {
               ))}
             </div>
           </div>
-          
+
           <div className="text-center mt-24">
             <Button variant="secondary" className="border-earth text-earth hover:bg-earth hover:text-cream">
-              Load More Entries
+              {t("loadMore")}
             </Button>
           </div>
         </FadeUpSection>

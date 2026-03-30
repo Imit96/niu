@@ -59,7 +59,7 @@ export default async function AdminIngredientsPage() {
                   </td>
                   <td className="py-3 px-4 text-earth/70 text-xs">{item.category}</td>
                   <td className="py-3 px-4 text-earth/60 text-xs">{item.origin || "—"}</td>
-                  <td className="py-3 px-4 text-earth/60 text-xs">{item.relatedProduct?.name || "—"}</td>
+                  <td className="py-3 px-4 text-earth/60 text-xs">{(item as any).products?.map((p: { name: string }) => p.name).join(", ") || "—"}</td>
                   <td className="py-3 px-4">
                     <span className={`text-[10px] font-semibold uppercase tracking-widest px-2 py-1 ${item.isPublished ? "bg-bronze/10 text-bronze" : "bg-earth/5 text-earth/40"}`}>
                       {item.isPublished ? "Published" : "Draft"}

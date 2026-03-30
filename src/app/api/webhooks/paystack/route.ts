@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
-import { sendOrderConfirmationEmail } from "@/lib/email";
+import { sendOrderConfirmationEmail, sendAdminNewOrderNotification } from "@/lib/email";
 import { logger } from "@/lib/logger";
 
 /**
@@ -111,8 +111,9 @@ export async function POST(req: NextRequest) {
 
         logger.info("[Paystack Webhook] Order marked as PAID:", orderId);
 
-        // Awaited so failures are caught and logged — email.ts handles errors internally
+        // Send customer confirmation and admin notification (errors handled internally)
         await sendOrderConfirmationEmail(orderId);
+        await sendAdminNewOrderNotification(orderId);
       }
     }
 

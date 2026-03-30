@@ -63,6 +63,13 @@ enum Role {
   ADMIN
 }
 
+enum ProductCategory {
+  HAIR
+  SCENT
+  BODY
+  OTHER
+}
+
 model User {
   id              String    @id @default(cuid())
   name            String?
@@ -137,15 +144,30 @@ model Product {
   culturalInspiration String? @db.Text // Cultural Inspiration description
   resonanceData       Json?   // e.g. [{ timeframe: "Day 01", title: "...", description: "..." }]
   faqData             Json?   // e.g. [{ question: "...", answer: "..." }]
-  isFeaturedHair  Boolean  @default(false) // Homepage hair spotlight section
-  isFeaturedScent Boolean  @default(false) // Homepage scent spotlight section
+  isFeaturedHair  Boolean         @default(false) // Homepage hair spotlight section
+  isFeaturedScent Boolean         @default(false) // Homepage scent spotlight section
+  category        ProductCategory @default(OTHER)  // Product domain: HAIR, SCENT, BODY, OTHER
+
+  // French translations (nullable — falls back to English when empty)
+  nameFr                String?
+  ritualNameFr          String?
+  functionalTitleFr     String?
+  descriptionFr         String?
+  howToUseFr            String?
+  ingredientsTextFr     String?
+  textureScentFr        String?  @db.Text
+  culturalInspirationFr String?  @db.Text
+  resonanceDataFr       Json?
+  faqDataFr             Json?
 
   variants        ProductVariant[]
   reviews         Review[]
   bundles         RitualBundle[]    @relation("BundleProducts")
   articles        Article[]         // Articles featuring this product as a CTA
   wishlistedBy    WishlistItem[]
-  ingredients     Ingredient[]      // Ingredients that spotlight this product
+  ingredients     Ingredient[]      @relation("IngredientProducts") // Ingredients that spotlight this product
+  guides          Guide[]           // Guides that feature this product (via relatedProductId FK)
+  guidesIncluded  Guide[]           @relation("GuideProducts")       // Guides that include this product (M2M)
 
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
@@ -176,9 +198,16 @@ model RitualBundle {
   id          String    @id @default(cuid())
   name        String
   description String
-  priceInCents Int
-  slug        String    @unique
-  
+  priceInCents  Int
+  slug          String    @unique
+  image         String?
+  imagePosition String?   @default("center")
+  category      ProductCategory @default(HAIR)
+
+  // French translations
+  nameFr        String?
+  descriptionFr String?
+
   products    Product[] @relation("BundleProducts")
 
   createdAt   DateTime  @default(now())
@@ -357,7 +386,13 @@ model Article {
   sortOrder     Int      @default(0)
   isFeatured    Boolean  @default(false)
   datePublished DateTime @default(now())
-  
+
+  // French translations
+  titleFr    String?
+  categoryFr String?
+  excerptFr  String?  @db.Text
+  contentFr  String?  @db.Text
+
   // Call to action product relation
   relatedProductId String?
   relatedProduct   Product? @relation(fields: [relatedProductId], references: [id])
@@ -447,11 +482,17 @@ model Ingredient {
   description      String   @db.Text
   origin           String?  // e.g. "West Africa", "Atlas Mountains"
   benefitsText     String?  @db.Text
+  image            String?
+  imagePosition    String?  @default("center")
   sortOrder        Int      @default(0)
   isPublished      Boolean  @default(true)
 
-  relatedProductId String?
-  relatedProduct   Product? @relation(fields: [relatedProductId], references: [id])
+  // French translations
+  nameFr         String?
+  descriptionFr  String?  @db.Text
+  benefitsTextFr String?  @db.Text
+
+  products         Product[]  @relation("IngredientProducts")
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -466,14 +507,43 @@ model Guide {
   title        String
   description  String   @db.Text
   methodNumber Int      @default(0) // Display order / numbering
-  image        String?  // URL or local path
-  sortOrder    Int      @default(0)
-  isPublished  Boolean  @default(true)
+  image         String?  // URL or local path
+  imagePosition String?  @default("center")
+  sortOrder     Int      @default(0)
+  isPublished   Boolean  @default(true)
+
+  // French translations
+  titleFr       String?
+  descriptionFr String?  @db.Text
+
+  relatedProductId String?
+  relatedProduct   Product? @relation(fields: [relatedProductId], references: [id])
+  products         Product[] @relation("GuideProducts")
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   @@index([slug])
+}
+
+// ==========================================
+// Custom Formula Requests
+// ==========================================
+
+model CustomFormulaRequest {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  hairConcern String
+  texture     String?
+  notes       String?  @db.Text
+  isReviewed  Boolean  @default(false)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([email])
+  @@index([isReviewed])
 }
 
 // ==========================================

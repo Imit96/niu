@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { parseImageTransform, transformStyle } from "@/lib/image-transform";
 
 interface ProductGalleryProps {
   images: string[];
@@ -10,6 +11,7 @@ interface ProductGalleryProps {
 }
 
 export default function ProductGallery({ images, productName, positions }: ProductGalleryProps) {
+  const t = useTranslations("shop.gallery");
   const [activeIndex, setActiveIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
@@ -36,7 +38,7 @@ export default function ProductGallery({ images, productName, positions }: Produ
   }
 
   const activeImage = images[activeIndex] ?? images[0];
-  const activePosition = positions?.[activeIndex] || "center";
+  const activeTransform = parseImageTransform(positions?.[activeIndex]);
 
   return (
     <div className="space-y-4">
@@ -48,6 +50,7 @@ export default function ProductGallery({ images, productName, positions }: Produ
         onMouseEnter={() => setIsZoomed(true)}
         onMouseLeave={() => setIsZoomed(false)}
       >
+        {/* Hover-zoom wrapper */}
         <div
           className="absolute inset-0"
           style={{
@@ -57,42 +60,47 @@ export default function ProductGallery({ images, productName, positions }: Produ
             willChange: "transform",
           }}
         >
-          <Image
-            src={activeImage}
-            alt={`${productName} Main View`}
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover"
-            style={{ objectPosition: activePosition }}
-          />
+          {/* Crop-position wrapper */}
+          <div style={transformStyle(activeTransform)}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={activeImage}
+              alt={t("mainView", { productName })}
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       </div>
 
       {/* Thumbnail Grid */}
       {images.length > 1 && (
         <div className="grid grid-cols-4 gap-4">
-          {images.map((img, idx) => (
-            <button
-              key={idx}
-              onClick={() => setActiveIndex(idx)}
-              className={`relative aspect-square bg-stone border cursor-pointer transition-all overflow-hidden
-                ${activeIndex === idx ? "border-bronze ring-1 ring-bronze" : "border-ash/30 hover:border-bronze/50"}
-              `}
-              aria-label={`View ${productName} image ${idx + 1}`}
-            >
-              {img !== "Product Image Placeholder" ? (
-                <Image
-                  src={img}
-                  alt={`${productName} Thumbnail ${idx + 1}`}
-                  fill
-                  className="object-cover"
-                  style={{ objectPosition: positions?.[idx] || "center" }}
-                />
-              ) : (
-                <span className="text-earth/20 text-xs">IMG {idx + 1}</span>
-              )}
-            </button>
-          ))}
+          {images.map((img, idx) => {
+            const thumbTransform = parseImageTransform(positions?.[idx]);
+            return (
+              <button
+                key={idx}
+                onClick={() => setActiveIndex(idx)}
+                className={`relative aspect-square bg-stone border cursor-pointer transition-all overflow-hidden
+                  ${activeIndex === idx ? "border-bronze ring-1 ring-bronze" : "border-ash/30 hover:border-bronze/50"}
+                `}
+                aria-label={t("viewImage", { productName, index: idx + 1 })}
+              >
+                {img !== "Product Image Placeholder" ? (
+                  <div style={transformStyle(thumbTransform)}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={img}
+                      alt={t("thumbnail", { productName, index: idx + 1 })}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <span className="text-earth/20 text-xs">IMG {idx + 1}</span>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

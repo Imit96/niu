@@ -1,9 +1,10 @@
-import Link from "next/link";
-import { getPublicProducts, getProductsForSearch } from "../actions/product";
-import { getActiveFlashSale } from "../actions/admin";
+import { getPublicProducts, getProductsForSearch } from "@/app/actions/product";
+import { getActiveFlashSale } from "@/app/actions/admin";
 import { PriceDisplay } from "@/components/ui/PriceDisplay";
 import ShopFilters from "./ShopFilters";
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
 export const revalidate = 1800;
 
@@ -14,21 +15,24 @@ export const metadata = {
 };
 
 export default async function ShopPage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const resolvedSearchParams = await searchParams;
+  const [{ locale }, resolvedSearchParams] = await Promise.all([params, searchParams]);
 
   const activeRitual = typeof resolvedSearchParams.ritual === "string" ? resolvedSearchParams.ritual : "All";
   const activeTexture = typeof resolvedSearchParams.texture === "string" ? resolvedSearchParams.texture : "All";
   const searchQuery = typeof resolvedSearchParams.q === "string" ? resolvedSearchParams.q : "";
   const page = typeof resolvedSearchParams.page === "string" ? Math.max(1, parseInt(resolvedSearchParams.page) || 1) : 1;
 
-  const [{ products, total, totalPages }, searchSuggestions, flashSale] = await Promise.all([
-    getPublicProducts({ ritual: activeRitual, texture: activeTexture, search: searchQuery }, page),
+  const [{ products, total, totalPages }, searchSuggestions, flashSale, t] = await Promise.all([
+    getPublicProducts({ ritual: activeRitual, texture: activeTexture, search: searchQuery }, page, 24, locale),
     getProductsForSearch(),
     getActiveFlashSale(),
+    getTranslations("shop"),
   ]);
 
   const buildPageUrl = (p: number) => {
@@ -45,9 +49,9 @@ export default async function ShopPage({
     <div className="flex flex-col w-full min-h-screen bg-sand">
       {/* Intro */}
       <section className="pt-32 pb-16 px-6 bg-earth text-cream text-center">
-        <h1 className="text-4xl md:text-6xl font-serif uppercase tracking-widest mb-6">All Regimens</h1>
+        <h1 className="text-4xl md:text-6xl font-serif uppercase tracking-widest mb-6">{t("title")}</h1>
         <p className="text-lg text-cream/80 max-w-2xl mx-auto leading-relaxed font-light">
-          Discover our full collection of intentional, heritage-rooted formulations. Designed to restore, protect, and honor your natural texture.
+          {t("description")}
         </p>
       </section>
 
@@ -61,12 +65,18 @@ export default async function ShopPage({
 
         {/* Product Grid */}
         <div className="flex-1">
+          {/* Active filter indicator */}
+          {(activeRitual !== "All" || activeTexture !== "All" || searchQuery) && (
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-sm text-earth/60">{total} {total === 1 ? "product" : "products"}</p>
+              <Link href="/shop" className="text-xs text-bronze underline underline-offset-4 hover:text-earth transition-colors">
+                {t("clearFilters")}
+              </Link>
+            </div>
+          )}
           {products.length === 0 ? (
             <div className="py-24 text-center text-earth/60">
-              <p>No regimens found matching your selection.</p>
-              <Link href="/shop" className="mt-4 inline-block text-bronze underline underline-offset-4">
-                Clear Filters
-              </Link>
+              <p>{t("empty")}</p>
             </div>
           ) : (
             <>
@@ -118,27 +128,34 @@ export default async function ShopPage({
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="mt-16 flex items-center justify-center gap-4">
-                  {page > 1 && (
-                    <Link
-                      href={buildPageUrl(page - 1)}
-                      className="px-6 py-2 border border-earth/30 text-earth text-sm tracking-wider uppercase hover:border-earth transition-colors"
-                    >
-                      Previous
-                    </Link>
-                  )}
-                  <span className="text-earth/60 text-sm">
-                    Page {page} of {totalPages} &mdash; {total} products
-                  </span>
-                  {page < totalPages && (
-                    <Link
-                      href={buildPageUrl(page + 1)}
-                      className="px-6 py-2 border border-earth/30 text-earth text-sm tracking-wider uppercase hover:border-earth transition-colors"
-                    >
-                      Next
-                    </Link>
-                  )}
-                </div>
+                <>
+                  <div className="mt-16 flex items-center justify-center gap-4">
+                    {page > 1 && (
+                      <Link
+                        href={buildPageUrl(page - 1)}
+                        className="px-6 py-2 border border-earth/30 text-earth text-sm tracking-wider uppercase hover:border-earth transition-colors"
+                      >
+                        {t("pagination.previous")}
+                      </Link>
+                    )}
+                    <span className="text-earth/60 text-sm">
+                      Page {page} of {totalPages} &mdash; {total} products
+                    </span>
+                    {page < totalPages && (
+                      <Link
+                        href={buildPageUrl(page + 1)}
+                        className="px-6 py-2 border border-earth/30 text-earth text-sm tracking-wider uppercase hover:border-earth transition-colors"
+                      >
+                        {t("pagination.next")}
+                      </Link>
+                    )}
+                  </div>
+                  <div className="mt-6 text-center">
+                    <a href="#" className="text-xs text-earth/40 hover:text-bronze transition-colors uppercase tracking-widest">
+                      ↑ Back to top
+                    </a>
+                  </div>
+                </>
               )}
             </>
           )}

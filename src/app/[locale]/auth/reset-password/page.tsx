@@ -7,8 +7,10 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { resetPassword } from "@/app/actions/passwordReset";
+import { useTranslations } from "next-intl";
 
 export default function ResetPasswordPage() {
+  const t = useTranslations("auth");
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
   const email = searchParams.get("email") ?? "";
@@ -27,9 +29,9 @@ export default function ResetPasswordPage() {
     return (
       <div className="flex flex-col w-full min-h-screen bg-sand items-center justify-center py-24 px-6">
         <div className="bg-cream border border-earth/10 p-8 md:p-12 w-full max-w-md shadow-sm text-center space-y-4">
-          <p className="text-earth font-serif text-xl">Invalid reset link.</p>
+          <p className="text-earth font-serif text-xl">{t("invalidToken")}</p>
           <Link href="/auth/forgot-password" className="text-bronze hover:underline underline-offset-4 text-sm">
-            Request a new link
+            {t("requestNewLink")}
           </Link>
         </div>
       </div>
@@ -40,15 +42,15 @@ export default function ResetPasswordPage() {
     <div className="flex flex-col w-full min-h-screen bg-sand items-center justify-center py-24 px-6">
       <div className="bg-cream border border-earth/10 p-8 md:p-12 w-full max-w-md shadow-sm">
         <h1 className="text-3xl font-serif text-earth uppercase tracking-widest text-center mb-2">
-          New Password
+          {t("resetTitle")}
         </h1>
         <p className="text-center text-earth/70 text-sm mb-8">
-          Choose a password of at least 8 characters.
+          {t("resetSubtitle")}
         </p>
 
         {(state as any)?.success ? (
           <div className="p-4 bg-green-50 border border-green-200 text-green-700 text-sm text-center">
-            Password updated. Redirecting to sign in…
+            {t("resetSuccess")}
           </div>
         ) : (
           <form action={action} className="space-y-6">
@@ -63,26 +65,26 @@ export default function ResetPasswordPage() {
             <Input
               type="password"
               name="password"
-              placeholder="New Password"
+              placeholder={t("newPassword")}
               required
               disabled={isPending}
             />
             <Input
               type="password"
               name="confirmPassword"
-              placeholder="Confirm Password"
+              placeholder={t("confirmPassword")}
               required
               disabled={isPending}
             />
             <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? "Updating..." : "Update Password"}
+              {isPending ? t("resetting") : t("resetButton")}
             </Button>
           </form>
         )}
 
         <div className="mt-8 text-center text-sm text-earth/80">
           <Link href="/auth/login" className="text-bronze hover:underline underline-offset-4">
-            Back to Sign In
+            {t("backToSignIn")}
           </Link>
         </div>
       </div>

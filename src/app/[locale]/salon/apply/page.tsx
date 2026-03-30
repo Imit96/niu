@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { getSalonProfile } from "@/app/actions/salon";
 import { SalonApplicationForm } from "./SalonApplicationForm";
+import { getTranslations } from "next-intl/server";
 
 export const metadata = {
   title: "Partnership Inquiry | ORIGONÆ",
@@ -9,7 +10,7 @@ export const metadata = {
 };
 
 export default async function SalonApplicationPage() {
-  const profile = await getSalonProfile();
+  const [profile, t] = await Promise.all([getSalonProfile(), getTranslations("salon")]);
 
   return (
     <div className="flex flex-col w-full bg-sand min-h-screen">
@@ -17,9 +18,9 @@ export default async function SalonApplicationPage() {
         <div className="max-w-2xl mx-auto space-y-12">
 
           <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-5xl font-serif text-earth uppercase tracking-widest leading-tight">Partnership Inquiry</h1>
+            <h1 className="text-4xl md:text-5xl font-serif text-earth uppercase tracking-widest leading-tight">{t("partnershipInquiry")}</h1>
             <p className="text-earth/80 font-light leading-relaxed">
-              We selectively partner with salons and stylists who share our commitment to intentional luxury and elevated botanical regimens. Please provide your details below for our wholesale team to review.
+              {t("applyIntro")}
             </p>
           </div>
 
@@ -29,27 +30,27 @@ export default async function SalonApplicationPage() {
               {profile.isApproved ? (
                 <>
                   <div className="inline-block px-4 py-1.5 bg-bronze/10 border border-bronze/30 text-bronze text-[10px] uppercase tracking-widest font-semibold">
-                    Active Partner
+                    {t("activePartner")}
                   </div>
-                  <h3 className="text-2xl font-serif text-earth">You are an ORIGONÆ Partner.</h3>
+                  <h3 className="text-2xl font-serif text-earth">{t("activePartnerTitle")}</h3>
                   <p className="text-earth/70 font-light max-w-sm mx-auto leading-relaxed">
-                    Your salon partnership is active. Access your dashboard to manage wholesale orders and pricing.
+                    {t("activePartnerBody")}
                   </p>
                   <Link href="/salon/dashboard">
-                    <Button size="lg" className="mt-4">Enter Salon Dashboard</Button>
+                    <Button size="lg" className="mt-4">{t("enterDashboard")}</Button>
                   </Link>
                 </>
               ) : (
                 <>
                   <div className="inline-block px-4 py-1.5 bg-earth/5 border border-earth/20 text-earth/60 text-[10px] uppercase tracking-widest font-semibold">
-                    Application Under Review
+                    {t("underReview")}
                   </div>
-                  <h3 className="text-2xl font-serif text-earth">Application Received.</h3>
+                  <h3 className="text-2xl font-serif text-earth">{t("applicationReceived")}</h3>
                   <p className="text-earth/70 font-light max-w-sm mx-auto leading-relaxed">
-                    We have your application for <span className="text-earth font-medium">{profile.businessName}</span> on file. Our wholesale concierge is reviewing your submission and will contact you shortly.
+                    {t("applicationPending", { name: profile.businessName })}
                   </p>
                   <p className="text-[10px] text-earth/40 uppercase tracking-widest">
-                    Questions? <Link href="/contact" className="underline hover:text-bronze transition-colors">Contact our wholesale team</Link>
+                    Questions? <Link href="/contact" className="underline hover:text-bronze transition-colors">{t("contactWholesaleTeam")}</Link>
                   </p>
                 </>
               )}

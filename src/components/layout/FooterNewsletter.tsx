@@ -29,12 +29,12 @@ export function FooterNewsletter() {
 
   return (
     <div className="flex flex-col space-y-4 md:col-span-1">
-      <h4 className="text-sm font-semibold tracking-wider uppercase mb-2">Enter The Regimen</h4>
-      <p className="text-sm text-cream/80 leading-relaxed mb-4">
+      <h4 className="text-xs font-semibold tracking-[0.2em] uppercase text-cream/30 mb-2">Enter The Regimen</h4>
+      <p className="text-sm text-cream/50 leading-relaxed mb-4">
         Join the circle to receive exclusive insights into our world, early access to new regimens, and quiet beauty philosophy.
       </p>
       {status === "success" ? (
-        <p className="text-sm text-cream/80">You&apos;re on the list. Welcome to the circle.</p>
+        <p className="text-sm text-cream/50">You&apos;re on the list. Welcome to the circle.</p>
       ) : (
         <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col space-y-3">
           {status === "error" && (

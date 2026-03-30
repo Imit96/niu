@@ -1,9 +1,11 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 import { useCallback, Suspense, useState, useRef, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const categories = ["All", "The Cleansing Regimen", "The Growth Regimen", "The Restoration Regimen", "The Olfactory Regimen"];
 const textures = ["All", "Oil", "Clay", "Cream", "Mist", "Serum", "Parfum"];
@@ -21,6 +23,7 @@ type ProductSuggestion = {
 function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRitual: string; activeTexture: string; suggestions: ProductSuggestion[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("shop");
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -83,7 +86,7 @@ function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRit
               setShowSuggestions(true);
             }}
             onFocus={() => setShowSuggestions(true)}
-            placeholder="Search products..."
+            placeholder={t("filters.search")}
             className="w-full px-4 py-3 bg-stone/50 border border-earth/20 focus:outline-none focus:border-bronze focus:ring-1 focus:ring-bronze text-sm"
           />
           <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-earth/60 hover:text-earth">
@@ -108,7 +111,7 @@ function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRit
                       </div>
                       <div className="flex flex-col flex-1 overflow-hidden">
                         <span className="text-sm font-serif text-earth truncate">{p.name}</span>
-                        <span className="text-xs text-earth/60 uppercase tracking-widest truncate">{p.ritualName || "Regimen"}</span>
+                        <span className="text-xs text-earth/60 uppercase tracking-widest truncate">{p.ritualName || t("pdp.origonaeBase")}</span>
                       </div>
                     </Link>
                   </li>
@@ -124,7 +127,7 @@ function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRit
         onClick={() => setIsMobileOpen(!isMobileOpen)}
         className="md:hidden w-full flex items-center justify-between px-4 py-3 bg-earth/5 border border-earth/10 text-earth font-semibold tracking-widest uppercase text-sm"
       >
-        <span>Filter Products</span>
+        <span>{t("filters.filterProducts")}</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform duration-300 ${isMobileOpen ? "rotate-180" : ""}`}>
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
@@ -133,7 +136,7 @@ function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRit
       {/* Filter Content - Collapsible on Mobile */}
       <div className={`space-y-8 md:space-y-12 transition-all duration-300 ease-in-out md:block ${isMobileOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0 overflow-hidden md:max-h-none md:opacity-100"}`}>
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold tracking-widest uppercase text-bronze border-b border-earth/20 pb-2">By Regimen</h3>
+          <h3 className="text-sm font-semibold tracking-widest uppercase text-bronze border-b border-earth/20 pb-2">{t("filters.regimenLabel")}</h3>
           <ul className="space-y-3">
             {categories.map((cat) => (
               <li key={cat}>
@@ -152,7 +155,7 @@ function FilterContent({ activeRitual, activeTexture, suggestions }: { activeRit
         </div>
 
         <div className="space-y-4 pb-4 md:pb-0">
-          <h3 className="text-sm font-semibold tracking-widest uppercase text-bronze border-b border-earth/20 pb-2">By Texture</h3>
+          <h3 className="text-sm font-semibold tracking-widest uppercase text-bronze border-b border-earth/20 pb-2">{t("filters.textureLabel")}</h3>
           <ul className="space-y-3">
             {textures.map((tex) => (
               <li key={tex}>
@@ -183,8 +186,9 @@ export default function ShopFilters({
   activeTexture: string;
   suggestions: ProductSuggestion[];
 }) {
+  const t = useTranslations("shop");
   return (
-    <Suspense fallback={<div className="text-earth/60 text-sm">Loading filters...</div>}>
+    <Suspense fallback={<div className="text-earth/60 text-sm">{t("filters.loadingFilters")}</div>}>
       <FilterContent activeRitual={activeRitual} activeTexture={activeTexture} suggestions={suggestions} />
     </Suspense>
   );

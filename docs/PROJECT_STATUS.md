@@ -7,3 +7,22 @@
 - [x] Phase 5: Salon Portal Polish
 - [x] Phase 6: Homepage Enhancement
 - [/] Phase 7: Scaling, Performance & Analytics
+- [x] i18n Phase A: Infrastructure (next-intl, messages, routing config, middleware)
+- [x] i18n Phase B: Page migration (all routes under [locale]/, NextIntlClientProvider wired)
+- [x] i18n Phase C: Consume translations (useTranslations in pages, language switcher UI)
+- [x] i18n Groups 6–10: All remaining pages fully translated (about, journal detail, ingredients detail, guides detail, bundles detail+button, listing pages, salon portal, error states, homepage cleanup)
+- [x] i18n Phase D: Backend content localisation — DB `_fr` columns on Product/Article/Ingredient/Guide/RitualBundle; `localise()` helper; locale-aware server actions; FR input sections in admin CMS forms
+- [x] Dedicated Hair Section — `ProductCategory` enum, `/hair` editorial page, admin category field, Navbar link
+- [x] Category Pages — `/scent` and `/skin` editorial pages; seed data (3 HAIR, 3 SCENT, 2 BODY + 1 bundle)
+- [x] Homepage Composition Redesign — 16-section editorial layout matching reference composition; CategoryStrip, CustomFormulaSection, journal grid, ritual steps, shop by category
+- [x] Custom Formula Feature — `CustomFormulaRequest` DB model, Zod schema, rate-limited server action, accessible split-panel form
+- [x] UI/UX Audit — accessibility (focus-visible, ARIA, reduced-motion), hero split layout, analytics gating, contrast improvements
+- [x] Full UI/UX accessibility audit and fixes.
+- [x] Luxury Hero & Category Strip V2 implementation (Editorial style, pixel-perfect).
+- [x] Wire Custom Formula Requests to an admin CMS view (list, mark reviewed) — `/admin/formula-requests`.
+- [x] Add email notification to admin when a Custom Formula Request is submitted.
+- [x] Admin order notification email — admin receives email on every successful Paystack payment.
+- [x] Custom Formula Section expanded to Hair / Skin / Scent (was hair-only).
+- [x] Luxury Hero & Category Strip V2 — Pixel-perfect eCommerce hero with rounded-2xl container, luxury editorial typography (Cormorant Garamond), and responsive horizontal scroll category navigation.
+- [x] Signature Regimens Homepage Implementation — Split-panel categorical segments with horizontal scroll for Hair, Body, and Scent categories.
+- [x] Signature Regimens Admin CMS — Categorization support for RitualBundles and updated DB model.

@@ -22,6 +22,8 @@ export interface AdminProductDetails {
   imagePositions?: any;
   faqData?: string | any;
   resonanceData?: string | any;
+  faqDataFr?: string | any;
+  resonanceDataFr?: string | any;
   variants: { id: string; size?: string | null; priceInCents: number; salePriceInCents?: number | null; inventoryCount: number }[];
   description: string;
   howToUse?: string | null;
@@ -35,6 +37,15 @@ export interface AdminProductDetails {
   regimenProductIds?: string[];
   isFeaturedHair?: boolean;
   isFeaturedScent?: boolean;
+  category?: string | null;
+  nameFr?: string | null;
+  ritualNameFr?: string | null;
+  functionalTitleFr?: string | null;
+  descriptionFr?: string | null;
+  howToUseFr?: string | null;
+  ingredientsTextFr?: string | null;
+  textureScentFr?: string | null;
+  culturalInspirationFr?: string | null;
 }
 
 export default function EditProductForm({
@@ -62,6 +73,18 @@ export default function EditProductForm({
 
   const [resonance, setResonance] = useState<{timeframe: string, title: string, description: string}[]>(
     product.resonanceData ? (typeof product.resonanceData === "string" ? JSON.parse(product.resonanceData) : product.resonanceData) : [
+      { timeframe: "Day 01", title: "", description: "" },
+      { timeframe: "Day 14", title: "", description: "" },
+      { timeframe: "Day 30", title: "", description: "" }
+    ]
+  );
+
+  const [showFr, setShowFr] = useState(false);
+  const [faqsFr, setFaqsFr] = useState<{question: string, answer: string}[]>(
+    product.faqDataFr ? (typeof product.faqDataFr === "string" ? JSON.parse(product.faqDataFr) : product.faqDataFr) : []
+  );
+  const [resonanceFr, setResonanceFr] = useState<{timeframe: string, title: string, description: string}[]>(
+    product.resonanceDataFr ? (typeof product.resonanceDataFr === "string" ? JSON.parse(product.resonanceDataFr) : product.resonanceDataFr) : [
       { timeframe: "Day 01", title: "", description: "" },
       { timeframe: "Day 14", title: "", description: "" },
       { timeframe: "Day 30", title: "", description: "" }
@@ -96,6 +119,8 @@ export default function EditProductForm({
     <form action={handleSubmit} className="space-y-12">
       <input type="hidden" name="faqData" value={JSON.stringify(faqs)} />
       <input type="hidden" name="resonanceData" value={JSON.stringify(resonance)} />
+      <input type="hidden" name="faqDataFr" value={JSON.stringify(faqsFr)} />
+      <input type="hidden" name="resonanceDataFr" value={JSON.stringify(resonanceFr)} />
       <input type="hidden" name="imagesJson" value={JSON.stringify(imageEntries.map((e) => e.url))} />
       <input type="hidden" name="imagePositionsJson" value={JSON.stringify(imageEntries.map((e) => e.position))} />
       <input type="hidden" name="variantsJson" value={JSON.stringify(variants)} />
@@ -109,9 +134,24 @@ export default function EditProductForm({
               <Input id="name" name="name" required defaultValue={product.name} className="bg-sand border-earth/20 focus-visible:border-bronze" />
             </div>
             <div className="space-y-2">
+              <label htmlFor="category" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Product Category *</label>
+              <select
+                id="category"
+                name="category"
+                required
+                defaultValue={product.category || "OTHER"}
+                className="flex w-full rounded-none border border-earth/20 bg-sand px-4 py-3 text-sm text-earth shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-earth"
+              >
+                <option value="HAIR">Hair</option>
+                <option value="SCENT">Scent / Olfactory</option>
+                <option value="BODY">Body</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+            <div className="space-y-2">
               <label htmlFor="ritualName" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Regimen Line</label>
-              <select 
-                id="ritualName" 
+              <select
+                id="ritualName"
                 name="ritualName"
                 defaultValue={product.ritualName || ""}
                 className="flex w-full rounded-none border border-earth/20 bg-sand px-4 py-3 text-sm text-earth shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-earth"
@@ -380,6 +420,101 @@ export default function EditProductForm({
           </div>
         </div>
 
+      </div>
+
+      {/* FR Translation Section */}
+      <div className="border border-earth/20 rounded-sm">
+        <button
+          type="button"
+          onClick={() => setShowFr(!showFr)}
+          className="w-full flex items-center justify-between p-4 text-left"
+        >
+          <span className="text-sm font-semibold uppercase tracking-widest text-earth/70">
+            FR Translation (optional)
+          </span>
+          <span className="text-earth/50 text-xs">{showFr ? "Collapse" : "Expand"}</span>
+        </button>
+        {showFr && (
+          <div className="p-6 border-t border-earth/10 space-y-6 bg-stone/10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Product Name (FR)</label>
+                <Input name="nameFr" defaultValue={product.nameFr || ""} placeholder="Nom du produit en francais" className="bg-sand border-earth/20" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Functional Subtitle (FR)</label>
+                <Input name="functionalTitleFr" defaultValue={product.functionalTitleFr || ""} placeholder="Sous-titre fonctionnel en francais" className="bg-sand border-earth/20" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Regimen Line (FR)</label>
+                <Input name="ritualNameFr" defaultValue={product.ritualNameFr || ""} placeholder="Nom de la gamme en francais" className="bg-sand border-earth/20" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Main Description (FR)</label>
+              <textarea name="descriptionFr" rows={4} defaultValue={product.descriptionFr || ""} placeholder="Description principale en francais..." className="flex w-full rounded-none border border-earth/20 bg-sand px-4 py-3 text-sm text-earth shadow-sm placeholder:text-earth/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-earth" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Usage Guide (FR)</label>
+              <textarea name="howToUseFr" rows={3} defaultValue={product.howToUseFr || ""} placeholder="Guide d'utilisation en francais..." className="flex w-full rounded-none border border-earth/20 bg-sand px-4 py-3 text-sm text-earth shadow-sm placeholder:text-earth/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-earth" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Key Ingredients (FR)</label>
+              <textarea name="ingredientsTextFr" rows={3} defaultValue={product.ingredientsTextFr || ""} placeholder="Ingredients cles en francais..." className="flex w-full rounded-none border border-earth/20 bg-sand px-4 py-3 text-sm text-earth shadow-sm placeholder:text-earth/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-earth" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Sensory Description (FR)</label>
+              <textarea name="textureScentFr" rows={4} defaultValue={product.textureScentFr || ""} placeholder="Description sensorielle en francais..." className="flex w-full rounded-none border border-earth/20 bg-sand px-4 py-3 text-sm text-earth shadow-sm placeholder:text-earth/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-earth" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Cultural Inspiration (FR)</label>
+              <textarea name="culturalInspirationFr" rows={4} defaultValue={product.culturalInspirationFr || ""} placeholder="Inspiration culturelle en francais..." className="flex w-full rounded-none border border-earth/20 bg-sand px-4 py-3 text-sm text-earth shadow-sm placeholder:text-earth/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-earth" />
+            </div>
+            {/* FR Resonance Timeline */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold uppercase tracking-widest text-earth/70">Resonance Timeline (FR)</h3>
+              {resonanceFr.map((res, index) => (
+                <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-earth/10 bg-stone/20">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Timeframe</label>
+                    <Input value={res.timeframe} onChange={(e) => { const u = [...resonanceFr]; u[index].timeframe = e.target.value; setResonanceFr(u); }} className="bg-sand border-earth/20" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Title (FR)</label>
+                    <Input value={res.title} onChange={(e) => { const u = [...resonanceFr]; u[index].title = e.target.value; setResonanceFr(u); }} className="bg-sand border-earth/20" />
+                  </div>
+                  <div className="space-y-2 md:col-span-3">
+                    <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Description (FR)</label>
+                    <textarea value={res.description} onChange={(e) => { const u = [...resonanceFr]; u[index].description = e.target.value; setResonanceFr(u); }} rows={2} className="flex w-full rounded-none border border-earth/20 bg-sand px-4 py-3 text-sm text-earth shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-earth" />
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* FR FAQs */}
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <h3 className="text-sm font-semibold uppercase tracking-widest text-earth/70">FAQs (FR)</h3>
+                <Button type="button" variant="secondary" size="sm" onClick={() => setFaqsFr([...faqsFr, { question: "", answer: "" }])}>+ Add FAQ</Button>
+              </div>
+              {faqsFr.map((faq, index) => (
+                <div key={index} className="p-4 border border-earth/10 bg-stone/20 relative">
+                  <button type="button" onClick={() => setFaqsFr(faqsFr.filter((_, i) => i !== index))} className="absolute top-2 right-2 text-earth/50 hover:text-red-500 text-xs uppercase tracking-widest font-bold">Remove</button>
+                  <div className="space-y-3">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Question (FR)</label>
+                      <Input value={faq.question} onChange={(e) => { const u = [...faqsFr]; u[index].question = e.target.value; setFaqsFr(u); }} className="bg-sand border-earth/20" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Answer (FR)</label>
+                      <textarea value={faq.answer} onChange={(e) => { const u = [...faqsFr]; u[index].answer = e.target.value; setFaqsFr(u); }} rows={2} className="flex w-full rounded-none border border-earth/20 bg-sand px-4 py-3 text-sm text-earth shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-earth" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {faqsFr.length === 0 && <p className="text-sm text-earth/50 italic">No French FAQs added yet.</p>}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Homepage Spotlight */}

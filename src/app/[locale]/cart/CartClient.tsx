@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { X, Minus, Plus, Tag, Info, Zap } from "lucide-react";
 import { PriceDisplay } from "@/components/ui/PriceDisplay";
 import { useMemo, useEffect } from "react";
@@ -19,6 +20,7 @@ interface CartClientProps {
 }
 
 export default function CartClient({ isSalon, discountPct, businessName, flashSalePct }: CartClientProps) {
+  const t = useTranslations("cart");
   const { items, removeItem, updateQuantity, syncPrices } = useCartStore();
 
   // Refresh stale cart prices from DB on mount
@@ -68,10 +70,10 @@ export default function CartClient({ isSalon, discountPct, businessName, flashSa
   if (items.length === 0) {
     return (
       <div className="flex flex-col w-full min-h-[60vh] bg-sand items-center justify-center px-6">
-        <h1 className="text-3xl font-serif text-earth mb-4 uppercase tracking-widests">Your Cart</h1>
-        <p className="text-earth/70 mb-8">Your cart is currently empty.</p>
+        <h1 className="text-3xl font-serif text-earth mb-4 uppercase tracking-widests">{t("title")}</h1>
+        <p className="text-earth/70 mb-8">{t("empty")}</p>
         <Link href="/shop">
-          <Button size="lg">Discover Regimens</Button>
+          <Button size="lg">{t("discoverRegimens")}</Button>
         </Link>
       </div>
     );
@@ -80,20 +82,20 @@ export default function CartClient({ isSalon, discountPct, businessName, flashSa
   return (
     <div className="flex flex-col w-full min-h-screen bg-sand">
       <section className="pt-24 pb-16 px-6 max-w-[1440px] mx-auto w-full">
-        <h1 className="text-4xl md:text-5xl font-serif text-earth mb-4 uppercase tracking-widest text-center">Your Cart</h1>
+        <h1 className="text-4xl md:text-5xl font-serif text-earth mb-4 uppercase tracking-widest text-center">{t("title")}</h1>
 
         {/* Banners */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
           {flashSalePct > 0 && (
             <span className="flex items-center gap-2 bg-bronze/10 border border-bronze/30 text-bronze text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-sm">
               <Zap className="w-3 h-3" />
-              Flash Sale Active — {flashSalePct}% off all items
+              {t("flashSaleActive", { pct: flashSalePct })}
             </span>
           )}
           {isSalon && (
             <span className="flex items-center gap-2 bg-bronze/10 border border-bronze/30 text-bronze text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-sm">
               <Tag className="w-3 h-3" />
-              Wholesale Pricing Active — {discountPct}% off ({businessName || "Salon Partner"})
+              {t("wholesalePricingActive", { pct: discountPct, name: businessName || "Salon Partner" })}
             </span>
           )}
         </div>
@@ -102,9 +104,9 @@ export default function CartClient({ isSalon, discountPct, businessName, flashSa
           {/* Cart Items */}
           <div className="flex-1 space-y-8">
             <div className="hidden md:grid grid-cols-12 gap-4 pb-4 border-b border-earth/20 text-xs font-semibold tracking-widest uppercase text-bronze">
-              <div className="col-span-6">Product</div>
-              <div className="col-span-3 text-center">Quantity</div>
-              <div className="col-span-3 text-right">Total</div>
+              <div className="col-span-6">{t("product")}</div>
+              <div className="col-span-3 text-center">{t("quantity")}</div>
+              <div className="col-span-3 text-right">{t("total")}</div>
             </div>
 
             <div className="space-y-6">
@@ -137,14 +139,14 @@ export default function CartClient({ isSalon, discountPct, businessName, flashSa
                         {belowMoq && (
                           <p className="text-[10px] text-bronze/80 flex items-center gap-1 pt-1">
                             <Info className="w-3 h-3 flex-shrink-0" />
-                            Add 1 more to unlock {discountPct}% wholesale price
+                            {t("unlockWholesale", { pct: discountPct })}
                           </p>
                         )}
                         <button
                           onClick={() => removeItem(item.id)}
                           className="text-xs text-bronze underline underline-offset-4 pt-2 flex items-center"
                         >
-                          <X className="w-3 h-3 mr-1" /> Remove
+                          <X className="w-3 h-3 mr-1" /> {t("remove")}
                         </button>
                       </div>
                     </div>
@@ -187,11 +189,11 @@ export default function CartClient({ isSalon, discountPct, businessName, flashSa
           {/* Order Summary */}
           <div className="w-full lg:w-[400px] flex-shrink-0">
             <div className="bg-cream border border-earth/10 p-8 space-y-6 sticky top-32">
-              <h2 className="text-xl font-serif text-earth uppercase tracking-widest border-b border-earth/10 pb-4">Order Summary</h2>
+              <h2 className="text-xl font-serif text-earth uppercase tracking-widests border-b border-earth/10 pb-4">{t("orderSummary")}</h2>
 
               <div className="space-y-3 text-sm text-earth/80">
                 <div className="flex justify-between">
-                  <span>Subtotal</span>
+                  <span>{t("subtotal")}</span>
                   {hasAnyDiscount ? (
                     <span className="text-earth/50 line-through text-xs">
                       <PriceDisplay amountInCents={originalTotal} />
@@ -203,26 +205,26 @@ export default function CartClient({ isSalon, discountPct, businessName, flashSa
 
                 {flashSalePct > 0 && (
                   <div className="flex justify-between text-bronze font-semibold">
-                    <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> Flash Sale ({flashSalePct}%)</span>
+                    <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> {t("flashSaleDiscount", { pct: flashSalePct })}</span>
                     <span>– <PriceDisplay amountInCents={flashSavings} /></span>
                   </div>
                 )}
 
                 {isSalon && wholesaleSavings > 0 && (
                   <div className="flex justify-between text-bronze font-semibold">
-                    <span>Wholesale Discount ({discountPct}%)</span>
+                    <span>{t("wholesaleDiscount", { pct: discountPct })}</span>
                     <span>– <PriceDisplay amountInCents={wholesaleSavings} /></span>
                   </div>
                 )}
 
                 <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span className="text-bronze">Calculated at checkout</span>
+                  <span>{t("shippingLabel")}</span>
+                  <span className="text-bronze">{t("shippingCalc")}</span>
                 </div>
               </div>
 
               <div className="pt-4 border-t border-earth/10 flex justify-between items-center text-lg font-medium text-earth">
-                <span>Total</span>
+                <span>{t("totalLabel")}</span>
                 <span className={hasAnyDiscount ? "text-bronze" : ""}>
                   <PriceDisplay amountInCents={subtotal} />
                 </span>
@@ -230,18 +232,18 @@ export default function CartClient({ isSalon, discountPct, businessName, flashSa
 
               {isSalon && (
                 <p className="text-[10px] text-earth/50 leading-relaxed">
-                  Wholesale discount of {discountPct}% applies to products with 2 or more units. Single units are charged at the standard retail price.
+                  {t("wholesaleNote", { pct: discountPct })}
                 </p>
               )}
 
               <div className="pt-2">
                 <Link href="/checkout" className="w-full inline-block">
-                  <Button size="lg" className="w-full">Proceed to Checkout</Button>
+                  <Button size="lg" className="w-full">{t("checkout")}</Button>
                 </Link>
               </div>
 
               <p className="text-xs text-center text-earth/60 pt-2">
-                Taxes and international shipping calculated at checkout.
+                {t("taxNote")}
               </p>
             </div>
           </div>

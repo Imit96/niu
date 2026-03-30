@@ -7,6 +7,7 @@ import { ProductSchema, VariantSchema, formDataToObject } from "../../lib/valida
 import { ROLES } from "../../lib/constants";
 import { requireAdmin } from "../../lib/auth-utils";
 import type { Prisma } from "@prisma/client";
+import { localise } from "@/lib/i18n-content";
 
 // Helper: safely parse JSON with a fallback value
 function safeJsonParse<T>(raw: string | null | undefined, fallback: T): T {
@@ -55,7 +56,7 @@ export async function createProduct(formData: FormData) {
 
   const variants = parseVariants(formData);
 
-  const product = await prisma.product.create({
+  const product = await (prisma.product.create as any)({
     data: {
       name,
       slug,
@@ -73,6 +74,17 @@ export async function createProduct(formData: FormData) {
       culturalInspiration: formData.get("culturalInspiration") as string,
       resonanceData: safeJsonParse(formData.get("resonanceData") as string, []),
       faqData: safeJsonParse(formData.get("faqData") as string, []),
+      nameFr: (formData.get("nameFr") as string) || null,
+      ritualNameFr: (formData.get("ritualNameFr") as string) || null,
+      functionalTitleFr: (formData.get("functionalTitleFr") as string) || null,
+      descriptionFr: (formData.get("descriptionFr") as string) || null,
+      howToUseFr: (formData.get("howToUseFr") as string) || null,
+      ingredientsTextFr: (formData.get("ingredientsTextFr") as string) || null,
+      textureScentFr: (formData.get("textureScentFr") as string) || null,
+      culturalInspirationFr: (formData.get("culturalInspirationFr") as string) || null,
+      resonanceDataFr: safeJsonParse(formData.get("resonanceDataFr") as string, null),
+      faqDataFr: safeJsonParse(formData.get("faqDataFr") as string, null),
+      category: (formData.get("category") as string) || "OTHER",
       regimenProductIds: formData.getAll("regimenProductIds") as string[],
       imagePositions: safeJsonParse(formData.get("imagePositionsJson") as string, []),
       images: (() => {
@@ -95,6 +107,9 @@ export async function createProduct(formData: FormData) {
 
   revalidatePath("/admin/products");
   revalidatePath("/shop");
+  revalidatePath("/hair");
+  revalidatePath("/scent");
+  revalidatePath("/skin");
   return { success: true, product };
 }
 
@@ -147,7 +162,7 @@ export async function updateProduct(id: string, formData: FormData) {
     }
   }
 
-  const product = await prisma.product.update({
+  const product = await (prisma.product.update as any)({
     where: { id },
     data: {
       name,
@@ -166,6 +181,17 @@ export async function updateProduct(id: string, formData: FormData) {
       culturalInspiration: formData.get("culturalInspiration") as string,
       resonanceData: safeJsonParse(formData.get("resonanceData") as string, []),
       faqData: safeJsonParse(formData.get("faqData") as string, []),
+      nameFr: (formData.get("nameFr") as string) || null,
+      ritualNameFr: (formData.get("ritualNameFr") as string) || null,
+      functionalTitleFr: (formData.get("functionalTitleFr") as string) || null,
+      descriptionFr: (formData.get("descriptionFr") as string) || null,
+      howToUseFr: (formData.get("howToUseFr") as string) || null,
+      ingredientsTextFr: (formData.get("ingredientsTextFr") as string) || null,
+      textureScentFr: (formData.get("textureScentFr") as string) || null,
+      culturalInspirationFr: (formData.get("culturalInspirationFr") as string) || null,
+      resonanceDataFr: safeJsonParse(formData.get("resonanceDataFr") as string, null),
+      faqDataFr: safeJsonParse(formData.get("faqDataFr") as string, null),
+      category: (formData.get("category") as string) || "OTHER",
       regimenProductIds: formData.getAll("regimenProductIds") as string[],
       imagePositions: safeJsonParse(formData.get("imagePositionsJson") as string, []),
       isFeaturedHair,
@@ -179,6 +205,9 @@ export async function updateProduct(id: string, formData: FormData) {
 
   revalidatePath("/admin/products");
   revalidatePath("/shop");
+  revalidatePath("/hair");
+  revalidatePath("/scent");
+  revalidatePath("/skin");
   revalidatePath("/");
   return { success: true, product };
 }
@@ -211,45 +240,96 @@ export async function deleteProduct(id: string) {
 
   revalidatePath("/admin/products");
   revalidatePath("/shop");
+  revalidatePath("/hair");
+  revalidatePath("/scent");
+  revalidatePath("/skin");
   return { success: true };
 }
 
 // Homepage spotlight getters
-export async function getFeaturedHairProduct() {
-  return prisma.product.findFirst({
+export async function getFeaturedHairProduct(locale = "en") {
+  const p = await prisma.product.findFirst({
     where: { isFeaturedHair: true },
     select: {
-      id: true,
-      slug: true,
-      name: true,
-      functionalTitle: true,
-      description: true,
+      id: true, slug: true,
+      name: true, nameFr: true,
+      functionalTitle: true, functionalTitleFr: true,
+      description: true, descriptionFr: true,
       images: true,
       variants: { take: 1, select: { priceInCents: true } },
     },
   });
+  if (!p) return p;
+  return {
+    ...p,
+    name: localise(p.name, p.nameFr, locale),
+    functionalTitle: localise(p.functionalTitle, p.functionalTitleFr, locale),
+    description: localise(p.description, p.descriptionFr, locale),
+  };
 }
 
-export async function getFeaturedScentProduct() {
-  return prisma.product.findFirst({
+export async function getFeaturedScentProduct(locale = "en") {
+  const p = await prisma.product.findFirst({
     where: { isFeaturedScent: true },
     select: {
-      id: true,
-      slug: true,
-      name: true,
-      functionalTitle: true,
-      description: true,
+      id: true, slug: true,
+      name: true, nameFr: true,
+      functionalTitle: true, functionalTitleFr: true,
+      description: true, descriptionFr: true,
       images: true,
       variants: { take: 1, select: { priceInCents: true } },
     },
   });
+  if (!p) return p;
+  return {
+    ...p,
+    name: localise(p.name, p.nameFr, locale),
+    functionalTitle: localise(p.functionalTitle, p.functionalTitleFr, locale),
+    description: localise(p.description, p.descriptionFr, locale),
+  };
+}
+
+// Generic helper — fetch products by category enum value
+async function getProductsByCategory(category: string, page: number, pageSize: number, locale: string) {
+  const where = { category: category as any };
+  const skip = (page - 1) * pageSize;
+  const [products, total] = await Promise.all([
+    (prisma.product.findMany as any)({
+      where,
+      include: { variants: { take: 1 } },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: pageSize,
+    }),
+    prisma.product.count({ where: where as any }),
+  ]);
+  const localised = products.map((p: any) => ({
+    ...p,
+    name: localise(p.name, p.nameFr, locale),
+    functionalTitle: localise(p.functionalTitle ?? null, p.functionalTitleFr ?? null, locale),
+    description: localise(p.description, p.descriptionFr, locale),
+  }));
+  return { products: localised, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
+}
+
+export async function getHairProducts(page = 1, pageSize = 24, locale = "en") {
+  return getProductsByCategory("HAIR", page, pageSize, locale);
+}
+
+export async function getScentProducts(page = 1, pageSize = 24, locale = "en") {
+  return getProductsByCategory("SCENT", page, pageSize, locale);
+}
+
+export async function getSkinProducts(page = 1, pageSize = 24, locale = "en") {
+  return getProductsByCategory("BODY", page, pageSize, locale);
 }
 
 // Get Products for Storefront — SQL-filtered and paginated
 export async function getPublicProducts(
   filters: { ritual?: string; texture?: string; search?: string } = {},
   page = 1,
-  pageSize = 24
+  pageSize = 24,
+  locale = "en"
 ) {
   const { ritual, texture, search } = filters;
 
@@ -281,7 +361,16 @@ export async function getPublicProducts(
     prisma.product.count({ where }),
   ]);
 
-  return { products, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
+  const localisedProducts = products.map((p) => {
+    const pa = p as any;
+    return {
+      ...p,
+      name: localise(p.name, pa.nameFr, locale),
+      functionalTitle: localise(p.functionalTitle ?? null, pa.functionalTitleFr ?? null, locale),
+      description: localise(p.description, pa.descriptionFr, locale),
+    };
+  });
+  return { products: localisedProducts, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
 }
 
 // Lightweight product list for search autocomplete — no variants needed
@@ -310,16 +399,24 @@ export async function getProductsByIds(ids: string[]) {
 }
 
 // Get Single Product by Slug or ID for PDP
-export async function getProductBySlug(slugOrId: string) {
-  return prisma.product.findFirst({
-    where: { 
-      OR: [
-        { slug: slugOrId },
-        { id: slugOrId }
-      ]
-    },
-    include: {
-      variants: true
-    }
+export async function getProductBySlug(slugOrId: string, locale = "en") {
+  const p = await prisma.product.findFirst({
+    where: { OR: [{ slug: slugOrId }, { id: slugOrId }] },
+    include: { variants: true },
   });
+  if (!p) return p;
+  const pa = p as any;
+  return {
+    ...p,
+    name: localise(p.name, pa.nameFr, locale),
+    ritualName: localise(p.ritualName ?? null, pa.ritualNameFr ?? null, locale),
+    functionalTitle: localise(p.functionalTitle ?? null, pa.functionalTitleFr ?? null, locale),
+    description: localise(p.description, pa.descriptionFr, locale),
+    howToUse: localise(p.howToUse ?? null, pa.howToUseFr ?? null, locale),
+    ingredientsText: localise(p.ingredientsText ?? null, pa.ingredientsTextFr ?? null, locale),
+    textureScent: localise(p.textureScent ?? null, pa.textureScentFr ?? null, locale),
+    culturalInspiration: localise(p.culturalInspiration ?? null, pa.culturalInspirationFr ?? null, locale),
+    resonanceData: locale === "fr" && pa.resonanceDataFr ? pa.resonanceDataFr : p.resonanceData,
+    faqData: locale === "fr" && pa.faqDataFr ? pa.faqDataFr : p.faqData,
+  };
 }

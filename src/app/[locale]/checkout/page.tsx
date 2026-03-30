@@ -1,8 +1,8 @@
 export const dynamic = "force-dynamic";
 
-import { getActiveShippingRates } from "../actions/shipping";
-import { getActiveFlashSale } from "../actions/admin";
-import { auth } from "../../../auth";
+import { getActiveShippingRates } from "@/app/actions/shipping";
+import { getActiveFlashSale } from "@/app/actions/admin";
+import { auth } from "../../../../auth";
 import { CheckoutClient } from "./CheckoutClient";
 
 export default async function CheckoutPage() {

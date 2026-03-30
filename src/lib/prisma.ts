@@ -1,3 +1,4 @@
+// Prisma client instance - updated for category support.
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
+import { SingleImageUploader } from "@/components/ui/SingleImageUploader";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
@@ -44,9 +45,37 @@ export default async function NewBundlePage() {
         </div>
 
         <div className="space-y-2">
+          <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Bundle Name (FR)</label>
+          <Input name="nameFr" placeholder="Nom du coffret en francais" />
+        </div>
+        <div className="space-y-2">
+          <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Description (FR)</label>
+          <Textarea name="descriptionFr" rows={4} placeholder="Description en francais..." />
+        </div>
+
+        <div className="space-y-2">
           <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Bundle Price (₦) *</label>
           <Input name="price" type="number" step="0.01" min="0" required placeholder="e.g. 45000" />
           <p className="text-[10px] text-earth/50">Enter the full amount in Naira — e.g. 45000 for ₦45,000</p>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Bundle Category *</label>
+          <select 
+            name="category" 
+            required 
+            className="flex h-10 w-full rounded-md border border-ash bg-stone px-3 py-2 text-sm ring-offset-background placeholder:text-ink/60 focus-visible:outline-none focus-visible:border-bronze focus-visible:ring-1 focus-visible:ring-bronze disabled:cursor-not-allowed disabled:opacity-50 transition-colors cursor-pointer"
+          >
+            <option value="HAIR">Hair Care</option>
+            <option value="BODY">Skin Care</option>
+            <option value="SCENT">Perfumes (Scent)</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Bundle Image</label>
+          <SingleImageUploader name="image" positionName="imagePosition" />
         </div>
 
         <div className="space-y-3">

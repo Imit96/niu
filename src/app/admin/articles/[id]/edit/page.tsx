@@ -25,6 +25,10 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
       mediaUrl: (formData.get("mediaUrl") as string) || null,
       isFeatured: formData.get("isFeatured") === "on",
       relatedProductId: (formData.get("relatedProductId") as string) || null,
+      titleFr: (formData.get("titleFr") as string) || null,
+      categoryFr: (formData.get("categoryFr") as string) || null,
+      excerptFr: (formData.get("excerptFr") as string) || null,
+      contentFr: (formData.get("contentFr") as string) || null,
     });
 
     redirect("/admin/articles");

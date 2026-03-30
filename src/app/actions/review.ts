@@ -143,7 +143,7 @@ export async function getFeaturedReviews(limit = 3) {
     where: { isApproved: true, isFeatured: true, comment: { not: null } },
     include: {
       user: { select: { name: true } },
-      product: { select: { id: true, name: true } },
+      product: { select: { id: true, slug: true, name: true } },
     },
     orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
     take: limit,

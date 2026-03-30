@@ -1,24 +1,29 @@
 "use client";
 
-import { motion, Variants, HTMLMotionProps } from "framer-motion";
-import { ReactNode, ElementType } from "react";
+import { motion, Variants, useReducedMotion } from "framer-motion";
+import { ReactNode } from "react";
 
-const fadeUpVariant: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
-};
+function useFadeUpVariant(): Variants {
+  const reduce = useReducedMotion();
+  return {
+    hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: reduce ? 0 : 0.8, ease: "easeOut" } },
+  };
+}
 
-const staggerContainer: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
+function useStaggerContainer(): Variants {
+  const reduce = useReducedMotion();
+  return {
+    hidden: { opacity: reduce ? 1 : 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: reduce ? 0 : 0.2 },
     },
-  },
-};
+  };
+}
 
-export function StaggerSection({ children, className, id }: { children: ReactNode, className?: string, id?: string }) {
+export function StaggerSection({ children, className, id }: { children: ReactNode; className?: string; id?: string }) {
+  const staggerContainer = useStaggerContainer();
   return (
     <motion.section
       id={id}
@@ -33,7 +38,8 @@ export function StaggerSection({ children, className, id }: { children: ReactNod
   );
 }
 
-export function StaggerDiv({ children, className }: { children: ReactNode, className?: string }) {
+export function StaggerDiv({ children, className }: { children: ReactNode; className?: string }) {
+  const staggerContainer = useStaggerContainer();
   return (
     <motion.div
       initial="hidden"
@@ -47,7 +53,8 @@ export function StaggerDiv({ children, className }: { children: ReactNode, class
   );
 }
 
-export function FadeUpDiv({ children, className }: { children: ReactNode, className?: string }) {
+export function FadeUpDiv({ children, className }: { children: ReactNode; className?: string }) {
+  const fadeUpVariant = useFadeUpVariant();
   return (
     <motion.div variants={fadeUpVariant} className={className}>
       {children}
@@ -55,7 +62,8 @@ export function FadeUpDiv({ children, className }: { children: ReactNode, classN
   );
 }
 
-export function FadeUpSection({ children, className }: { children: ReactNode, className?: string }) {
+export function FadeUpSection({ children, className }: { children: ReactNode; className?: string }) {
+  const fadeUpVariant = useFadeUpVariant();
   return (
     <motion.section
       initial="hidden"
@@ -69,14 +77,17 @@ export function FadeUpSection({ children, className }: { children: ReactNode, cl
   );
 }
 
-export function FadeUpH1({ children, className }: { children: ReactNode, className?: string }) {
+export function FadeUpH1({ children, className }: { children: ReactNode; className?: string }) {
+  const fadeUpVariant = useFadeUpVariant();
   return <motion.h1 variants={fadeUpVariant} className={className}>{children}</motion.h1>;
 }
 
-export function FadeUpH2({ children, className }: { children: ReactNode, className?: string }) {
+export function FadeUpH2({ children, className }: { children: ReactNode; className?: string }) {
+  const fadeUpVariant = useFadeUpVariant();
   return <motion.h2 variants={fadeUpVariant} className={className}>{children}</motion.h2>;
 }
 
-export function FadeUpP({ children, className }: { children: ReactNode, className?: string }) {
+export function FadeUpP({ children, className }: { children: ReactNode; className?: string }) {
+  const fadeUpVariant = useFadeUpVariant();
   return <motion.p variants={fadeUpVariant} className={className}>{children}</motion.p>;
 }

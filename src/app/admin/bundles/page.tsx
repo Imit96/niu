@@ -2,7 +2,6 @@ import Link from "next/link";
 import { adminGetAllBundles, deleteBundle } from "../../actions/bundle-admin";
 import { Button } from "@/components/ui/Button";
 import { Plus, Pencil, Trash2, Package } from "lucide-react";
-import { PriceDisplay } from "@/components/ui/PriceDisplay";
 
 export const metadata = {
   title: "Ritual Bundles | Admin — ORIGONÆ",
@@ -64,7 +63,7 @@ export default async function AdminBundlesPage() {
                     <span className="text-earth/40">{bundle.products.map(p => p.name).join(", ")}</span>
                   </td>
                   <td className="py-3 px-4 text-earth font-medium">
-                    <PriceDisplay amountInCents={bundle.priceInCents} />
+                    ₦ {(bundle.priceInCents / 100).toLocaleString()}
                   </td>
                   <td className="py-3 px-4 text-earth/40 text-xs font-mono">{bundle.slug}</td>
                   <td className="py-3 px-4">

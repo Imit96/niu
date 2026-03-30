@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/lib/store/cartStore";
 import { toast } from "react-hot-toast";
 import { checkInventoryAvailable } from "@/app/actions/cartActions";
+import { useTranslations } from "next-intl";
 
 interface AddToCartButtonProps {
   id: string; // The variant ID
@@ -27,6 +28,7 @@ export default function AddToCartButton({
   image,
   inventoryCount: initialInventoryCount,
 }: AddToCartButtonProps) {
+  const t = useTranslations("shop.addToCart");
   const cart = useCartStore();
   const [inventoryCount, setInventoryCount] = useState(initialInventoryCount);
   const [isChecking, setIsChecking] = useState(false);
@@ -49,7 +51,7 @@ export default function AddToCartButton({
       }
 
       if (!available) {
-        toast.error(liveCount === 0 ? "This product is out of stock." : "Not enough stock available.");
+        toast.error(liveCount === 0 ? t("errorOutOfStock") : t("errorNotEnough"));
         return;
       }
 
@@ -64,7 +66,7 @@ export default function AddToCartButton({
         image: image && image !== "Product Image Placeholder" && image !== "Product Image" ? image : "",
         inventoryCount: liveCount,
       });
-      toast.success(`${name} added to cart`);
+      toast.success(t("addedToCart", { name }));
     } catch {
       // Fall back to local check on network error
       cart.addItem({
@@ -78,7 +80,7 @@ export default function AddToCartButton({
         image: image && image !== "Product Image Placeholder" && image !== "Product Image" ? image : "",
         inventoryCount,
       });
-      toast.success(`${name} added to cart`);
+      toast.success(t("addedToCart", { name }));
     } finally {
       setIsChecking(false);
     }
@@ -92,12 +94,12 @@ export default function AddToCartButton({
       onClick={handleAddToCart}
     >
       {isChecking
-        ? "Checking..."
+        ? t("checking")
         : isOutOfStock
-        ? "Out of Stock"
+        ? t("outOfStock")
         : isLimitReached
-        ? "Max Stock in Cart"
-        : "Add to Cart"}
+        ? t("maxStock")
+        : t("addToCart")}
     </Button>
   );
 }

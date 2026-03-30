@@ -4,11 +4,14 @@ import * as React from "react";
 import { subscribeToNewsletter } from "@/app/actions/newsletter";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useTranslations } from "next-intl";
 
 export function HomeNewsletterSection() {
+  const t = useTranslations("home.newsletter");
   const [status, setStatus] = React.useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = React.useState("");
   const formRef = React.useRef<HTMLFormElement>(null);
+  const successRef = React.useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,6 +30,12 @@ export function HomeNewsletterSection() {
     }
   };
 
+  React.useEffect(() => {
+    if (status === "success") {
+      successRef.current?.focus();
+    }
+  }, [status]);
+
   return (
     <section className="py-32 px-6 bg-earth text-cream relative overflow-hidden">
       {/* Decorative stroke lines */}
@@ -39,49 +48,58 @@ export function HomeNewsletterSection() {
 
       <div className="max-w-3xl mx-auto text-center relative z-10 space-y-10">
         <div className="space-y-4">
-          <p className="text-xs font-semibold tracking-[0.3em] text-bronze uppercase">Enter the Circle</p>
+          <p className="text-xs font-semibold tracking-[0.3em] text-bronze uppercase">{t("label")}</p>
           <h2 className="text-3xl md:text-5xl font-serif uppercase tracking-widest leading-tight">
-            The Ritual Begins With Intention.
+            {t("heading")}
           </h2>
           <p className="text-lg text-cream/70 font-light leading-relaxed max-w-xl mx-auto">
-            Join the ORIGONÆ inner circle. Receive early access to new regimens, editorial dispatches, and the quiet philosophy behind the practice.
+            {t("body")}
           </p>
         </div>
 
         {status === "success" ? (
-          <div className="py-6 border border-cream/20 px-8 inline-block space-y-2">
-            <p className="text-sm font-semibold tracking-widest uppercase text-bronze">Welcome to the Circle.</p>
-            <p className="text-cream/70 text-sm font-light">Your regimen begins now.</p>
+          <div
+            ref={successRef}
+            tabIndex={-1}
+            className="py-6 border border-cream/20 px-8 inline-block space-y-2 outline-none"
+            aria-live="polite"
+          >
+            <p className="text-sm font-semibold tracking-widest uppercase text-bronze">{t("successTitle")}</p>
+            <p className="text-cream/70 text-sm font-light">{t("successBody")}</p>
           </div>
         ) : (
-          <form
-            ref={formRef}
-            onSubmit={handleSubmit}
-            className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
-          >
+          <div className="space-y-3">
             {status === "error" && (
-              <p className="text-xs text-bronze/80 text-center col-span-2 -mb-2">{errorMsg}</p>
+              <p role="alert" className="text-sm text-bronze text-center">{errorMsg}</p>
             )}
-            <Input
-              type="email"
-              name="email"
-              placeholder="Your email address"
-              className="flex-1 bg-cream/10 border-cream/20 text-cream placeholder:text-cream/40 focus-visible:ring-cream/50 focus-visible:border-transparent h-12 rounded-none"
-              required
-              disabled={status === "loading"}
-            />
-            <Button
-              type="submit"
-              className="bg-cream text-earth hover:bg-stone h-12 rounded-none px-8 shrink-0"
-              disabled={status === "loading"}
+            <form
+              ref={formRef}
+              onSubmit={handleSubmit}
+              className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
             >
-              {status === "loading" ? "Joining..." : "Join the Circle"}
-            </Button>
-          </form>
+              <label htmlFor="newsletter-email" className="sr-only">{t("placeholder")}</label>
+              <Input
+                id="newsletter-email"
+                type="email"
+                name="email"
+                placeholder={t("placeholder")}
+                className="flex-1 bg-cream/10 border-cream/20 text-cream placeholder:text-cream/60 focus-visible:ring-cream/50 focus-visible:border-transparent h-12 rounded-none"
+                required
+                disabled={status === "loading"}
+              />
+              <Button
+                type="submit"
+                className="bg-cream text-earth hover:bg-stone h-12 rounded-none px-8 shrink-0"
+                disabled={status === "loading"}
+              >
+                {status === "loading" ? t("joining") : t("cta")}
+              </Button>
+            </form>
+          </div>
         )}
 
-        <p className="text-[10px] text-cream/30 tracking-widest uppercase">
-          No spam. Only ritual.
+        <p className="text-xs text-cream/50 tracking-widest uppercase">
+          {t("disclaimer")}
         </p>
       </div>
     </section>

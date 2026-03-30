@@ -1,9 +1,10 @@
 import { getWishlist } from "@/app/actions/wishlist";
-import { auth } from "../../../../auth";
+import { auth } from "../../../../../auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { PriceDisplay } from "@/components/ui/PriceDisplay";
+import { getTranslations } from "next-intl/server";
 
 export const metadata = {
   title: "My Wishlist | ORIGONÆ",
@@ -17,7 +18,10 @@ export default async function WishlistPage() {
     redirect("/auth/login");
   }
 
-  const { success, items } = await getWishlist();
+  const [{ success, items }, t] = await Promise.all([
+    getWishlist(),
+    getTranslations("account"),
+  ]);
 
   if (!success) {
     return (
@@ -31,15 +35,15 @@ export default async function WishlistPage() {
   return (
     <div className="space-y-12">
       <div className="border-b border-earth/20 pb-4">
-        <h1 className="text-3xl font-serif text-earth uppercase tracking-widest">My Wishlist</h1>
-        <p className="text-earth/70 mt-2">Your saved products.</p>
+        <h1 className="text-3xl font-serif text-earth uppercase tracking-widest">{t("wishlistTitle")}</h1>
+        <p className="text-earth/70 mt-2">{t("wishlistSubtitle")}</p>
       </div>
 
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 border border-dashed border-earth/20 bg-cream/30">
-          <p className="text-earth font-serif text-xl mb-6">Your wishlist is empty.</p>
+          <p className="text-earth font-serif text-xl mb-6">{t("wishlistEmpty")}</p>
           <Link href="/shop" className="px-8 py-3 bg-earth text-cream uppercase tracking-widest text-sm hover:bg-earth/90 transition-colors">
-            Discover Regimens
+            {t("discoverRegimens")}
           </Link>
         </div>
       ) : (

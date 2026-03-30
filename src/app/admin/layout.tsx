@@ -17,6 +17,7 @@ import {
   FlaskConical,
   BookMarked,
   Layers,
+  Sparkles,
 } from "lucide-react";
 import { AdminSidebarLink } from "./AdminSidebarLink";
 
@@ -31,6 +32,7 @@ const sidebarLinks = [
   { name: "Ingredients", href: "/admin/ingredients", icon: "FlaskConical" },
   { name: "Care Guides", href: "/admin/guides", icon: "BookMarked" },
   { name: "Ritual Bundles", href: "/admin/bundles", icon: "Layers" },
+  { name: "Formula Requests", href: "/admin/formula-requests", icon: "Sparkles" },
   { name: "Products", href: "/admin/products", icon: "Package" },
   { name: "Orders", href: "/admin/orders", icon: "ShoppingCart" },
   { name: "Users", href: "/admin/users", icon: "Users" },
@@ -48,6 +50,7 @@ const iconMap: Record<string, React.ElementType> = {
   FlaskConical,
   BookMarked,
   Layers,
+  Sparkles,
   Package,
   ShoppingCart,
   Users,

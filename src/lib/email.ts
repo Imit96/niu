@@ -6,6 +6,8 @@ import { OrderConfirmationEmail } from "../emails/OrderConfirmationEmail";
 import { WelcomeEmail } from "../emails/WelcomeEmail";
 import { ShippingNotificationEmail } from "../emails/ShippingNotificationEmail";
 import { PasswordResetEmail } from "../emails/PasswordResetEmail";
+import { AdminNewOrderEmail } from "../emails/AdminNewOrderEmail";
+import { AdminFormulaRequestEmail } from "../emails/AdminFormulaRequestEmail";
 import { prisma } from "./prisma";
 import { logger } from "./logger";
 
@@ -128,6 +130,97 @@ export async function sendOrderConfirmationEmail(orderId: string) {
     });
   } catch (error) {
     logger.error("[Email] Failed to send order confirmation email:", error);
+  }
+}
+
+export async function sendAdminNewOrderNotification(orderId: string) {
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.CARE_EMAIL || "care@origonae.com";
+
+  try {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId },
+      include: {
+        user: { select: { email: true, name: true } },
+        orderItems: {
+          include: {
+            variant: {
+              include: { product: { select: { name: true } } },
+            },
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      logger.error("[Email] Order not found for admin notification:", orderId);
+      return;
+    }
+
+    const customerEmail = order.guestEmail ?? order.user?.email ?? "unknown";
+    const customerName = order.shippingName ?? order.user?.name ?? "Guest";
+
+    await resend.emails.send({
+      from: FROM,
+      to: ADMIN_EMAIL,
+      subject: `New Order — ${order.paymentIntentId ?? order.id} · ${customerName}`,
+      react: AdminNewOrderEmail({
+        orderReference: order.paymentIntentId ?? order.id,
+        customerName,
+        customerEmail,
+        orderItems: order.orderItems.map((item) => ({
+          productName: item.variant.product.name,
+          variantSize: item.variant.size,
+          quantity: item.quantity,
+          priceAtPurchase: item.priceAtPurchase,
+        })),
+        totalInCents: order.totalInCents,
+        currency: order.currency,
+        shippingAddress: {
+          address: order.shippingAddress ?? "",
+          apartment: order.shippingApartment,
+          city: order.shippingCity ?? "",
+          state: order.shippingState ?? "",
+          country: order.shippingCountry ?? "",
+        },
+        adminOrderUrl: `${APP_URL}/admin/orders`,
+      }),
+    });
+  } catch (error) {
+    logger.error("[Email] Failed to send admin new order notification:", error);
+  }
+}
+
+export async function sendAdminFormulaRequestNotification({
+  submitterName,
+  submitterEmail,
+  concern,
+  texture,
+  notes,
+}: {
+  submitterName: string;
+  submitterEmail: string;
+  concern: string;
+  texture?: string | null;
+  notes?: string | null;
+}) {
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.CARE_EMAIL || "care@origonae.com";
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: ADMIN_EMAIL,
+      subject: `New Custom Formula Request — ${submitterName}`,
+      react: AdminFormulaRequestEmail({
+        submitterName,
+        submitterEmail,
+        concern,
+        texture,
+        notes,
+        adminUrl: `${APP_URL}/admin/formula-requests`,
+      }),
+    });
+  } catch (error) {
+    logger.error("[Email] Failed to send admin formula request notification:", error);
   }
 }
 

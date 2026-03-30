@@ -1,14 +1,16 @@
-import { auth } from "../../../../auth";
+import { auth } from "../../../../../auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import AddToCartButton from "@/app/shop/[id]/AddToCartButton";
+import AddToCartButton from "@/app/[locale]/shop/[id]/AddToCartButton";
 import { PriceDisplay } from "@/components/ui/PriceDisplay";
 import { StaggerSection, FadeUpDiv } from "@/components/ui/Motion";
+import { getTranslations } from "next-intl/server";
 
 export default async function SalonDashboardPage() {
-  const session = await auth();
+  const [session, t] = await Promise.all([auth(), getTranslations("salon")]);
+
   if (!session?.user?.id || (session.user.role !== "SALON" && session.user.role !== "ADMIN")) {
     redirect("/auth/login");
   }
@@ -21,10 +23,9 @@ export default async function SalonDashboardPage() {
   if (!profile || !profile.isApproved) {
     return (
       <div className="min-h-screen bg-sand pt-32 pb-24 px-6 flex flex-col items-center">
-        <h1 className="text-3xl font-serif text-earth mb-4">Application Pending</h1>
+        <h1 className="text-3xl font-serif text-earth mb-4">{t("applicationPendingTitle")}</h1>
         <p className="text-earth/70 max-w-md text-center">
-          Your salon partnership application is currently under review. 
-          You will receive an email once approved to access wholesale pricing.
+          {t("applicationPendingBody")}
         </p>
       </div>
     );
@@ -44,24 +45,24 @@ export default async function SalonDashboardPage() {
     <div className="flex flex-col w-full min-h-screen bg-sand">
       <StaggerSection className="pt-32 pb-16 px-6 bg-earth text-cream text-center">
         <FadeUpDiv>
-          <h1 className="text-4xl md:text-6xl font-serif uppercase tracking-widest mb-6 border-b border-cream/20 pb-6 inline-block">Wholesale Portal</h1>
+          <h1 className="text-4xl md:text-6xl font-serif uppercase tracking-widest mb-6 border-b border-cream/20 pb-6 inline-block">{t("wholesalePortal")}</h1>
         </FadeUpDiv>
         <FadeUpDiv>
           <p className="text-lg text-cream/80 max-w-2xl mx-auto leading-relaxed font-light mb-4 pt-4">
-            Welcome back, <span className="font-semibold">{profile.businessName}</span>.<br />
-            You are currently on the <span className="font-semibold text-bronze">{profile.pricingTier?.name || "Standard"}</span> tier.
+            {t("welcomeBack", { name: profile.businessName })}<br />
+            {t("currentTier", { tier: profile.pricingTier?.name || "Standard" })}
           </p>
         </FadeUpDiv>
         <FadeUpDiv>
           <p className="text-xs text-cream/60 uppercase tracking-widest bg-stone/20 inline-block px-6 py-2 border border-cream/10">
-            {discountPct}% wholesale discount applied automatically at checkout
+            {t("discountInfo", { pct: discountPct })}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
             <Link href="/account/orders" className="text-xs text-cream/70 uppercase tracking-widest border border-cream/20 px-6 py-3 hover:bg-cream/10 transition-colors">
-              Order History
+              {t("orderHistory")}
             </Link>
             <Link href="/contact" className="text-xs text-cream/70 uppercase tracking-widest border border-cream/20 px-6 py-3 hover:bg-cream/10 transition-colors">
-              Contact Wholesale Team
+              {t("contactWholesale")}
             </Link>
           </div>
         </FadeUpDiv>
@@ -80,20 +81,20 @@ export default async function SalonDashboardPage() {
               <FadeUpDiv key={product.id} className="group flex flex-col space-y-4 bg-cream/30 p-6 border border-earth/10 hover:border-earth/30 transition-colors">
                 <Link href={`/shop/${product.slug}`} className="relative aspect-square overflow-hidden bg-stone border border-ash/30 block mb-2">
                   {product.images?.[0] && product.images[0] !== "Product Image Placeholder" ? (
-                    <Image 
-                      src={product.images[0]} 
-                      alt={product.name} 
-                      fill 
+                    <Image
+                      src={product.images[0]}
+                      alt={product.name}
+                      fill
                       className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center text-earth/40 uppercase tracking-widest font-serif text-xs">
-                      No Image
+                      {t("noImage")}
                     </div>
                   )}
                 </Link>
                 <div className="space-y-2 flex-1">
-                  <p className="text-[10px] font-semibold text-bronze uppercase tracking-widest">{product.ritualName || "General"}</p>
+                  <p className="text-[10px] font-semibold text-bronze uppercase tracking-widest">{product.ritualName || t("general")}</p>
                   <h3 className="text-xl font-serif text-earth leading-tight">{product.name}</h3>
                   <p className="text-xs text-earth/70 line-clamp-2">{product.functionalTitle}</p>
                 </div>
@@ -107,8 +108,8 @@ export default async function SalonDashboardPage() {
                   </div>
                 </div>
                 <div className="pt-4 drop-shadow-sm">
-                  <AddToCartButton 
-                    id={primaryVariant.id} 
+                  <AddToCartButton
+                    id={primaryVariant.id}
                     productId={product.id}
                     slug={product.slug}
                     name={product.name}

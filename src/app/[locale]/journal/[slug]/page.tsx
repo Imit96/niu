@@ -3,8 +3,10 @@ import { getArticleBySlug } from "@/app/actions/article";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
-import AddToCartButton from "@/app/shop/[id]/AddToCartButton";
+import AddToCartButton from "@/app/[locale]/shop/[id]/AddToCartButton";
 import { PriceDisplay } from "@/components/ui/PriceDisplay";
+import { getTranslations } from "next-intl/server";
+import { MDXRemote } from "next-mdx-remote/rsc";
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -72,9 +74,9 @@ function ArticleMedia({ url }: { url: string }) {
   );
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const resolvedParams = await params;
-  const article = await getArticleBySlug(resolvedParams.slug);
+  const article = await getArticleBySlug(resolvedParams.slug, resolvedParams.locale);
   if (!article) return { title: "Article Not Found | ORIGONÆ" };
   return {
     title: `${article.title} | ORIGONÆ Journal`,
@@ -82,9 +84,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ArticlePage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const resolvedParams = await params;
-  const article = await getArticleBySlug(resolvedParams.slug);
+  const [article, t] = await Promise.all([
+    getArticleBySlug(resolvedParams.slug, resolvedParams.locale),
+    getTranslations("journal"),
+  ]);
 
   if (!article) {
     notFound();
@@ -99,7 +104,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         {/* Header Section */}
         <header className="px-6 mb-16 max-w-4xl mx-auto text-center space-y-6">
           <Link href="/journal" className="inline-flex items-center text-xs font-semibold tracking-widest uppercase text-bronze hover:text-earth transition-colors mb-8">
-            <ChevronLeft className="h-4 w-4 mr-1" /> Back to Journal
+            <ChevronLeft className="h-4 w-4 mr-1" /> {t("backToJournal")}
           </Link>
           <div className="flex items-center justify-center space-x-4 text-xs font-semibold tracking-widest uppercase text-earth/50">
             <span>{article.category}</span>
@@ -127,11 +132,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </div>
         )}
 
-        {/* Article Content */}
-        <div className="px-6 max-w-3xl mx-auto !leading-loose prose prose-p:text-earth/80 prose-p:font-light prose-p:text-lg prose-headings:font-serif prose-headings:text-earth prose-headings:font-normal prose-a:text-bronze prose-a:underline prose-md">
-          {article.content.split('\n').map((paragraph: string, index: number) => (
-            <p key={index} className="mb-6">{paragraph}</p>
-          ))}
+        {/* Article Content — MDX rendered */}
+        <div className="px-6 max-w-3xl mx-auto prose prose-p:text-earth/80 prose-p:font-light prose-p:text-lg prose-p:leading-loose prose-headings:font-serif prose-headings:text-earth prose-headings:font-normal prose-h2:text-3xl prose-h3:text-2xl prose-a:text-bronze prose-a:underline prose-strong:text-earth prose-strong:font-semibold prose-blockquote:border-l-bronze prose-blockquote:text-earth/70 prose-blockquote:font-serif prose-blockquote:text-xl prose-ul:text-earth/80 prose-ol:text-earth/80 prose-hr:border-earth/20">
+          <MDXRemote source={article.content} />
         </div>
 
         {/* Inline Media — video, YouTube, Vimeo, GIF */}
@@ -162,7 +165,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               </div>
               <div className="flex-1 space-y-8 text-center md:text-left">
                 <div className="space-y-4">
-                  <h3 className="text-xs font-semibold text-bronze uppercase tracking-widest">Featured in this Dispatch</h3>
+                  <h3 className="text-xs font-semibold text-bronze uppercase tracking-widest">{t("featuredDispatch")}</h3>
                   <h4 className="text-4xl md:text-5xl font-serif text-earth">{article.relatedProduct.name}</h4>
                   <p className="text-xl text-earth/80 font-light">{article.relatedProduct.functionalTitle}</p>
                 </div>
@@ -192,14 +195,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     </div>
                   ) : (
                     <div className="p-4 border border-earth/20 bg-earth/5 text-earth text-center text-sm tracking-widest uppercase">
-                      Currently Unavailable
+                      {t("productUnavailable")}
                     </div>
                   )}
                 </div>
 
                 <div className="pt-4 md:pt-8 text-center md:text-left">
                    <Link href={`/shop/${article.relatedProduct.slug || article.relatedProduct.id}`} className="inline-block text-xs uppercase tracking-widest text-bronze hover:text-earth transition-colors border-b border-transparent hover:border-earth pb-1">
-                      Discover Full Regimen Details
+                      {t("discoverDetails")}
                    </Link>
                 </div>
               </div>
@@ -210,10 +213,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
       {/* Footer Area */}
       <section className="py-24 border-t border-earth/20 bg-cream px-6 text-center">
-        <h3 className="text-2xl font-serif text-earth uppercase tracking-widest mb-6">Explore the Journal</h3>
+        <h3 className="text-2xl font-serif text-earth uppercase tracking-widest mb-6">{t("exploreJournal")}</h3>
         <Link href="/journal">
           <span className="inline-flex items-center justify-center px-8 py-4 border border-earth text-earth uppercase tracking-widest text-xs font-semibold hover:bg-earth hover:text-cream transition-colors cursor-pointer">
-            View All Dispatches
+            {t("viewAllDispatches")}
           </span>
         </Link>
       </section>

@@ -5,6 +5,7 @@ import { PriceDisplay } from "@/components/ui/PriceDisplay";
 import { WishlistButton } from "./WishlistButton";
 import AddToCartButton from "./AddToCartButton";
 import { LOW_STOCK_THRESHOLD } from "@/lib/constants";
+import { useTranslations } from "next-intl";
 
 interface Variant {
   id: string;
@@ -35,12 +36,13 @@ export default function ProductActions({
   inWishlist,
   isLoggedIn,
 }: ProductActionsProps) {
+  const t = useTranslations("shop.actions");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const selected = variants[selectedIndex] ?? variants[0];
 
   if (!selected) {
     return (
-      <p className="text-sm text-earth/50 italic">No variants available.</p>
+      <p className="text-sm text-earth/50 italic">{t("noVariants")}</p>
     );
   }
 
@@ -62,7 +64,7 @@ export default function ProductActions({
       {variants.length > 1 && (
         <div className="space-y-2">
           <p className="text-xs font-semibold tracking-widest uppercase text-earth">
-            Size / Volume
+            {t("sizeVolume")}
           </p>
           <div className="flex flex-wrap gap-2">
             {variants.map((v, i) => (
@@ -76,7 +78,7 @@ export default function ProductActions({
                     : "border-earth/30 text-earth hover:border-earth"
                 }`}
               >
-                {v.size || "Standard"}
+                {v.size || t("standard")}
               </button>
             ))}
           </div>
@@ -109,7 +111,7 @@ export default function ProductActions({
       {/* Low stock warning */}
       {isLowStock && (
         <p className="text-xs font-semibold tracking-widest uppercase text-clay">
-          Only {selected.inventoryCount} left in stock
+          {t("onlyLeft", { count: selected.inventoryCount })}
         </p>
       )}
 

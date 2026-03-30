@@ -1,7 +1,9 @@
-import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { getIngredients, type IngredientSummary } from "@/app/actions/content";
 import { StaggerSection, FadeUpDiv } from "@/components/ui/Motion";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { parseImageTransform, transformStyle } from "@/lib/image-transform";
 
 export const revalidate = 3600;
 
@@ -10,8 +12,9 @@ export const metadata = {
   description: "An A-Z guide of the foundational botanicals and raw earth elements that power our regimens.",
 };
 
-export default async function IngredientsIndexPage() {
-  const ingredients = await getIngredients();
+export default async function IngredientsIndexPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const [ingredients, t] = await Promise.all([getIngredients(locale), getTranslations("ingredients")]);
 
   // Group by first letter
   const grouped = ingredients.reduce((acc, ingredient) => {
@@ -29,15 +32,14 @@ export default async function IngredientsIndexPage() {
       {/* Hero */}
       <StaggerSection className="pt-32 pb-24 px-6 bg-earth text-cream text-center">
         <FadeUpDiv>
-          <h2 className="text-sm font-semibold tracking-[0.3em] text-bronze uppercase mb-4">The Glossary</h2>
+          <h2 className="text-sm font-semibold tracking-[0.3em] text-bronze uppercase mb-4">{t("glossaryLabel")}</h2>
         </FadeUpDiv>
         <FadeUpDiv>
-          <h1 className="text-4xl md:text-5xl font-serif uppercase tracking-widest mb-6">Ingredient Heritage</h1>
+          <h1 className="text-4xl md:text-5xl font-serif uppercase tracking-widest mb-6">{t("title")}</h1>
         </FadeUpDiv>
         <FadeUpDiv>
           <p className="text-lg text-cream/80 max-w-2xl mx-auto leading-relaxed font-light">
-            We source directly from the earth, focusing on materials revered for centuries. 
-            Explore the functional power and cultural resonance behind each element in our regimens.
+            {t("pageBody")}
           </p>
         </FadeUpDiv>
       </StaggerSection>
@@ -48,12 +50,12 @@ export default async function IngredientsIndexPage() {
           {allLetters.map((letter) => {
             const hasIngredients = letters.includes(letter);
             return (
-              <Link 
-                key={letter} 
+              <Link
+                key={letter}
                 href={hasIngredients ? `#letter-${letter}` : "#"}
                 className={`w-8 h-8 flex items-center justify-center font-serif text-lg transition-colors
-                  ${hasIngredients 
-                    ? 'text-earth hover:text-bronze hover:bg-earth/5' 
+                  ${hasIngredients
+                    ? 'text-earth hover:text-bronze hover:bg-earth/5'
                     : 'text-earth/20 cursor-default pointer-events-none'
                   }`}
               >
@@ -74,17 +76,27 @@ export default async function IngredientsIndexPage() {
               </div>
               <div className="space-y-8">
                 {grouped[letter].map((ingredient) => (
-                  <FadeUpDiv key={ingredient.slug} className="group border-b border-earth/10 pb-8 last:border-b-0">
-                    <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-bronze">{ingredient.category}</span>
-                    <Link href={`/ingredients/${ingredient.slug}`} className="block mt-2">
-                       <h3 className="text-2xl font-serif text-earth group-hover:text-bronze transition-colors">{ingredient.name}</h3>
-                    </Link>
-                    <p className="text-earth/80 mt-3 leading-relaxed max-w-2xl">
-                      {ingredient.description}
-                    </p>
-                    <Link href={`/ingredients/${ingredient.slug}`} className="inline-block mt-4 text-xs tracking-widest uppercase text-earth/60 group-hover:text-earth transition-colors">
-                      Discover the origins &rarr;
-                    </Link>
+                  <FadeUpDiv key={ingredient.slug} className="group border-b border-earth/10 pb-8 last:border-b-0 flex gap-5 items-start">
+                    {ingredient.image && (
+                      <Link href={`/ingredients/${ingredient.slug}`} className="relative w-20 h-24 shrink-0 bg-stone border border-earth/10 overflow-hidden">
+                        <div style={transformStyle(parseImageTransform(ingredient.imagePosition))}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={ingredient.image} alt={ingredient.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.05]" />
+                        </div>
+                      </Link>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-bronze">{ingredient.category}</span>
+                      <Link href={`/ingredients/${ingredient.slug}`} className="block mt-2">
+                        <h3 className="text-2xl font-serif text-earth group-hover:text-bronze transition-colors">{ingredient.name}</h3>
+                      </Link>
+                      <p className="text-earth/80 mt-3 leading-relaxed max-w-2xl">
+                        {ingredient.description}
+                      </p>
+                      <Link href={`/ingredients/${ingredient.slug}`} className="inline-block mt-4 text-xs tracking-widest uppercase text-earth/60 group-hover:text-earth transition-colors">
+                        {t("discoverOrigins")}
+                      </Link>
+                    </div>
                   </FadeUpDiv>
                 ))}
               </div>
@@ -92,12 +104,12 @@ export default async function IngredientsIndexPage() {
           ))}
         </div>
       </section>
-      
+
       {/* CTA */}
       <StaggerSection className="py-24 px-6 bg-stone text-center border-t border-earth/10">
         <FadeUpDiv className="max-w-2xl mx-auto space-y-6">
-          <h2 className="text-3xl font-serif text-earth">Uncompromising Purity</h2>
-          <p className="text-earth/70">Our formulas are painstakingly developed without synthetic fillers, artificial fragrances, or harsh sulfates.</p>
+          <h2 className="text-3xl font-serif text-earth">{t("purityHeading")}</h2>
+          <p className="text-earth/70">{t("purityBody")}</p>
           <Link href="/shop" className="inline-block mt-4">
             <Button>Shop All Regimens</Button>
           </Link>

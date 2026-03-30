@@ -9,16 +9,16 @@ import { redirect } from "next/navigation";
 // ==========================================
 
 export async function adminGetAllIngredients() {
-  return prisma.ingredient.findMany({
+  return (prisma.ingredient.findMany as any)({
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-    include: { relatedProduct: { select: { id: true, name: true } } },
+    include: { products: { select: { id: true, name: true } } },
   });
 }
 
 export async function adminGetIngredientById(id: string) {
-  return prisma.ingredient.findUnique({
+  return (prisma.ingredient.findUnique as any)({
     where: { id },
-    include: { relatedProduct: { select: { id: true, name: true } } },
+    include: { products: { select: { id: true, name: true } } },
   });
 }
 
@@ -31,10 +31,18 @@ export async function createIngredient(formData: FormData) {
   const benefitsText = (formData.get("benefitsText") as string) || null;
   const sortOrder = parseInt(formData.get("sortOrder") as string) || 0;
   const isPublished = formData.get("isPublished") === "true";
-  const relatedProductId = (formData.get("relatedProductId") as string) || null;
+  const productIds = formData.getAll("productIds") as string[];
+  const image = (formData.get("image") as string) || null;
+  const imagePosition = (formData.get("imagePosition") as string) || "center";
 
-  await prisma.ingredient.create({
-    data: { name, slug, category, description, origin, benefitsText, sortOrder, isPublished, relatedProductId },
+  await (prisma.ingredient.create as any)({
+    data: {
+      name, slug, category, description, origin, benefitsText, sortOrder, isPublished, image, imagePosition,
+      products: productIds.length > 0 ? { connect: productIds.map((id) => ({ id })) } : undefined,
+      nameFr: (formData.get("nameFr") as string) || null,
+      descriptionFr: (formData.get("descriptionFr") as string) || null,
+      benefitsTextFr: (formData.get("benefitsTextFr") as string) || null,
+    },
   });
 
   revalidatePath("/admin/ingredients");
@@ -51,11 +59,19 @@ export async function updateIngredient(id: string, formData: FormData) {
   const benefitsText = (formData.get("benefitsText") as string) || null;
   const sortOrder = parseInt(formData.get("sortOrder") as string) || 0;
   const isPublished = formData.get("isPublished") === "true";
-  const relatedProductId = (formData.get("relatedProductId") as string) || null;
+  const productIds = formData.getAll("productIds") as string[];
+  const image = (formData.get("image") as string) || null;
+  const imagePosition = (formData.get("imagePosition") as string) || "center";
 
-  await prisma.ingredient.update({
+  await (prisma.ingredient.update as any)({
     where: { id },
-    data: { name, slug, category, description, origin, benefitsText, sortOrder, isPublished, relatedProductId },
+    data: {
+      name, slug, category, description, origin, benefitsText, sortOrder, isPublished, image, imagePosition,
+      products: { set: productIds.map((id) => ({ id })) },
+      nameFr: (formData.get("nameFr") as string) || null,
+      descriptionFr: (formData.get("descriptionFr") as string) || null,
+      benefitsTextFr: (formData.get("benefitsTextFr") as string) || null,
+    },
   });
 
   revalidatePath("/admin/ingredients");
@@ -80,7 +96,13 @@ export async function adminGetAllGuides() {
 }
 
 export async function adminGetGuideById(id: string) {
-  return prisma.guide.findUnique({ where: { id } });
+  return (prisma.guide as any).findUnique({
+    where: { id },
+    include: {
+      relatedProduct: { select: { id: true, name: true } },
+      products: { select: { id: true, name: true } },
+    },
+  });
 }
 
 export async function createGuide(formData: FormData) {
@@ -88,12 +110,19 @@ export async function createGuide(formData: FormData) {
   const slug = formData.get("slug") as string;
   const description = formData.get("description") as string;
   const image = (formData.get("image") as string) || null;
+  const imagePosition = (formData.get("imagePosition") as string) || "center";
   const methodNumber = parseInt(formData.get("methodNumber") as string) || 0;
   const sortOrder = parseInt(formData.get("sortOrder") as string) || 0;
   const isPublished = formData.get("isPublished") === "true";
+  const productIds = formData.getAll("productIds") as string[];
 
-  await prisma.guide.create({
-    data: { title, slug, description, image, methodNumber, sortOrder, isPublished },
+  await (prisma.guide.create as any)({
+    data: {
+      title, slug, description, image, imagePosition, methodNumber, sortOrder, isPublished,
+      titleFr: (formData.get("titleFr") as string) || null,
+      descriptionFr: (formData.get("descriptionFr") as string) || null,
+      products: productIds.length > 0 ? { connect: productIds.filter(Boolean).map((id) => ({ id })) } : undefined,
+    },
   });
 
   revalidatePath("/admin/guides");
@@ -106,13 +135,20 @@ export async function updateGuide(id: string, formData: FormData) {
   const slug = formData.get("slug") as string;
   const description = formData.get("description") as string;
   const image = (formData.get("image") as string) || null;
+  const imagePosition = (formData.get("imagePosition") as string) || "center";
   const methodNumber = parseInt(formData.get("methodNumber") as string) || 0;
   const sortOrder = parseInt(formData.get("sortOrder") as string) || 0;
   const isPublished = formData.get("isPublished") === "true";
+  const productIds = formData.getAll("productIds") as string[];
 
-  await prisma.guide.update({
+  await (prisma.guide.update as any)({
     where: { id },
-    data: { title, slug, description, image, methodNumber, sortOrder, isPublished },
+    data: {
+      title, slug, description, image, imagePosition, methodNumber, sortOrder, isPublished,
+      titleFr: (formData.get("titleFr") as string) || null,
+      descriptionFr: (formData.get("descriptionFr") as string) || null,
+      products: { set: productIds.filter(Boolean).map((id) => ({ id })) },
+    },
   });
 
   revalidatePath("/admin/guides");

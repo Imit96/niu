@@ -4,12 +4,21 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "../../../auth";
 import { ROLES } from "@/lib/constants";
-
 import { requireAdmin } from "../../lib/auth-utils";
+import { localise } from "@/lib/i18n-content";
 
-export async function getArticles() {
-  return await prisma.article.findMany({
+export async function getArticles(locale = "en") {
+  const articles = await prisma.article.findMany({
     orderBy: [{ sortOrder: "asc" }, { datePublished: "desc" }],
+  });
+  return articles.map((a) => {
+    const aa = a as any;
+    return {
+      ...a,
+      title: localise(a.title, aa.titleFr, locale),
+      category: localise(a.category, aa.categoryFr, locale),
+      excerpt: localise(a.excerpt, aa.excerptFr, locale),
+    };
   });
 }
 
@@ -47,11 +56,48 @@ export async function moveArticle(id: string, direction: "up" | "down") {
   revalidatePath("/admin/articles");
 }
 
-export async function getFeaturedArticle() {
-  return await prisma.article.findFirst({
+export async function getRecentArticles(count = 3, locale = "en") {
+  const articles = await prisma.article.findMany({
+    orderBy: [{ isFeatured: "desc" }, { datePublished: "desc" }],
+    take: count,
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      titleFr: true,
+      category: true,
+      categoryFr: true,
+      excerpt: true,
+      excerptFr: true,
+      featuredImage: true,
+      datePublished: true,
+      isFeatured: true,
+    },
+  });
+  return articles.map((a) => {
+    const aa = a as any;
+    return {
+      ...a,
+      title: localise(a.title, aa.titleFr, locale),
+      category: localise(a.category, aa.categoryFr, locale),
+      excerpt: localise(a.excerpt, aa.excerptFr, locale),
+    };
+  });
+}
+
+export async function getFeaturedArticle(locale = "en") {
+  const a = await prisma.article.findFirst({
     where: { isFeatured: true },
     orderBy: { datePublished: "desc" },
   });
+  if (!a) return a;
+  const aa = a as any;
+  return {
+    ...a,
+    title: localise(a.title, aa.titleFr, locale),
+    category: localise(a.category, aa.categoryFr, locale),
+    excerpt: localise(a.excerpt, aa.excerptFr, locale),
+  };
 }
 
 export async function getArticleById(id: string) {
@@ -60,17 +106,20 @@ export async function getArticleById(id: string) {
   });
 }
 
-export async function getArticleBySlug(slug: string) {
-  return await prisma.article.findFirst({
+export async function getArticleBySlug(slug: string, locale = "en") {
+  const a = await prisma.article.findFirst({
     where: { slug },
-    include: {
-      relatedProduct: {
-        include: {
-          variants: true
-        }
-      }
-    }
+    include: { relatedProduct: { include: { variants: true } } },
   });
+  if (!a) return a;
+  const aa = a as any;
+  return {
+    ...a,
+    title: localise(a.title, aa.titleFr, locale),
+    category: localise(a.category, aa.categoryFr, locale),
+    excerpt: localise(a.excerpt, aa.excerptFr, locale),
+    content: localise(a.content, aa.contentFr, locale),
+  };
 }
 
 export async function createArticle(data: {
@@ -83,13 +132,17 @@ export async function createArticle(data: {
   mediaUrl?: string | null;
   isFeatured?: boolean;
   relatedProductId?: string | null;
+  titleFr?: string | null;
+  categoryFr?: string | null;
+  excerptFr?: string | null;
+  contentFr?: string | null;
 }) {
   await requireAdmin();
   if (data.isFeatured) {
     await prisma.article.updateMany({ where: { isFeatured: true }, data: { isFeatured: false } });
   }
 
-  const article = await prisma.article.create({
+  const article = await (prisma.article.create as any)({
     data: {
       title: data.title,
       slug: data.slug,
@@ -100,6 +153,10 @@ export async function createArticle(data: {
       mediaUrl: data.mediaUrl,
       isFeatured: data.isFeatured ?? false,
       relatedProductId: data.relatedProductId,
+      titleFr: data.titleFr ?? null,
+      categoryFr: data.categoryFr ?? null,
+      excerptFr: data.excerptFr ?? null,
+      contentFr: data.contentFr ?? null,
     },
   });
 
@@ -121,6 +178,10 @@ export async function updateArticle(
     isFeatured?: boolean;
     datePublished?: Date;
     relatedProductId?: string | null;
+    titleFr?: string | null;
+    categoryFr?: string | null;
+    excerptFr?: string | null;
+    contentFr?: string | null;
   }
 ) {
   await requireAdmin();
@@ -128,7 +189,7 @@ export async function updateArticle(
     await prisma.article.updateMany({ where: { isFeatured: true, NOT: { id } }, data: { isFeatured: false } });
   }
 
-  const article = await prisma.article.update({
+  const article = await (prisma.article.update as any)({
     where: { id },
     data: {
       title: data.title,
@@ -141,6 +202,10 @@ export async function updateArticle(
       isFeatured: data.isFeatured,
       datePublished: data.datePublished,
       relatedProductId: data.relatedProductId,
+      titleFr: data.titleFr ?? null,
+      categoryFr: data.categoryFr ?? null,
+      excerptFr: data.excerptFr ?? null,
+      contentFr: data.contentFr ?? null,
     },
   });
 

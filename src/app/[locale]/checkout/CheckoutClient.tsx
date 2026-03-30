@@ -5,13 +5,14 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { PriceDisplay } from "@/components/ui/PriceDisplay";
 import { useState, useEffect, useTransition, useMemo } from "react";
-import Link from "next/link";
-import { createOrderFromCart, confirmOrderPayment } from "../actions/order";
-import { validateDiscountCode } from "../actions/discount";
-import { saveAbandonedCartAction } from "../actions/cartActions";
+import { createOrderFromCart, confirmOrderPayment } from "@/app/actions/order";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { validateDiscountCode } from "@/app/actions/discount";
+import { saveAbandonedCartAction } from "@/app/actions/cartActions";
 import { toast } from "react-hot-toast";
 import { NIGERIAN_STATES } from "@/lib/constants";
-import type { ShippingRate } from "../actions/shipping";
+import type { ShippingRate } from "@/app/actions/shipping";
 
 interface FlashSaleInfo {
   title: string;
@@ -19,6 +20,7 @@ interface FlashSaleInfo {
 }
 
 export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: ShippingRate[]; flashSale: FlashSaleInfo | null }) {
+  const t = useTranslations("checkout");
   const { items, getCartTotal, clearCart } = useCartStore();
   const baseSubtotal = getCartTotal();
 
@@ -34,7 +36,7 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
 
   const [salonDiscountPct, setSalonDiscountPct] = useState(0);
   useEffect(() => {
-    import("../actions/salon").then(({ getSalonProfile }) => {
+    import("@/app/actions/salon").then(({ getSalonProfile }) => {
       getSalonProfile().then(profile => {
         if (profile?.isApproved && profile.pricingTier) {
           setSalonDiscountPct(profile.pricingTier.discountPct);
@@ -209,8 +211,8 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
   if (items.length === 0) {
     return (
       <div className="flex flex-col w-full min-h-[60vh] bg-stone items-center justify-center px-6">
-        <p className="text-earth mb-4">No items to checkout.</p>
-        <Link href="/shop"><Button>Back to Shop</Button></Link>
+        <p className="text-earth mb-4">{t("noItems")}</p>
+        <Link href="/shop"><Button>{t("backToShop")}</Button></Link>
       </div>
     );
   }
@@ -227,8 +229,8 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
           {/* Form Side */}
           <div className="space-y-12">
             <div>
-              <h1 className="text-3xl font-serif text-earth uppercase tracking-widest mb-2">Checkout</h1>
-              <p className="text-earth/70 text-sm">Guest checkout enabled.</p>
+              <h1 className="text-3xl font-serif text-earth uppercase tracking-widest mb-2">{t("title")}</h1>
+              <p className="text-earth/70 text-sm">{t("guestCheckout")}</p>
             </div>
 
             {error && error !== "__STALE_CART__" && (
@@ -237,14 +239,14 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
 
             {error === "__STALE_CART__" && (
               <div className="bg-clay/10 border border-clay/30 text-clay p-4 text-sm space-y-3">
-                <p className="font-semibold">Your cart contains outdated product data.</p>
-                <p className="text-clay/80">One or more items in your cart no longer match our database. Please clear your cart and re-add your items.</p>
+                <p className="font-semibold">{t("staleCartTitle")}</p>
+                <p className="text-clay/80">{t("staleCartBody")}</p>
                 <button
                   type="button"
                   onClick={() => { clearCart(); setError(null); }}
                   className="px-4 py-2 bg-clay text-cream text-xs font-bold uppercase tracking-widest hover:bg-clay/90 transition-colors"
                 >
-                  Clear Cart & Start Over
+                  {t("clearCart")}
                 </button>
               </div>
             )}
@@ -252,43 +254,43 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
             <form onSubmit={handlePaystackCheckout} className="space-y-8">
               {/* Contact */}
               <div className="space-y-4">
-                <h2 className="text-lg font-serif text-earth uppercase tracking-widest border-b border-earth/20 pb-2">Contact Information</h2>
-                <Input name="email" type="email" placeholder="Email Address" required onBlur={handleEmailBlur} />
-                <Input name="phone" type="tel" placeholder="Mobile Number (for delivery updates)" />
+                <h2 className="text-lg font-serif text-earth uppercase tracking-widest border-b border-earth/20 pb-2">{t("contactInformation")}</h2>
+                <Input name="email" type="email" placeholder={t("emailPlaceholder")} required onBlur={handleEmailBlur} />
+                <Input name="phone" type="tel" placeholder={t("phonePlaceholder")} />
               </div>
 
               {/* Shipping */}
               <div className="space-y-4">
-                <h2 className="text-lg font-serif text-earth uppercase tracking-widest border-b border-earth/20 pb-2">Shipping Address</h2>
+                <h2 className="text-lg font-serif text-earth uppercase tracking-widest border-b border-earth/20 pb-2">{t("shippingAddress")}</h2>
                 <div className="grid grid-cols-2 gap-4">
-                  <Input name="firstName" type="text" placeholder="First Name" required />
-                  <Input name="lastName" type="text" placeholder="Last Name" required />
+                  <Input name="firstName" type="text" placeholder={t("firstNamePlaceholder")} required />
+                  <Input name="lastName" type="text" placeholder={t("lastNamePlaceholder")} required />
                 </div>
-                <Input name="address" type="text" placeholder="Street Address" required />
-                <Input name="apartment" type="text" placeholder="Apartment, suite, etc. (optional)" />
+                <Input name="address" type="text" placeholder={t("streetAddressPlaceholder")} required />
+                <Input name="apartment" type="text" placeholder={t("apartmentPlaceholder")} />
 
                 {/* Destination type */}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">Delivery Destination</label>
+                  <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">{t("deliveryDestination")}</label>
                   <select
                     value={isInternational ? "international" : "domestic"}
                     onChange={(e) => setIsInternational(e.target.value === "international")}
                     className={selectClass}
                   >
-                    <option value="domestic">Nigeria (Domestic)</option>
-                    <option value="international">Outside Nigeria (International)</option>
+                    <option value="domestic">{t("domesticOption")}</option>
+                    <option value="international">{t("internationalOption")}</option>
                   </select>
                 </div>
 
                 {isInternational ? (
                   <>
                     {/* International: free-text country + state */}
-                    <Input name="country" type="text" placeholder="Country" required />
+                    <Input name="country" type="text" placeholder={t("countryPlaceholder")} required />
                     <div className="grid grid-cols-2 gap-4">
-                      <Input name="city" type="text" placeholder="City" required />
-                      <Input name="state" type="text" placeholder="State / Region (optional)" />
+                      <Input name="city" type="text" placeholder={t("cityPlaceholder")} required />
+                      <Input name="state" type="text" placeholder={t("stateRegionPlaceholder")} />
                     </div>
-                    <Input name="postalCode" type="text" placeholder="Postal Code" required />
+                    <Input name="postalCode" type="text" placeholder={t("postalCodePlaceholder")} required />
                   </>
                 ) : (
                   <>
@@ -296,7 +298,7 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
                     <input type="hidden" name="country" value="Nigeria" />
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">State *</label>
+                        <label className="text-[10px] font-semibold tracking-widest uppercase text-earth">{t("stateLabel")}</label>
                         <select
                           name="state"
                           value={selectedState}
@@ -309,9 +311,9 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
                           ))}
                         </select>
                       </div>
-                      <Input name="city" type="text" placeholder="City" required />
+                      <Input name="city" type="text" placeholder={t("cityPlaceholder")} required />
                     </div>
-                    <Input name="postalCode" type="text" placeholder="Postal Code (optional)" />
+                    <Input name="postalCode" type="text" placeholder={t("postalCodeOptionalPlaceholder")} />
                   </>
                 )}
 
@@ -323,9 +325,9 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
                   </div>
                 ) : isInternational ? (
                   <div className="bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
-                    International shipping to your region is not yet available online.{" "}
+                    {t("internationalUnavailable")}{" "}
                     <Link href="/contact" className="underline underline-offset-2 font-medium hover:text-amber-900">
-                      Contact us
+                      {t("contactForQuote")}
                     </Link>{" "}
                     to arrange a custom shipping quote.
                   </div>
@@ -336,7 +338,7 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
               <div className="pt-4 space-y-4">
                 {hasStockIssue && (
                   <div className="bg-clay/10 border border-clay/30 text-clay px-4 py-3 text-sm">
-                    Some items in your cart exceed available stock. Please reduce the quantity.
+                    {t("stockIssue")}
                   </div>
                 )}
                 <Button
@@ -346,7 +348,7 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
                   disabled={loading || isPending || hasStockIssue || (isInternational && !selectedShippingRate)}
                 >
                   {loading || isPending
-                    ? "Processing..."
+                    ? t("processing")
                     : <span className="flex items-center justify-center gap-1.5 break-normal">Pay <PriceDisplay amountInCents={finalCartTotal} /></span>
                   }
                 </Button>
@@ -356,7 +358,7 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
 
           {/* Summary Side */}
           <div className="bg-cream/50 p-8 border border-earth/10 sticky top-32 h-fit">
-            <h2 className="text-lg font-serif text-earth uppercase tracking-widest border-b border-earth/20 pb-4 mb-6">Order Summary</h2>
+            <h2 className="text-lg font-serif text-earth uppercase tracking-widest border-b border-earth/20 pb-4 mb-6">{t("orderSummary")}</h2>
 
             <div className="space-y-4 mb-6">
               {(() => {
@@ -399,7 +401,7 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="Discount Code"
+                  placeholder={t("discountCode")}
                   value={discountCode}
                   onChange={(e) => setDiscountCode(e.target.value)}
                   disabled={!!appliedDiscount || isValidatingDiscount}
@@ -411,7 +413,7 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
                     onClick={() => { setAppliedDiscount(null); setDiscountCode(""); }}
                     className="px-6 py-3 text-xs uppercase tracking-widest text-earth bg-earth/5 hover:bg-earth/10 transition-colors"
                   >
-                    Remove
+                    {t("removeDiscount")}
                   </button>
                 ) : (
                   <button
@@ -420,48 +422,48 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
                     disabled={isValidatingDiscount || !discountCode.trim()}
                     className="px-6 py-3 bg-earth text-cream text-xs uppercase tracking-widest hover:bg-earth/90 transition-colors disabled:opacity-50"
                   >
-                    Apply
+                    {t("applyDiscount")}
                   </button>
                 )}
               </div>
               {discountError && <p className="text-red-600 text-xs">{discountError}</p>}
-              {appliedDiscount && <p className="text-green-700 text-xs">Code {appliedDiscount.code} applied ({appliedDiscount.type})</p>}
+              {appliedDiscount && <p className="text-green-700 text-xs">{t("discountApplied", { code: appliedDiscount.code, type: appliedDiscount.type })}</p>}
             </div>
 
             {/* Totals */}
             <div className="space-y-3 text-sm text-earth/80 pt-6 mt-6 border-t border-earth/10">
               <div className="flex justify-between">
-                <span>Subtotal</span>
+                <span>{t("subtotalLabel")}</span>
                 <span className={(flashSale || salonDiscountPct > 0) ? "line-through opacity-50" : ""}>
                   <PriceDisplay amountInCents={baseSubtotal} />
                 </span>
               </div>
               {flashSale && (
                 <div className="flex justify-between text-bronze font-medium">
-                  <span>Flash Sale ({flashSale.discountPct}% — {flashSale.title})</span>
+                  <span>{t("flashSaleLabel", { pct: flashSale.discountPct, title: flashSale.title })}</span>
                   <span>-<PriceDisplay amountInCents={flashSaleDiscountInCents} /></span>
                 </div>
               )}
               {salonDiscountPct > 0 && (
                 <>
                   <div className="flex justify-between text-earth font-medium">
-                    <span>Wholesale Discount ({salonDiscountPct}%)</span>
+                    <span>{t("wholesaleDiscountLabel", { pct: salonDiscountPct })}</span>
                     <span>-<PriceDisplay amountInCents={subtotalAfterFlash - subtotal} /></span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Discounted Subtotal</span>
+                    <span>{t("discountedSubtotalLabel")}</span>
                     <span><PriceDisplay amountInCents={subtotal} /></span>
                   </div>
                 </>
               )}
               {appliedDiscount && (
                 <div className="flex justify-between text-green-700">
-                  <span>Discount ({appliedDiscount.code})</span>
+                  <span>{t("discountLabel", { code: appliedDiscount.code })}</span>
                   <span>-<PriceDisplay amountInCents={appliedDiscount.amountInCents} /></span>
                 </div>
               )}
               <div className="flex justify-between">
-                <span>Shipping{selectedShippingRate?.estimatedDays ? ` (${selectedShippingRate.estimatedDays})` : ""}</span>
+                <span>{t("shippingLabel")}{selectedShippingRate?.estimatedDays ? ` (${selectedShippingRate.estimatedDays})` : ""}</span>
                 {shippingFeeInCents > 0
                   ? <PriceDisplay amountInCents={shippingFeeInCents} />
                   : <span className="text-earth/60">—</span>
@@ -470,7 +472,7 @@ export function CheckoutClient({ shippingRates, flashSale }: { shippingRates: Sh
             </div>
 
             <div className="flex justify-between items-center text-earth pt-4 mt-4 border-t border-earth/10">
-              <span className="font-serif text-lg tracking-widest uppercase">Total</span>
+              <span className="font-serif text-lg tracking-widest uppercase">{t("totalLabel")}</span>
               <span className="font-medium text-xl"><PriceDisplay amountInCents={finalCartTotal} /></span>
             </div>
           </div>

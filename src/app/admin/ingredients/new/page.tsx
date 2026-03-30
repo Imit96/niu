@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
+import { SingleImageUploader } from "@/components/ui/SingleImageUploader";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
@@ -10,7 +11,7 @@ export const metadata = { title: "New Ingredient | Admin — ORIGONÆ" };
 
 export default async function NewIngredientPage() {
   const products = await prisma.product.findMany({
-    select: { id: true, name: true },
+    select: { id: true, name: true, functionalTitle: true },
     orderBy: { name: "asc" },
   });
 
@@ -58,17 +59,28 @@ export default async function NewIngredientPage() {
           <Textarea name="benefitsText" rows={3} placeholder="Functional benefits and skin/scalp efficacy..." />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="space-y-2">
+          <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Name (FR)</label>
+          <Input name="nameFr" placeholder="Nom en francais" />
+        </div>
+        <div className="space-y-2">
+          <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Description (FR)</label>
+          <Textarea name="descriptionFr" rows={4} placeholder="Description en francais..." />
+        </div>
+        <div className="space-y-2">
+          <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Benefits (FR)</label>
+          <Textarea name="benefitsTextFr" rows={3} placeholder="Benefices en francais..." />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Image</label>
+          <SingleImageUploader name="image" positionName="imagePosition" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Sort Order</label>
             <Input name="sortOrder" type="number" defaultValue="0" />
-          </div>
-          <div className="space-y-2">
-            <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Linked Product</label>
-            <select name="relatedProductId" className="w-full h-10 px-3 border border-earth/20 bg-cream text-earth text-sm focus:outline-none focus:ring-2 focus:ring-earth/40">
-              <option value="">— None —</option>
-              {products.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-            </select>
           </div>
           <div className="space-y-2">
             <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Published</label>
@@ -76,6 +88,28 @@ export default async function NewIngredientPage() {
               <option value="true">Published</option>
               <option value="false">Draft</option>
             </select>
+          </div>
+        </div>
+        <div className="space-y-3">
+          <label className="text-[10px] font-semibold uppercase tracking-widest text-earth">Linked Products</label>
+          <p className="text-[10px] text-earth/50">Select all regimens that feature this ingredient.</p>
+          <div className="space-y-2 max-h-72 overflow-y-auto border border-earth/10 p-3">
+            {products.map((p) => (
+              <label key={p.id} className="flex items-start gap-3 p-3 hover:bg-stone/30 cursor-pointer transition-colors rounded-sm">
+                <input
+                  type="checkbox"
+                  name="productIds"
+                  value={p.id}
+                  className="mt-0.5 accent-earth h-4 w-4 shrink-0"
+                />
+                <div>
+                  <p className="text-sm text-earth font-medium">{p.name}</p>
+                  {p.functionalTitle && (
+                    <p className="text-[10px] text-earth/50 uppercase tracking-widest">{p.functionalTitle}</p>
+                  )}
+                </div>
+              </label>
+            ))}
           </div>
         </div>
 

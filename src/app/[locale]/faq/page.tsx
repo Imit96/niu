@@ -1,32 +1,20 @@
 import { StaggerSection, FadeUpDiv } from "@/components/ui/Motion";
+import { getTranslations } from "next-intl/server";
 
 export const metadata = {
   title: "Frequently Asked Questions | ORIGONÆ",
   description: "Find answers regarding our regimens, sourcing, and shipping.",
 };
 
-export default function FAQPage() {
+export default async function FAQPage() {
+  const t = await getTranslations("faq");
+
   const faqs = [
-    {
-      question: "Are your products suitable for all hair types?",
-      answer: "While ORIGONÆ is rooted in African heritage and particularly supportive of dense, coarse, and coily textures, our formulations focus on foundational scalp health and deep hydration, making them beneficial for all hair architectures."
-    },
-    {
-      question: "Where do you source your ingredients?",
-      answer: "We ethically source our key botanicals and minerals, such as our Rhassoul Clay and Kalahari Melon Seed Oil, directly from cooperatives across the African continent, ensuring purity and fair trade practices."
-    },
-    {
-      question: "Do your products contain synthetic fragrances?",
-      answer: "No. The Olfactory Regimen and all our product scents are derived entirely from natural essential oils, resins, and absolutes. We prioritize earthy, grounding notes over synthetic florals."
-    },
-    {
-      question: "How long does shipping take?",
-      answer: "Standard domestic shipping takes 3-5 business days. International shipping typically takes 7-14 business days depending on the destination and customs processing."
-    },
-    {
-      question: "Can I use the Purifying Clay Wash daily?",
-      answer: "We recommend using the Clay Wash 1-2 times per week to gently detoxify without stripping the scalp of its natural lipid barrier."
-    }
+    { question: t("q1"), answer: t("a1") },
+    { question: t("q2"), answer: t("a2") },
+    { question: t("q3"), answer: t("a3") },
+    { question: t("q4"), answer: t("a4") },
+    { question: t("q5"), answer: t("a5") },
   ];
 
   return (
@@ -34,10 +22,10 @@ export default function FAQPage() {
       <div className="max-w-3xl mx-auto space-y-16">
         <StaggerSection className="text-center space-y-4">
           <FadeUpDiv>
-            <h1 className="text-4xl md:text-5xl font-serif text-earth uppercase tracking-widest">F.A.Q.</h1>
+            <h1 className="text-4xl md:text-5xl font-serif text-earth uppercase tracking-widest">{t("title")}</h1>
           </FadeUpDiv>
           <FadeUpDiv>
-            <p className="text-earth/70 font-light">Questions regarding our philosophy and formulations.</p>
+            <p className="text-earth/70 font-light">{t("subtitle")}</p>
           </FadeUpDiv>
         </StaggerSection>
 
@@ -51,9 +39,9 @@ export default function FAQPage() {
         </StaggerSection>
 
         <div className="text-center pt-8 border-t border-earth/20">
-          <p className="text-earth/70 font-light mb-4">Still need assistance?</p>
+          <p className="text-earth/70 font-light mb-4">{t("stillNeedHelp")}</p>
           <a href="/contact" className="inline-block text-xs uppercase tracking-widest text-bronze hover:text-earth transition-colors border-b border-transparent hover:border-earth pb-1">
-            Contact Client Care
+            {t("contactCare")}
           </a>
         </div>
       </div>

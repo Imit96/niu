@@ -4,10 +4,12 @@ import * as React from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { submitSalonApplication } from "@/app/actions/salon";
+import { useTranslations } from "next-intl";
 
 export function SalonApplicationForm() {
   const [status, setStatus] = React.useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = React.useState("");
+  const t = useTranslations("salon");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,7 +30,7 @@ export function SalonApplicationForm() {
   if (status === "success") {
     return (
       <div className="text-center py-16 bg-stone border border-earth/10">
-        <h3 className="text-2xl font-serif text-earth mb-4">Application Received.</h3>
+        <h3 className="text-2xl font-serif text-earth mb-4">{t("form.success")}</h3>
         <p className="text-earth/80 font-light mb-8 max-w-sm mx-auto">
           Thank you for your interest in ORIGONÆ. Our wholesale concierge will review your submission and contact you shortly.
         </p>
@@ -40,51 +42,51 @@ export function SalonApplicationForm() {
     <form onSubmit={handleSubmit} className="space-y-8 bg-stone p-8 md:p-12 border border-earth/10">
       {status === "error" && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm rounded-sm">
-          {errorMsg}
+          {errorMsg || t("form.error")}
         </div>
       )}
 
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label htmlFor="businessName" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Salon / Business Name *</label>
+            <label htmlFor="businessName" className="text-[10px] font-semibold tracking-widest uppercase text-earth">{t("form.salonName")}</label>
             <Input id="businessName" name="businessName" required placeholder="Your Salon" className="bg-cream border-earth/20 focus-visible:border-bronze" />
           </div>
           <div className="space-y-2">
-            <label htmlFor="contactName" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Primary Contact *</label>
+            <label htmlFor="contactName" className="text-[10px] font-semibold tracking-widest uppercase text-earth">{t("form.ownerName")}</label>
             <Input id="contactName" name="contactName" required placeholder="Stylist or Owner Name" className="bg-cream border-earth/20 focus-visible:border-bronze" />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label htmlFor="contactEmail" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Professional Email *</label>
+            <label htmlFor="contactEmail" className="text-[10px] font-semibold tracking-widest uppercase text-earth">{t("form.email")}</label>
             <Input id="contactEmail" name="contactEmail" type="email" required placeholder="contact@yoursalon.com" className="bg-cream border-earth/20 focus-visible:border-bronze" />
           </div>
           <div className="space-y-2">
-            <label htmlFor="phone" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Phone Number</label>
+            <label htmlFor="phone" className="text-[10px] font-semibold tracking-widest uppercase text-earth">{t("form.phone")}</label>
             <Input id="phone" name="phone" placeholder="+234..." className="bg-cream border-earth/20 focus-visible:border-bronze" />
           </div>
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="address" className="text-[10px] font-semibold tracking-widest uppercase text-earth">City &amp; Country *</label>
+          <label htmlFor="address" className="text-[10px] font-semibold tracking-widest uppercase text-earth">{t("form.address")}</label>
           <Input id="address" name="address" required placeholder="Lagos, Nigeria" className="bg-cream border-earth/20 focus-visible:border-bronze" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label htmlFor="instagramHandle" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Instagram Handle</label>
+            <label htmlFor="instagramHandle" className="text-[10px] font-semibold tracking-widest uppercase text-earth">{t("form.stylistCount")}</label>
             <Input id="instagramHandle" name="instagramHandle" placeholder="@yoursalon" className="bg-cream border-earth/20 focus-visible:border-bronze" />
           </div>
           <div className="space-y-2">
-            <label htmlFor="socialMediaLinks" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Website / TikTok / Other</label>
+            <label htmlFor="socialMediaLinks" className="text-[10px] font-semibold tracking-widest uppercase text-earth">{t("form.website")}</label>
             <Input id="socialMediaLinks" name="socialMediaLinks" placeholder="https://yoursalon.com or @tiktokhandle" className="bg-cream border-earth/20 focus-visible:border-bronze" />
           </div>
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="message" className="text-[10px] font-semibold tracking-widest uppercase text-earth">Tell Us About Your Salon Philosophy</label>
+          <label htmlFor="message" className="text-[10px] font-semibold tracking-widest uppercase text-earth">{t("form.message")}</label>
           <textarea
             id="message"
             name="message"
@@ -97,7 +99,7 @@ export function SalonApplicationForm() {
 
       <div className="pt-4">
         <Button type="submit" size="lg" className="w-full" disabled={status === "loading"}>
-          {status === "loading" ? "Submitting..." : "Submit Application"}
+          {status === "loading" ? t("form.submitting") : t("form.submit")}
         </Button>
       </div>
     </form>

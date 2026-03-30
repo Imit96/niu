@@ -173,6 +173,20 @@ export const ResetPasswordSchema = z
 // Helpers
 // ==========================================
 
+// ==========================================
+// Custom Formula Request
+// ==========================================
+
+export const CustomFormulaRequestSchema = z.object({
+  name: z.string().min(1, "Your name is required"),
+  email: z.string().email("Please enter a valid email address"),
+  hairConcern: z.string().min(1, "Please select a primary hair concern"),
+  texture: z.string().optional(),
+  notes: z.string().max(500, "Notes must be under 500 characters").optional(),
+});
+
+// ==========================================
+
 /** Extract FormData into a plain object for Zod parsing */
 export function formDataToObject(formData: FormData): Record<string, string> {
   const obj: Record<string, string> = {};
