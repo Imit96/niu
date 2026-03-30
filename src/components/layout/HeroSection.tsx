@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -52,6 +53,18 @@ export function HeroSection({ imageSrc = "/hero.png", className }: HeroSectionPr
   const tHero = useTranslations("home.heroV2");
   const tCat = useTranslations("home.categoriesV2");
   const shouldReduceMotion = useReducedMotion();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    // Force play on mount to bypass aggressive mobile browser autoplay restrictions
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+      videoRef.current.play().catch((err) => {
+        console.warn("Autoplay was prevented by browser:", err);
+      });
+    }
+  }, []);
 
   return (
     <div className={cn("w-full flex flex-col", className)}>
@@ -68,6 +81,7 @@ export function HeroSection({ imageSrc = "/hero.png", className }: HeroSectionPr
           transition={shouldReduceMotion ? { duration: 0.3 } : { duration: 1.8, ease: [0.33, 1, 0.68, 1] }}
         >
           <video
+            ref={videoRef}
             autoPlay
             loop
             muted
