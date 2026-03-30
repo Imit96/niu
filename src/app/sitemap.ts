@@ -4,32 +4,47 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://origonae.com";
+  const rawBaseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://origonae.com";
+  // Strip trailing slashes to prevent double-slash invalid URLs
+  const baseUrl = rawBaseUrl.endsWith("/") ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
 
-  // Fetch all dynamically generated routes — fall back to empty arrays if DB is unreachable at build time
-  const [products, journals, bundles] = await Promise.all([
-    prisma.product.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
-    prisma.article.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
-    prisma.ritualBundle.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
-  ]);
+  let products: any[] = [];
+  let journals: any[] = [];
+  let bundles: any[] = [];
+
+  try {
+    const res = await Promise.all([
+      prisma.product.findMany({ select: { slug: true, updatedAt: true } }),
+      prisma.article.findMany({ select: { slug: true, updatedAt: true } }),
+      prisma.ritualBundle.findMany({ select: { slug: true, updatedAt: true } }),
+    ]);
+    products = res[0] || [];
+    journals = res[1] || [];
+    bundles = res[2] || [];
+  } catch (error) {
+    console.error("[Sitemap] Database fetch failed during build/runtime:", error);
+    // Continue with static routes and empty dynamic routes so the build doesn't crash
+  }
+
+  const parseDate = (d: any) => (d instanceof Date ? d : new Date());
 
   const productEntries = products.map((product) => ({
     url: `${baseUrl}/shop/${product.slug}`,
-    lastModified: product.updatedAt,
+    lastModified: parseDate(product.updatedAt),
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
 
   const journalEntries = journals.map((article) => ({
     url: `${baseUrl}/journal/${article.slug}`,
-    lastModified: article.updatedAt,
+    lastModified: parseDate(article.updatedAt),
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
 
   const bundleEntries = bundles.map((bundle) => ({
     url: `${baseUrl}/bundles/${bundle.slug}`,
-    lastModified: bundle.updatedAt,
+    lastModified: parseDate(bundle.updatedAt),
     changeFrequency: "weekly" as const,
     priority: 0.9,
   }));
@@ -55,7 +70,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority,
   }));
 
-  // Ingredient pages are hardcoded — list slugs here
   const ingredientSlugs = [
     "african-black-soap",
     "baobab-oil",
@@ -64,6 +78,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "rhassoul-clay",
     "shea-butter",
   ];
+  
   const ingredientEntries = ingredientSlugs.map((slug) => ({
     url: `${baseUrl}/ingredients/${slug}`,
     lastModified: new Date(),
